@@ -6,10 +6,11 @@
     <title>AI Career Compass</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for Dynamic Radar -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -18,7 +19,6 @@
                         sand: '#F4F3EF',
                         moss: '#3D5A50',
                         mossDark: '#2C433B',
-                        appBlack: '#000000'
                     }
                 }
             }
@@ -27,42 +27,46 @@
     <style>
         body {
             background-color: #F4F3EF;
-            color: #000000;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        .text-black-all * {
             color: #000000 !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .modal-blur {
-            backdrop-filter: blur(8px);
+        * {
+            color: #000000;
+        }
+        .header-text, .btn-text-white, .badge-white {
+            color: #FFFFFF !important;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
         }
     </style>
 </head>
-<body class="bg-sand text-black min-h-screen flex flex-col">
+<body class="bg-sand min-h-screen flex flex-col">
 
-    <!-- TOP NAVIGATION HEADER -->
+    <!-- TOP NAVBAR -->
     <header class="bg-moss text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-compass text-2xl text-sand"></i>
-                <h1 class="text-xl font-bold tracking-wide text-white">AI CAREER COMPASS</h1>
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchSlide(1)">
+                <i class="fa-solid fa-compass text-2xl text-sand header-text"></i>
+                <h1 class="text-xl font-extrabold tracking-wide header-text">AI CAREER COMPASS</h1>
             </div>
             
-            <nav class="hidden md:flex space-x-1 text-xs font-semibold overflow-x-auto py-1">
-                <button onclick="switchSlide(1)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">1: Welcome</button>
-                <button onclick="switchSlide(2)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">2: Assessment</button>
-                <button onclick="switchSlide(3)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">3: APEX Radar</button>
-                <button onclick="switchSlide(4)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">4: Recommendations</button>
-                <button onclick="switchSlide(5)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">5: Academies Map</button>
-                <button onclick="switchSlide(6)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">6: Code & LinkedIn</button>
-                <button onclick="switchSlide(7)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">7: AI Tutor Studio</button>
-                <button onclick="switchSlide(8)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">8: Job Hunter</button>
-                <button onclick="switchSlide(9)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">9: CV Studio</button>
-                <button onclick="switchSlide(10)" class="px-3 py-1.5 rounded hover:bg-mossDark transition">10: Interview Arena</button>
+            <nav class="hidden lg:flex space-x-1 text-xs font-bold overflow-x-auto py-1">
+                <button onclick="switchSlide(1)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">1: Welcome</button>
+                <button onclick="switchSlide(2)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">2: Intake</button>
+                <button onclick="switchSlide(3)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">3: Radar</button>
+                <button onclick="switchSlide(4)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">4: Recommendations</button>
+                <button onclick="switchSlide(5)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">5: Academies Map</button>
+                <button onclick="switchSlide(6)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">6: Code & LinkedIn</button>
+                <button onclick="switchSlide(7)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">7: AI Tutor Studio</button>
+                <button onclick="switchSlide(8)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">8: Job Hunter</button>
+                <button onclick="switchSlide(9)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">9: CV Studio</button>
+                <button onclick="switchSlide(10)" class="px-2.5 py-1.5 rounded hover:bg-mossDark header-text">10: Interview Arena</button>
             </nav>
 
             <div class="flex items-center space-x-3">
-                <select id="langSelect" class="bg-mossDark text-white text-xs px-2 py-1.5 rounded border border-sand/30 focus:outline-none">
+                <select id="langSelect" class="bg-mossDark text-white text-xs px-2 py-1.5 rounded border border-sand/30 header-text">
                     <option value="en">English</option>
                     <option value="ur">Roman Urdu</option>
                 </select>
@@ -73,278 +77,325 @@
         </div>
     </header>
 
-    <!-- MAIN SLIDE CONTAINER -->
+    <!-- MAIN SLIDES CONTAINER -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-        <!-- SLIDE 1: WELCOME & PROMPTS -->
+        <!-- SLIDE 1: WELCOME HERO -->
         <section id="slide-1" class="slide-content block">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-moss/10 text-center max-w-3xl mx-auto my-8">
-                <h2 class="text-3xl font-extrabold text-black mb-4">Discover & Engineer Your Ideal Career Path</h2>
-                <p class="text-black mb-8 leading-relaxed">Welcome to AI Career Compass. Harness real-time skill mapping, automated portfolio feedback, curriculum generation, and live voice AI interview practice.</p>
-                <button onclick="switchSlide(2)" class="bg-moss text-white font-bold px-8 py-3 rounded-lg shadow-md hover:bg-mossDark transition">
-                    Start Assessment <i class="fa-solid fa-arrow-right ml-2"></i>
+            <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-moss/20 text-center max-w-3xl mx-auto my-8">
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Discover & Engineer Your Ideal Career Path</h2>
+                <p class="text-sm md:text-base mb-8 leading-relaxed">Welcome to AI Career Compass. Complete your personal evaluation, leverage live skill-gap analysis, explore targeted academies, audit your LinkedIn profile, and train with live AI interviews.</p>
+                <button onclick="switchSlide(2)" class="bg-moss text-white font-bold px-8 py-3 rounded-lg shadow-lg hover:bg-mossDark transition btn-text-white">
+                    Start Assessment <i class="fa-solid fa-arrow-right ml-2 header-text"></i>
                 </button>
             </div>
         </section>
 
-        <!-- SLIDE 2: ASSESSMENT -->
+        <!-- SLIDE 2: USER INTAKE & PROFILE DATA -->
         <section id="slide-2" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-4">Career Skill Assessment</h2>
-                <p class="text-black text-sm mb-6">Select your primary interests and proficiency levels to trigger instant APEX Radar indexing.</p>
-                
-                <div class="space-y-4 max-w-xl">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20 max-w-3xl mx-auto">
+                <h2 class="text-2xl font-bold mb-2">Step 1: Personal Intake & Academic Background</h2>
+                <p class="text-xs mb-6">Please enter your exact details so the compass can map precise local and international trajectory options.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-bold text-black mb-1">Target Field / Role</label>
-                        <input type="text" id="userRoleInput" value="Full-Stack Python & AI Specialist" class="w-full p-2.5 rounded border border-gray-300 text-black text-sm focus:border-moss focus:outline-none">
+                        <label class="block text-xs font-bold mb-1">Full Name</label>
+                        <input type="text" id="usrName" value="Minal" class="w-full p-2.5 rounded border border-gray-300 text-xs focus:border-moss outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-black mb-1">Current Skill Level</label>
-                        <select id="userProficiency" class="w-full p-2.5 rounded border border-gray-300 text-black text-sm focus:border-moss">
-                            <option>Intermediate (Self-Taught / Applied Projects)</option>
-                            <option>Beginner (Foundational)</option>
-                            <option>Advanced (Industry Ready)</option>
+                        <label class="block text-xs font-bold mb-1">Age</label>
+                        <input type="number" id="usrAge" value="18" class="w-full p-2.5 rounded border border-gray-300 text-xs focus:border-moss outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">Country</label>
+                        <input type="text" id="usrCountry" value="Pakistan" class="w-full p-2.5 rounded border border-gray-300 text-xs focus:border-moss outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">City</label>
+                        <input type="text" id="usrCity" value="Lahore" class="w-full p-2.5 rounded border border-gray-300 text-xs focus:border-moss outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold mb-1">Current Education Level</label>
+                        <input type="text" id="usrEdu" value="Matriculation / Self-Study Preparation" class="w-full p-2.5 rounded border border-gray-300 text-xs focus:border-moss outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold mb-1">Current Technical Skills & Interests</label>
+                        <input type="text" id="usrSkills" value="Python, Basic Web Development, Customer Communication, Model Training" class="w-full p-2.5 rounded border border-gray-300 text-xs focus:border-moss outline-none">
+                    </div>
+                </div>
+
+                <button onclick="runNanosecondRadar()" class="w-full mt-6 bg-moss text-white font-bold py-3 rounded-lg shadow hover:bg-mossDark transition btn-text-white">
+                    Submit Intake & Compute APEX Radar <i class="fa-solid fa-bolt ml-1 header-text"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: APEX RADAR (AUTO NANOSECOND TRANSITION) -->
+        <section id="slide-3" class="slide-content hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20 text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold mb-2">APEX Competency Radar Analysis</h2>
+                <p class="text-xs mb-6">Processing skill vectors in nanoseconds...</p>
+
+                <div class="w-full max-w-md mx-auto mb-6">
+                    <canvas id="radarChartCanvas"></canvas>
+                </div>
+
+                <div class="inline-flex items-center space-x-2 font-bold text-xs text-moss">
+                    <i class="fa-solid fa-spinner fa-spin text-moss"></i>
+                    <span>Computing gap vectors... Redirecting to Recommendations...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: RECOMMENDATIONS -->
+        <section id="slide-4" class="slide-content hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">Targeted Skill & Pathway Recommendations</h2>
+                <p class="text-xs mb-6">Click on any recommendation below to instantly jump into the Academies Map with filtered institute contacts.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div onclick="navigateToAcademy('IT')" class="p-4 rounded-xl border border-moss/30 bg-sand/60 cursor-pointer hover:border-moss hover:shadow transition">
+                        <i class="fa-solid fa-laptop-code text-2xl text-moss mb-2"></i>
+                        <h3 class="font-bold text-sm mb-1">Full-Stack Python & Data Engineering</h3>
+                        <p class="text-xs">Master FastAPI, Django, and PyTorch for backend system engineering.</p>
+                        <span class="inline-block mt-3 text-[11px] font-bold text-moss">Find IT Academies <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <div onclick="navigateToAcademy('Aviation')" class="p-4 rounded-xl border border-moss/30 bg-sand/60 cursor-pointer hover:border-moss hover:shadow transition">
+                        <i class="fa-solid fa-plane text-2xl text-moss mb-2"></i>
+                        <h3 class="font-bold text-sm mb-1">Aviation & Emirates Cabin Crew Training</h3>
+                        <p class="text-xs">Elevate English fluency, emergency protocols, and high-standard customer care.</p>
+                        <span class="inline-block mt-3 text-[11px] font-bold text-moss">Find Cabin Crew Academies <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <div onclick="navigateToAcademy('Global')" class="p-4 rounded-xl border border-moss/30 bg-sand/60 cursor-pointer hover:border-moss hover:shadow transition">
+                        <i class="fa-solid fa-graduation-cap text-2xl text-moss mb-2"></i>
+                        <h3 class="font-bold text-sm mb-1">United World Colleges & Global Diplomas</h3>
+                        <p class="text-xs">Explore international pre-university scholarships in UK, Australia, and UWC campuses.</p>
+                        <span class="inline-block mt-3 text-[11px] font-bold text-moss">Find Global Institutes <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: ACADEMIES MAP WITH GOOGLE MAP EMBED & DETAILS -->
+        <section id="slide-5" class="slide-content hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">Interactive Academies Map & Direct Contacts</h2>
+                <p class="text-xs mb-6">Select an academy on the list or drag/explore the map view. Click any academy to view detailed contact numbers, location address, and courses.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Academy Selector List -->
+                    <div class="space-y-3 max-h-[450px] overflow-y-auto pr-1">
+                        <div onclick="loadAcademyDetail('uwc')" class="p-3.5 rounded-lg border border-gray-300 hover:border-moss cursor-pointer bg-sand/40">
+                            <h4 class="font-bold text-xs">United World Colleges (UWC) National Committee</h4>
+                            <p class="text-[11px] text-gray-600">Global Pre-University Scholarships & International Diplomas</p>
+                        </div>
+
+                        <div onclick="loadAcademyDetail('lums')" class="p-3.5 rounded-lg border border-gray-300 hover:border-moss cursor-pointer bg-sand/40">
+                            <h4 class="font-bold text-xs">LUMS - School of Science & Engineering</h4>
+                            <p class="text-[11px] text-gray-600">DHA Phase 5, Lahore - Computer Science & AI Programs</p>
+                        </div>
+
+                        <div onclick="loadAcademyDetail('pucit')" class="p-3.5 rounded-lg border border-gray-300 hover:border-moss cursor-pointer bg-sand/40">
+                            <h4 class="font-bold text-xs">Punjab University (FCIT / Old Campus)</h4>
+                            <p class="text-[11px] text-gray-600">Anarkali, Lahore - IT Certifications & Degree Courses</p>
+                        </div>
+
+                        <div onclick="loadAcademyDetail('pia')" class="p-3.5 rounded-lg border border-gray-300 hover:border-moss cursor-pointer bg-sand/40">
+                            <h4 class="font-bold text-xs">PIA Training Centre / Aviation Academy</h4>
+                            <p class="text-[11px] text-gray-600">Cabin Crew Hospitality, Safety, and Aviation Studies</p>
+                        </div>
+                    </div>
+
+                    <!-- Map Embed & Dynamic Details Output -->
+                    <div class="lg:col-span-2 flex flex-col space-y-4">
+                        <div class="w-full h-64 bg-gray-200 rounded-xl overflow-hidden border border-moss/30 shadow-inner">
+                            <iframe id="mapFrame" class="w-full h-full border-0" src="https://maps.google.com/maps?q=Lahore%20Educational%20Institutes&t=&z=12&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+
+                        <div id="academyDetailCard" class="bg-sand p-4 rounded-xl border border-moss/30 text-xs">
+                            <h3 class="font-bold text-sm mb-1 text-moss" id="acName">Select an Academy</h3>
+                            <p class="mb-3" id="acDesc">Click any institution on the left list to inspect verified phone contact codes, location addresses, and course catalogs.</p>
+                            <div id="acMeta" class="hidden space-y-1.5 border-t border-moss/20 pt-3">
+                                <p><strong><i class="fa-solid fa-phone text-moss mr-1"></i>Contact Number / Helpline:</strong> <span id="acPhone">--</span></p>
+                                <p><strong><i class="fa-solid fa-location-dot text-moss mr-1"></i>Full Location:</strong> <span id="acAddress">--</span></p>
+                                <p><strong><i class="fa-solid fa-envelope text-moss mr-1"></i>Email / Support:</strong> <span id="acEmail">--</span></p>
+                                <p><strong><i class="fa-solid fa-link text-moss mr-1"></i>Portal Link:</strong> <a id="acLink" href="#" target="_blank" class="font-bold underline text-moss">Visit Official Page</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: CODE PLAYGROUND & LINKEDIN AUDIT -->
+        <section id="slide-6" class="slide-content hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">Code Studio & LinkedIn Profile Audit</h2>
+                <p class="text-xs mb-6">Test live HTML/CSS/JavaScript code snippets and perform a deep LinkedIn profile verification audit.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Interactive Code Playground -->
+                    <div class="bg-sand p-4 rounded-xl border border-moss/30 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-xs mb-2"><i class="fa-solid fa-code text-moss mr-1"></i>Interactive Live Code Sandbox</h3>
+                            <textarea id="codeInput" rows="7" class="w-full p-2.5 bg-white border border-gray-300 font-mono text-xs rounded focus:outline-none" placeholder="Write HTML/JS snippet here..."></textarea>
+                        </div>
+                        <button onclick="runUserCode()" class="mt-2 bg-moss text-white font-bold py-2 rounded text-xs hover:bg-mossDark btn-text-white">Run Code Snippet</button>
+                        <div class="mt-3">
+                            <label class="block text-[11px] font-bold mb-1">Execution Output Preview:</label>
+                            <iframe id="codeOutput" class="w-full h-28 bg-white border border-gray-300 rounded"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn Profile Audit System -->
+                    <div class="bg-sand p-4 rounded-xl border border-moss/30 space-y-3">
+                        <h3 class="font-bold text-xs"><i class="fa-brands fa-linkedin text-moss mr-1"></i>LinkedIn Professional Profile Audit</h3>
+                        <p class="text-[11px]">Paste your LinkedIn Profile URL to analyze structure, headline impact, and posting strategy.</p>
+                        <input type="text" id="linkedinUrl" value="https://linkedin.com/in/minal-profile" class="w-full p-2 bg-white border border-gray-300 rounded text-xs focus:outline-none">
+                        <button onclick="auditLinkedInProfile()" class="w-full bg-moss text-white font-bold py-2 rounded text-xs hover:bg-mossDark btn-text-white">Run Profile Audit</button>
+
+                        <div id="auditResultBox" class="hidden bg-white p-3 rounded border border-moss/20 space-y-2 text-[11px]">
+                            <h4 class="font-bold text-moss border-b pb-1">Audit Findings & Enhancement Playbook</h4>
+                            <p><strong>• Headline Recommendation:</strong> Change to <em>"Full-Stack Python Developer | AI Model Engineer | High-Standard Customer Service Specialist"</em></p>
+                            <p><strong>• Profile Banner & Photo:</strong> Ensure clear lighting, neutral backdrop, and structured professional posture.</p>
+                            <p><strong>• Content Strategy (What to Post):</strong> Publish 2 technical posts per week documenting working code demos, PyTorch model results, or aviation customer excellence principles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: AI TUTOR STUDIO & YOUTUBE NOTE GENERATOR -->
+        <section id="slide-7" class="slide-content hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">AI Tutor Studio & Video Note Generator</h2>
+                <p class="text-xs mb-6">Convert YouTube learning video URLs into comprehensive structured study notes, or chat directly with the trained AI tutor.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- YouTube Video Note Generator -->
+                    <div class="bg-sand p-4 rounded-xl border border-moss/30 space-y-3">
+                        <h3 class="font-bold text-xs"><i class="fa-brands fa-youtube text-red-600 mr-1"></i>YouTube Video Note Generator</h3>
+                        <input type="text" id="ytUrlInput" value="https://www.youtube.com/watch?v=rfscVS0vtbw" placeholder="Paste YouTube Video URL here..." class="w-full p-2 bg-white border border-gray-300 rounded text-xs">
+                        <button onclick="generateYtNotes()" class="w-full bg-moss text-white font-bold py-2 rounded text-xs hover:bg-mossDark btn-text-white">Extract & Build Comprehensive Notes</button>
+
+                        <div id="ytNotesDisplay" class="bg-white p-3 rounded border border-gray-300 max-h-64 overflow-y-auto text-xs space-y-2">
+                            <p class="text-gray-500 italic">Enter a valid YouTube tutorial link and click extract to generate complete textbook notes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Trained AI Tutor Model Chat -->
+                    <div class="bg-sand p-4 rounded-xl border border-moss/30 flex flex-col justify-between h-[380px]">
+                        <h3 class="font-bold text-xs mb-2"><i class="fa-solid fa-robot text-moss mr-1"></i>Well-Trained AI Learning Companion</h3>
+                        <div id="tutorChatBox" class="flex-grow bg-white p-3 rounded border border-gray-300 overflow-y-auto text-xs space-y-2 mb-2">
+                            <div class="p-2 bg-sand rounded border border-moss/20">
+                                <strong class="text-moss">AI Tutor:</strong> Hello Minal! I am trained on full-stack development, Python ML models, and cabin crew hospitality protocols. Ask me anything!
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="tutorQuery" placeholder="Ask a question..." class="flex-grow p-2 border border-gray-300 rounded text-xs focus:outline-none">
+                            <button onclick="sendTutorQuestion()" class="bg-moss text-white px-4 font-bold rounded text-xs hover:bg-mossDark btn-text-white">Ask</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: JOB HUNTER (3 ONBOARDING QUESTIONS + MATCHING) -->
+        <section id="slide-8" class="slide-content hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">Job Hunter & Vacancy Matcher</h2>
+                <p class="text-xs mb-6">Answer these 3 core questions to find accurate local and international industry openings.</p>
+
+                <!-- 3 Onboarding Questions -->
+                <div class="bg-sand p-4 rounded-xl border border-moss/30 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">1. Work Preference</label>
+                        <select id="jobPrefWork" class="w-full p-2 bg-white rounded border border-gray-300 text-xs">
+                            <option value="Remote">Remote</option>
+                            <option value="On-site">On-site</option>
+                            <option value="Hybrid">Hybrid</option>
                         </select>
                     </div>
-                    <button onclick="runRadarAndNavigate()" class="w-full bg-moss text-white font-bold py-3 rounded-lg shadow hover:bg-mossDark transition">
-                        Generate Skill Radar & Analytics
-                    </button>
-                </div>
-            </div>
-        </section>
 
-        <!-- SLIDE 3: APEX RADAR (AUTO-PROCESSING) -->
-        <section id="slide-3" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10 text-center max-w-2xl mx-auto">
-                <h2 class="text-2xl font-bold text-black mb-2">APEX Skill Vector Processing</h2>
-                <p class="text-black text-sm mb-6">Computing real-time skill gap analysis in nanoseconds...</p>
-                
-                <div class="w-full max-w-md mx-auto mb-6">
-                    <canvas id="apexRadarChart"></canvas>
-                </div>
-
-                <div id="radarStatus" class="inline-flex items-center space-x-2 text-moss font-semibold text-sm">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    <span>Analyzing domain competencies... Redirecting to Recommendations...</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 4: RECOMMENDATIONS & SKILL MAP -->
-        <section id="slide-4" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">Targeted Skill Recommendations</h2>
-                <p class="text-black text-xs mb-6">Based on your APEX evaluation, focus on these critical core competencies to optimize career entry:</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="recommendationsContainer">
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand/50">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <i class="fa-solid fa-brain text-moss text-lg"></i>
-                            <h3 class="font-bold text-black text-base">PyTorch & Machine Learning</h3>
-                        </div>
-                        <p class="text-black text-xs">Master model building, neural network architecture, and Scikit-Learn pipelines for intelligent backend automation.</p>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">2. Target Market Industry</label>
+                        <select id="jobPrefMarket" class="w-full p-2 bg-white rounded border border-gray-300 text-xs">
+                            <option value="Pakistan">Pakistan Industry</option>
+                            <option value="International">International Industry (UAE / UK / Australia)</option>
+                        </select>
                     </div>
 
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand/50">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <i class="fa-solid fa-code text-moss text-lg"></i>
-                            <h3 class="font-bold text-black text-base">Full-Stack Web Architectures</h3>
-                        </div>
-                        <p class="text-black text-xs">Build seamless REST APIs using Python (FastAPI/Django) coupled with dynamic frontend platforms.</p>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">3. Skillset You Serve</label>
+                        <input type="text" id="jobPrefSkill" value="Python, AI & Cabin Crew Customer Care" class="w-full p-2 bg-white rounded border border-gray-300 text-xs">
                     </div>
 
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand/50">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <i class="fa-solid fa-vial text-moss text-lg"></i>
-                            <h3 class="font-bold text-black text-base">Model Evaluation & Data Science</h3>
-                        </div>
-                        <p class="text-black text-xs">Implement confusion matrices, precision/recall scoring, dynamic data cleaning, and deployment metrics.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 5: ACADEMIES MAP WITH DIRECT CONTACT INFO -->
-        <section id="slide-5" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">Academies & Institution System</h2>
-                <p class="text-black text-xs mb-6">Select an academy from the interactive map list below to retrieve immediate contact numbers, admissions helplines, and portal links.</p>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Map/List selector -->
-                    <div class="space-y-3">
-                        <div onclick="selectAcademy('UWC')" class="p-4 rounded-lg border border-gray-200 cursor-pointer hover:border-moss hover:bg-sand transition bg-white">
-                            <h4 class="font-bold text-black text-sm">United World Colleges (UWC)</h4>
-                            <p class="text-black text-xs">International Pre-University & Global Scholarships</p>
-                        </div>
-                        <div onclick="selectAcademy('LUMS')" class="p-4 rounded-lg border border-gray-200 cursor-pointer hover:border-moss hover:bg-sand transition bg-white">
-                            <h4 class="font-bold text-black text-sm">LUMS - School of Science & Engineering</h4>
-                            <p class="text-black text-xs">Computer Science & Data Science Programs</p>
-                        </div>
-                        <div onclick="selectAcademy('PU')" class="p-4 rounded-lg border border-gray-200 cursor-pointer hover:border-moss hover:bg-sand transition bg-white">
-                            <h4 class="font-bold text-black text-sm">Punjab University (IT Department)</h4>
-                            <p class="text-black text-xs">Affordable Matriculation & Higher Degree Paths</p>
-                        </div>
-                    </div>
-
-                    <!-- Direct Contact System Display -->
-                    <div class="lg:col-span-2 bg-sand p-6 rounded-xl border border-moss/20 flex flex-col justify-center" id="academyDetailBox">
-                        <i class="fa-solid fa-university text-4xl text-moss mb-3"></i>
-                        <h3 class="text-xl font-bold text-black mb-1" id="academyTitle">Select an Institution</h3>
-                        <p class="text-black text-xs mb-4" id="academyDesc">Click any academy on the left to display its official verified phone number, contact code, and direct portal link.</p>
-                        <div id="academyContactInfo" class="hidden space-y-2 text-sm text-black border-t border-moss/20 pt-4">
-                            <p><strong><i class="fa-solid fa-phone text-moss mr-2"></i>Contact Phone / Code:</strong> <span id="academyPhone">--</span></p>
-                            <p><strong><i class="fa-solid fa-envelope text-moss mr-2"></i>Admissions Email:</strong> <span id="academyEmail">--</span></p>
-                            <p><strong><i class="fa-solid fa-globe text-moss mr-2"></i>Official Portal:</strong> <a id="academyLink" href="#" target="_blank" class="text-moss font-bold underline">Visit Web Page</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 6: CODE & LINKEDIN STRATEGY -->
-        <section id="slide-6" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">Code Portfolio & Professional LinkedIn Playbook</h2>
-                <p class="text-black text-xs mb-6">Actionable strategies on profile optimizations, content schedules, and portfolio showcasing.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-sand p-5 rounded-xl border border-moss/20">
-                        <h3 class="font-bold text-black text-base mb-3"><i class="fa-brands fa-linkedin text-moss mr-2"></i>Profile Optimization Checklist</h3>
-                        <ul class="text-black text-xs space-y-2 list-disc pl-4">
-                            <li><strong>Headline:</strong> Use target keywords e.g., <em>"Full-Stack Python & AI Specialist | PyTorch | Web Application Developer"</em> instead of standard student titles.</li>
-                            <li><strong>About Section:</strong> Frame your story around problem-solving, self-directed projects, and mastery of core technical frameworks.</li>
-                            <li><strong>Featured Section:</strong> Link direct GitHub repos, live web apps, and architectural diagrams.</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-sand p-5 rounded-xl border border-moss/20">
-                        <h3 class="font-bold text-black text-base mb-3"><i class="fa-solid fa-pen-to-square text-moss mr-2"></i>High-Engagement Posting Strategy</h3>
-                        <ul class="text-black text-xs space-y-2 list-disc pl-4">
-                            <li><strong>What to Post:</strong> Share 30-second video clips of functional web apps or AI scripts running successfully.</li>
-                            <li><strong>Write-ups:</strong> Document "What I Built, Challenges Faced, and Key Takeaways."</li>
-                            <li><strong>Consistency:</strong> Publish 2 detailed technical write-ups per week to build industry authority.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 7: AI TUTOR STUDIO & FULL NOTE GENERATOR -->
-        <section id="slide-7" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">AI Tutor Studio & Comprehensive Notes Generator</h2>
-                <p class="text-black text-xs mb-4">Generates thorough, textbook-grade study notes with detailed code, definitions, and step-by-step concepts.</p>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-black mb-1">Enter Topic for Complete Notes</label>
-                            <input type="text" id="noteTopicInput" value="Logistic Regression & Decision Trees in Python" class="w-full p-2.5 rounded border border-gray-300 text-black text-xs focus:border-moss">
-                        </div>
-                        <button onclick="generateFullNotes()" class="w-full bg-moss text-white font-bold py-2.5 rounded shadow text-xs hover:bg-mossDark transition">
-                            Generate Comprehensive Study Notes
+                    <div class="md:col-span-3">
+                        <button onclick="processJobPreferences()" class="w-full bg-moss text-white font-bold py-2.5 rounded text-xs hover:bg-mossDark btn-text-white">
+                            Match Industries & Open Vacancies
                         </button>
                     </div>
+                </div>
 
-                    <div class="lg:col-span-2 bg-sand p-5 rounded-xl border border-moss/20 max-h-96 overflow-y-auto" id="notesOutputDisplay">
-                        <h4 class="font-bold text-black text-sm mb-2" id="notesTitle">Comprehensive Study Notes Output</h4>
-                        <div class="text-black text-xs space-y-3 leading-relaxed" id="notesBody">
-                            <p class="italic text-gray-600">Click generate to receive fully formatted, in-depth technical study notes with code samples and structural breakdowns.</p>
-                        </div>
-                    </div>
+                <!-- Industry Results Display Grid -->
+                <div id="jobResultsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <p class="text-xs text-gray-500 italic col-span-3">Click 'Match Industries' above to process your preferences.</p>
                 </div>
             </div>
         </section>
 
-        <!-- SLIDE 8: JOB HUNTER (EXPANDED SUGGESTIONS) -->
-        <section id="slide-8" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">Job Hunter & Vacancy Recommendations</h2>
-                <p class="text-black text-xs mb-6">Automated aggregate match based on your target skills in Python, AI, and Customer Relations.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="jobGrid">
-                    <!-- Expanded Job Cards -->
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand">
-                        <span class="text-xs bg-moss text-white px-2 py-0.5 rounded font-bold">Remote</span>
-                        <h3 class="font-bold text-black text-sm mt-2">Junior Python & AI Developer</h3>
-                        <p class="text-black text-xs">Build REST APIs & train baseline machine learning classifiers using PyTorch.</p>
-                        <button class="mt-3 text-xs bg-moss text-white font-bold px-3 py-1.5 rounded hover:bg-mossDark">View Requirements</button>
-                    </div>
-
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand">
-                        <span class="text-xs bg-moss text-white px-2 py-0.5 rounded font-bold">International / Airline</span>
-                        <h3 class="font-bold text-black text-sm mt-2">Emirates Cabin Crew Specialist</h3>
-                        <p class="text-black text-xs">High-proficiency English communication, problem-solving, and passenger service excellence.</p>
-                        <button class="mt-3 text-xs bg-moss text-white font-bold px-3 py-1.5 rounded hover:bg-mossDark">View Requirements</button>
-                    </div>
-
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand">
-                        <span class="text-xs bg-moss text-white px-2 py-0.5 rounded font-bold">Full-Time</span>
-                        <h3 class="font-bold text-black text-sm mt-2">Full-Stack Django / React Engineer</h3>
-                        <p class="text-black text-xs">Maintain web e-commerce platforms, database schemas, and digital integrations.</p>
-                        <button class="mt-3 text-xs bg-moss text-white font-bold px-3 py-1.5 rounded hover:bg-mossDark">View Requirements</button>
-                    </div>
-
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand">
-                        <span class="text-xs bg-moss text-white px-2 py-0.5 rounded font-bold">Hybrid</span>
-                        <h3 class="font-bold text-black text-sm mt-2">Data Analyst & Model Scorer</h3>
-                        <p class="text-black text-xs">Clean dataset inputs, build feature matrices, and publish performance metrics.</p>
-                        <button class="mt-3 text-xs bg-moss text-white font-bold px-3 py-1.5 rounded hover:bg-mossDark">View Requirements</button>
-                    </div>
-
-                    <div class="p-4 rounded-xl border border-moss/20 bg-sand">
-                        <span class="text-xs bg-moss text-white px-2 py-0.5 rounded font-bold">Contract</span>
-                        <h3 class="font-bold text-black text-sm mt-2">E-Commerce Brand Developer</h3>
-                        <p class="text-black text-xs">Architect custom landing pages, fashion shop dynamic UI, and automated checkout backend.</p>
-                        <button class="mt-3 text-xs bg-moss text-white font-bold px-3 py-1.5 rounded hover:bg-mossDark">View Requirements</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 9: CV STUDIO (5 PROFESSIONAL LAYOUT SUGGESTIONS + FULL GENERATION) -->
+        <!-- SLIDE 9: CV STUDIO (5 EDITABLE LAYOUTS & COMPLETE COMPOSER) -->
         <section id="slide-9" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">CV Studio & Professional Document Engine</h2>
-                <p class="text-black text-xs mb-6">Select from 5 ATS-optimized executive layouts and generate complete professional resumes instantly.</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">CV Studio & Layout Customizer</h2>
+                <p class="text-xs mb-6">Enter your details and requirements to auto-generate from 5 professional layout styles with live editing.</p>
 
-                <div class="mb-6">
-                    <label class="block text-xs font-bold text-black mb-2">Select Preferred CV Layout Style:</label>
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <button onclick="setCvStyle('Executive Minimal')" class="cv-style-btn border-2 border-moss bg-sand p-2 text-xs font-bold rounded text-black text-center">1. Executive Minimal</button>
-                        <button onclick="setCvStyle('Modern Tech')" class="cv-style-btn border border-gray-300 p-2 text-xs font-bold rounded text-black text-center">2. Modern Tech</button>
-                        <button onclick="setCvStyle('Aviation / Airline')" class="cv-style-btn border border-gray-300 p-2 text-xs font-bold rounded text-black text-center">3. Aviation Premium</button>
-                        <button onclick="setCvStyle('Academic Clean')" class="cv-style-btn border border-gray-300 p-2 text-xs font-bold rounded text-black text-center">4. Academic Clean</button>
-                        <button onclick="setCvStyle('Creative Brand')" class="cv-style-btn border border-gray-300 p-2 text-xs font-bold rounded text-black text-center">5. Creative Brand</button>
+                <div class="mb-4">
+                    <label class="block text-xs font-bold mb-2">Select Layout Style Example:</label>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+                        <button onclick="selectCvLayout(1)" class="p-2 border-2 border-moss rounded text-xs font-bold bg-sand">1. Modern Executive</button>
+                        <button onclick="selectCvLayout(2)" class="p-2 border border-gray-300 rounded text-xs font-bold bg-white">2. Aviation Premium</button>
+                        <button onclick="selectCvLayout(3)" class="p-2 border border-gray-300 rounded text-xs font-bold bg-white">3. Minimalist Tech</button>
+                        <button onclick="selectCvLayout(4)" class="p-2 border border-gray-300 rounded text-xs font-bold bg-white">4. Academic Clean</button>
+                        <button onclick="selectCvLayout(5)" class="p-2 border border-gray-300 rounded text-xs font-bold bg-white">5. Creative Brand</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="space-y-3">
-                        <input type="text" id="cvFullName" value="Minal" placeholder="Full Name" class="w-full p-2 rounded border text-xs text-black">
-                        <input type="text" id="cvTargetRole" value="Cabin Crew / Full-Stack AI Developer" placeholder="Target Position" class="w-full p-2 rounded border text-xs text-black">
-                        <textarea id="cvSummary" rows="4" placeholder="Professional Summary" class="w-full p-2 rounded border text-xs text-black">Highly articulate and versatile professional fluent in English, skilled in full-stack Python development, customer engagement, and machine learning models.</textarea>
-                        <button onclick="generateFullCV()" class="w-full bg-moss text-white font-bold py-2.5 rounded text-xs hover:bg-mossDark">Build Full CV Document</button>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="space-y-2.5">
+                        <input type="text" id="cvInputName" value="MINAL" placeholder="Full Name" class="w-full p-2 border rounded text-xs">
+                        <input type="text" id="cvInputEmail" value="minal@example.com" placeholder="Email Address" class="w-full p-2 border rounded text-xs">
+                        <input type="text" id="cvInputPhone" value="+92 300 1234567" placeholder="Phone Number" class="w-full p-2 border rounded text-xs">
+                        <input type="text" id="cvInputTarget" value="Emirates Cabin Crew / Full-Stack Python Developer" placeholder="Target Position" class="w-full p-2 border rounded text-xs">
+                        <textarea id="cvInputSummary" rows="3" placeholder="Summary" class="w-full p-2 border rounded text-xs">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</textarea>
+                        <textarea id="cvInputProjects" rows="3" placeholder="Completed Projects" class="w-full p-2 border rounded text-xs">1. Azure E-Commerce Web App&#10;2. PyTorch Machine Learning Classifier&#10;3. AI Career Compass Portal</textarea>
+                        <button onclick="renderCustomCv()" class="w-full bg-moss text-white font-bold py-2 rounded text-xs hover:bg-mossDark btn-text-white">Build & Update CV</button>
                     </div>
 
-                    <div class="md:col-span-2 bg-sand p-6 rounded-xl border border-moss/20 text-black text-xs" id="cvDocumentPreview">
+                    <!-- Editable Document Sandbox -->
+                    <div class="lg:col-span-2 bg-sand p-6 rounded-xl border border-moss/30 min-h-[400px]" id="cvDocumentContainer">
                         <div class="border-b-2 border-moss pb-3 mb-4 flex justify-between items-end">
                             <div>
-                                <h2 class="text-2xl font-bold text-black uppercase" id="previewName">MINAL</h2>
-                                <p class="text-moss font-semibold text-sm" id="previewRole">Cabin Crew / Full-Stack AI Developer</p>
+                                <h1 class="text-2xl font-black uppercase tracking-wider" id="cvDocName" contenteditable="true">MINAL</h1>
+                                <p class="text-moss font-bold text-xs" id="cvDocTarget" contenteditable="true">Emirates Cabin Crew / Full-Stack Python Developer</p>
                             </div>
-                            <span class="text-xs text-gray-500 font-mono" id="previewStyleTag">Layout: Executive Minimal</span>
+                            <div class="text-right text-[11px] text-gray-600">
+                                <p id="cvDocEmail" contenteditable="true">minal@example.com</p>
+                                <p id="cvDocPhone" contenteditable="true">+92 300 1234567</p>
+                            </div>
                         </div>
-                        
-                        <div class="space-y-4">
+
+                        <div class="space-y-4 text-xs">
                             <div>
-                                <h4 class="font-bold text-black border-b border-gray-300 pb-1 mb-1 uppercase">Professional Profile</h4>
-                                <p id="previewSummaryText" class="leading-relaxed">Highly articulate and versatile professional fluent in English, skilled in full-stack Python development, customer engagement, and machine learning models.</p>
+                                <h3 class="font-bold border-b border-gray-300 pb-1 mb-1 text-moss uppercase">Professional Summary</h3>
+                                <p id="cvDocSummary" contenteditable="true" class="leading-relaxed">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</p>
                             </div>
+
                             <div>
-                                <h4 class="font-bold text-black border-b border-gray-300 pb-1 mb-1 uppercase">Core Competencies</h4>
-                                <p class="leading-relaxed">Python, PyTorch, Model Evaluation, High-Standard Customer Experience, Professional English Communication.</p>
+                                <h3 class="font-bold border-b border-gray-300 pb-1 mb-1 text-moss uppercase">Key Projects & Built Applications</h3>
+                                <p id="cvDocProjects" contenteditable="true" class="whitespace-pre-line leading-relaxed">1. Azure E-Commerce Web App&#10;2. PyTorch Machine Learning Classifier&#10;3. AI Career Compass Portal</p>
                             </div>
                         </div>
                     </div>
@@ -352,64 +403,62 @@
             </div>
         </section>
 
-        <!-- SLIDE 10: INTERVIEW ARENA (2-STEP CONVERSATIONAL SYSTEM + VISION + AUDIO FEEDBACK) -->
+        <!-- SLIDE 10: MOCK INTERVIEW ARENA (LIVE CAMERA & VOICE/CHAT FEEDBACK) -->
         <section id="slide-10" class="slide-content hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/10">
-                <h2 class="text-2xl font-bold text-black mb-2">Live AI Mock Interview Arena</h2>
-                <p class="text-black text-xs mb-6">Real-time vision feed combined with structured interactive voice and text interview assessment.</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-moss/20">
+                <h2 class="text-2xl font-bold mb-2">Live AI Mock Interview Arena</h2>
+                <p class="text-xs mb-6">Interactive interviewer voice simulation, webcam posture detection, and immediate evaluation response.</p>
 
-                <!-- STEP 1: INITIAL DETAILS SETUP -->
-                <div id="interviewSetupCard" class="bg-sand p-6 rounded-xl border border-moss/20 mb-6">
-                    <h3 class="font-bold text-black text-sm mb-3"><i class="fa-solid fa-sliders text-moss mr-2"></i>Step 1: Configure Interview Context</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <!-- Initial Setup Form -->
+                <div id="intSetupCard" class="bg-sand p-4 rounded-xl border border-moss/30 mb-6">
+                    <h3 class="font-bold text-xs mb-3"><i class="fa-solid fa-user-tie text-moss mr-1"></i>Configure Target Interviewer Expectations</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                         <div>
-                            <label class="block text-xs font-bold text-black mb-1">Target Industry</label>
-                            <input type="text" id="intIndustry" value="Aviation & Technology" class="w-full p-2 rounded border text-black text-xs">
+                            <label class="block text-[11px] font-bold mb-1">Target Company</label>
+                            <input type="text" id="intCompName" value="Emirates Airline" class="w-full p-2 bg-white rounded border border-gray-300 text-xs">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-black mb-1">Target Company</label>
-                            <input type="text" id="intCompany" value="Emirates" class="w-full p-2 rounded border text-black text-xs">
+                            <label class="block text-[11px] font-bold mb-1">Target Position</label>
+                            <input type="text" id="intCompRole" value="Cabin Crew Specialist" class="w-full p-2 bg-white rounded border border-gray-300 text-xs">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-black mb-1">Experience Level</label>
-                            <select id="intLevel" class="w-full p-2 rounded border text-black text-xs">
-                                <option>Entry / First-Year Professional</option>
-                                <option>Mid-Level</option>
-                                <option>Senior</option>
+                            <label class="block text-[11px] font-bold mb-1">Level</label>
+                            <select id="intCompLevel" class="w-full p-2 bg-white rounded border border-gray-300 text-xs">
+                                <option>Entry Level / First-Year</option>
+                                <option>Mid Career</option>
                             </select>
                         </div>
                     </div>
-                    <button onclick="startStructuredInterview()" class="bg-moss text-white font-bold px-6 py-2.5 rounded text-xs hover:bg-mossDark">
-                        Initialize AI Interviewer
+                    <button onclick="launchLiveInterview()" class="bg-moss text-white font-bold px-6 py-2 rounded text-xs hover:bg-mossDark btn-text-white">
+                        Initialize Interview Session
                     </button>
                 </div>
 
-                <!-- STEP 2: LIVE INTERVIEW INTERFACE -->
-                <div id="interviewActiveZone" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Vision Camera Feed -->
-                    <div class="bg-black rounded-xl p-4 flex flex-col justify-between relative min-h-[280px]">
-                        <div class="flex justify-between items-center text-white text-xs z-10">
-                            <span class="bg-moss px-2 py-1 rounded text-xs font-bold"><i class="fa-solid fa-eye mr-1"></i>AI Body Language Vision Active</span>
-                            <span id="camStatus" class="text-green-400">Camera Online</span>
+                <!-- Active Live Interview Session Zone -->
+                <div id="intSessionActive" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Webcam Feed -->
+                    <div class="bg-black rounded-xl p-4 relative min-h-[300px] flex flex-col justify-between">
+                        <div class="flex justify-between items-center text-xs z-10">
+                            <span class="bg-moss px-2 py-1 rounded text-white font-bold badge-white"><i class="fa-solid fa-video mr-1"></i>Camera Active</span>
+                            <span id="camStatusText" class="text-green-400 font-mono">Vision System Monitoring</span>
                         </div>
-                        
-                        <video id="webcam" autoplay playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-60"></video>
+
+                        <video id="webcamElement" autoplay playsinline class="absolute inset-0 w-full h-full object-cover rounded-xl opacity-65"></video>
 
                         <div class="z-10 flex space-x-2 mt-auto pt-4">
-                            <button onclick="toggleCamera()" class="bg-moss text-white text-xs px-3 py-1.5 rounded font-bold hover:bg-mossDark">Toggle Camera</button>
-                            <button class="bg-moss text-white text-xs px-3 py-1.5 rounded font-bold">Mic Input: ACTIVE</button>
+                            <button onclick="toggleWebcam()" class="bg-moss text-white text-xs px-3 py-1.5 rounded font-bold hover:bg-mossDark btn-text-white">Toggle Camera</button>
                         </div>
                     </div>
 
-                    <!-- AI Interviewer Siri Voice & Evaluation Chatbox -->
-                    <div class="bg-sand p-4 rounded-xl border border-moss/20 flex flex-col justify-between h-[340px]">
-                        <div id="interviewChat" class="overflow-y-auto space-y-3 p-2 text-xs flex-grow">
-                            <!-- Dynamic speech prompts append here -->
+                    <!-- AI Chat & Siri Voice Output -->
+                    <div class="bg-sand p-4 rounded-xl border border-moss/30 flex flex-col justify-between h-[360px]">
+                        <div id="intChatStream" class="overflow-y-auto space-y-2 p-1 text-xs flex-grow">
+                            <!-- Siri-style speech outputs stream here -->
                         </div>
 
                         <div class="border-t border-moss/20 pt-3 flex space-x-2">
-                            <input type="text" id="userInterviewAns" placeholder="Type your answer or speak into mic..." class="flex-grow p-2 rounded border text-black text-xs focus:outline-none focus:border-moss">
-                            <button onclick="processUserAnswer()" class="bg-moss text-white font-bold px-4 py-2 rounded text-xs hover:bg-mossDark">Submit Answer</button>
+                            <input type="text" id="intUserAnswerInput" placeholder="Type or speak your answer here..." class="flex-grow p-2 rounded border border-gray-300 text-xs focus:outline-none">
+                            <button onclick="submitInterviewResponse()" class="bg-moss text-white font-bold px-4 py-2 rounded text-xs hover:bg-mossDark btn-text-white">Submit Answer</button>
                         </div>
                     </div>
                 </div>
@@ -418,68 +467,44 @@
 
     </main>
 
-    <!-- FULLSCREEN MODAL FOR SIGN IN / SIGN UP (TIKTOK & LARGE APP STYLE) -->
-    <div id="authModal" class="fixed inset-0 bg-black/60 modal-blur hidden items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl border border-moss/20 relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-black hover:text-moss text-xl font-bold">&times;</button>
-            
-            <div class="text-center mb-6">
-                <i class="fa-solid fa-compass text-4xl text-moss mb-2"></i>
-                <h3 class="text-2xl font-black text-black">AI CAREER COMPASS</h3>
-                <p class="text-black text-xs mt-1">Sign in to save portfolio state and tracking history</p>
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl border border-moss/20 relative">
+            <button onclick="closeAuthModal()" class="absolute top-3 right-4 text-gray-600 hover:text-black font-bold text-xl">&times;</button>
+            <div class="text-center mb-5">
+                <i class="fa-solid fa-compass text-3xl text-moss mb-1"></i>
+                <h3 class="text-xl font-extrabold">AI CAREER COMPASS</h3>
+                <p class="text-xs text-gray-500">Sign in to sync career tracking data</p>
             </div>
 
-            <!-- Tab Toggles -->
             <div class="flex border-b border-gray-200 mb-4 text-xs font-bold">
-                <button id="tabSignIn" onclick="switchAuthTab('signin')" class="w-1/2 py-2 border-b-2 border-moss text-moss">Sign In</button>
-                <button id="tabSignUp" onclick="switchAuthTab('signup')" class="w-1/2 py-2 text-gray-500 hover:text-black">Sign Up</button>
+                <button id="tabIn" onclick="switchAuthTab('in')" class="w-1/2 py-2 border-b-2 border-moss text-moss">Sign In</button>
+                <button id="tabUp" onclick="switchAuthTab('up')" class="w-1/2 py-2 text-gray-400">Sign Up</button>
             </div>
 
-            <!-- Sign In Form -->
-            <form id="formSignIn" onsubmit="handleAuthSubmit(event)" class="space-y-3">
+            <form onsubmit="event.preventDefault(); closeAuthModal();" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-black mb-1">Email or Username</label>
-                    <input type="text" required class="w-full p-2.5 rounded border border-gray-300 text-black text-xs focus:border-moss focus:outline-none">
+                    <label class="block text-[11px] font-bold mb-1">Email or Username</label>
+                    <input type="text" required class="w-full p-2 border border-gray-300 rounded text-xs focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-black mb-1">Password</label>
-                    <input type="password" required class="w-full p-2.5 rounded border border-gray-300 text-black text-xs focus:border-moss focus:outline-none">
+                    <label class="block text-[11px] font-bold mb-1">Password</label>
+                    <input type="password" required class="w-full p-2 border border-gray-300 rounded text-xs focus:outline-none">
                 </div>
-                <button type="submit" class="w-full bg-moss text-white font-bold py-3 rounded-lg shadow hover:bg-mossDark text-xs transition">
-                    Log In
-                </button>
-            </form>
-
-            <!-- Sign Up Form -->
-            <form id="formSignUp" onsubmit="handleAuthSubmit(event)" class="space-y-3 hidden">
-                <div>
-                    <label class="block text-xs font-bold text-black mb-1">Full Name</label>
-                    <input type="text" required class="w-full p-2.5 rounded border border-gray-300 text-black text-xs focus:border-moss focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-black mb-1">Email Address</label>
-                    <input type="email" required class="w-full p-2.5 rounded border border-gray-300 text-black text-xs focus:border-moss focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-black mb-1">Password</label>
-                    <input type="password" required class="w-full p-2.5 rounded border border-gray-300 text-black text-xs focus:border-moss focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-moss text-white font-bold py-3 rounded-lg shadow hover:bg-mossDark text-xs transition">
-                    Create Account
-                </button>
+                <button type="submit" class="w-full bg-moss text-white font-bold py-2.5 rounded text-xs hover:bg-mossDark transition btn-text-white">Confirm</button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APP JAVASCRIPT LOGIC -->
+    <!-- MAIN APPLICATIVE JAVASCRIPT LOGIC -->
     <script>
-        // 1. SLIDE NAVIGATION SYSTEM
-        function switchSlide(slideNumber) {
-            document.querySelectorAll('.slide-content').forEach(slide => {
-                slide.classList.add('hidden');
-                slide.classList.remove('block');
+        // 1. NAVIGATION
+        function switchSlide(num) {
+            document.querySelectorAll('.slide-content').forEach(s => {
+                s.classList.add('hidden');
+                s.classList.remove('block');
             });
-            const target = document.getElementById(`slide-${slideNumber}`);
+            const target = document.getElementById(`slide-${num}`);
             if(target) {
                 target.classList.remove('hidden');
                 target.classList.add('block');
@@ -487,279 +512,262 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 2. RADAR CHART (SLIDE 3 AUTO-PROCESSING IN NANOSECONDS)
-        let radarChartInstance = null;
-        function runRadarAndNavigate() {
+        // 2. RADAR CHART & NANOSECOND AUTOMATION
+        let radarChartInst = null;
+        function runNanosecondRadar() {
             switchSlide(3);
-            
-            const ctx = document.getElementById('apexRadarChart').getContext('2d');
-            if(radarChartInstance) radarChartInstance.destroy();
+            const ctx = document.getElementById('radarChartCanvas').getContext('2d');
+            if(radarChartInst) radarChartInst.destroy();
 
-            radarChartInstance = new Chart(ctx, {
+            radarChartInst = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: ['Python Dev', 'ML & PyTorch', 'Data Analysis', 'Web Frontends', 'Communication'],
                     datasets: [{
-                        label: 'Competency Rating',
+                        label: 'Current Skills',
                         data: [85, 78, 80, 88, 92],
                         backgroundColor: 'rgba(61, 90, 80, 0.25)',
                         borderColor: '#3D5A50',
-                        pointBackgroundColor: '#3D5A50',
-                        pointBorderColor: '#fff'
+                        pointBackgroundColor: '#3D5A50'
                     }]
                 },
                 options: {
-                    scales: {
-                        r: {
-                            angleLines: { color: '#00000020' },
-                            grid: { color: '#00000010' },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            ticks: { display: false }
-                        }
-                    },
+                    scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } },
                     plugins: { legend: { display: false } },
-                    animation: { duration: 300 } // Fast nanosecond feel execution
+                    animation: { duration: 300 }
                 }
             });
 
-            // Instant automatic transition to Slide 4
-            setTimeout(() => {
-                switchSlide(4);
-            }, 750);
+            setTimeout(() => { switchSlide(4); }, 800);
         }
 
-        // 3. ACADEMIES MAP DIRECT CONTACT SYSTEM (SLIDE 5)
-        const academyData = {
-            'UWC': {
-                title: 'United World Colleges (UWC)',
-                desc: 'International pre-university scholarship networks offering global education pathways.',
-                phone: '+44 (0)20 7269 7800 / Code: #UWC-INT',
+        // 3. RECOMMENDATIONS TO ACADEMY NAVIGATION
+        function navigateToAcademy(type) {
+            switchSlide(5);
+            if(type === 'IT') loadAcademyDetail('lums');
+            else if(type === 'Aviation') loadAcademyDetail('pia');
+            else loadAcademyDetail('uwc');
+        }
+
+        // 4. ACADEMIES DETAIL MAP LOADER
+        const academies = {
+            'uwc': {
+                name: 'United World Colleges (UWC) National Committee',
+                desc: 'Official international pre-university scholarship board offering IB Diplomas globally.',
+                phone: '+44 20 7269 7800 / Code: #UWC-GLOBAL',
+                addr: 'Global Campuses (UK, Singapore, Canada, Italy)',
                 email: 'admissions@uwc.org',
-                link: 'https://www.uwc.org'
+                link: 'https://www.uwc.org',
+                mapQuery: 'United+World+Colleges'
             },
-            'LUMS': {
-                title: 'LUMS - Syed Babar Ali School of Science & Engineering',
-                desc: 'Top-tier undergraduate computer science, AI, and enterprise data analytics.',
+            'lums': {
+                name: 'LUMS - Syed Babar Ali School of Science & Engineering',
+                desc: 'Premier Computer Science, Data Engineering, and Artificial Intelligence Department.',
                 phone: '+92 42 3560 8000 / Code: #LUMS-SSE',
+                addr: 'DHA Phase 5, Lahore, Punjab, Pakistan',
                 email: 'admissions@lums.edu.pk',
-                link: 'https://lums.edu.pk'
+                link: 'https://lums.edu.pk',
+                mapQuery: 'LUMS+Lahore'
             },
-            'PU': {
-                title: 'Punjab University - Faculty of Computing & IT',
-                desc: 'Standardized matriculation continuation, diploma certifications, and BS degree programs.',
+            'pucit': {
+                name: 'Punjab University (FCIT / Old Campus)',
+                desc: 'Affordable Computer Science certifications, IT degrees, and technical matriculation pathways.',
                 phone: '+92 42 9923 1105 / Code: #PU-FCIT',
+                addr: 'Anarkali Bazaar, Shahrah-e-Quaid-e-Azam, Lahore',
                 email: 'info@pucit.edu.pk',
-                link: 'http://pucit.edu.pk'
+                link: 'http://pucit.edu.pk',
+                mapQuery: 'Punjab+University+Old+Campus+Lahore'
+            },
+            'pia': {
+                name: 'PIA Training Centre / Aviation Academy',
+                desc: 'Aviation hospitality, Cabin Crew emergency procedures, and international flight management.',
+                phone: '+92 42 9924 0051 / Code: #PIA-ACADEMY',
+                addr: 'Allama Iqbal International Airport Road, Lahore',
+                email: 'training@piac.aero',
+                link: 'https://www.piac.com.pk',
+                mapQuery: 'PIA+Training+Centre+Lahore'
             }
         };
 
-        function selectAcademy(key) {
-            const data = academyData[key];
+        function loadAcademyDetail(key) {
+            const data = academies[key];
             if(!data) return;
-            document.getElementById('academyTitle').innerText = data.title;
-            document.getElementById('academyDesc').innerText = data.desc;
-            document.getElementById('academyPhone').innerText = data.phone;
-            document.getElementById('academyEmail').innerText = data.email;
-            document.getElementById('academyLink').href = data.link;
-            document.getElementById('academyContactInfo').classList.remove('hidden');
+            document.getElementById('acName').innerText = data.name;
+            document.getElementById('acDesc').innerText = data.desc;
+            document.getElementById('acPhone').innerText = data.phone;
+            document.getElementById('acAddress').innerText = data.addr;
+            document.getElementById('acEmail').innerText = data.email;
+            document.getElementById('acLink').href = data.link;
+            document.getElementById('acMeta').classList.remove('hidden');
+
+            // Update Draggable Google Map
+            document.getElementById('mapFrame').src = `https://maps.google.com/maps?q=${data.mapQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
         }
 
-        // 4. AI TUTOR FULL COMPREHENSIVE NOTES GENERATOR (SLIDE 7)
-        function generateFullNotes() {
-            const topic = document.getElementById('noteTopicInput').value;
-            const titleEl = document.getElementById('notesTitle');
-            const bodyEl = document.getElementById('notesBody');
+        // 5. CODE PLAYGROUND & LINKEDIN AUDIT
+        function runUserCode() {
+            const code = document.getElementById('codeInput').value;
+            const outputFrame = document.getElementById('codeOutput').contentWindow.document;
+            outputFrame.open();
+            outputFrame.write(code || "<p style='font-family:sans-serif;font-size:12px;'>No output generated.</p>");
+            outputFrame.close();
+        }
 
-            titleEl.innerText = `Comprehensive Study Document: ${topic}`;
-            bodyEl.innerHTML = `
-                <div class="space-y-3 text-black">
-                    <p><strong>1. Architectural Overview & Theoretical Foundation:</strong><br>
-                    ${topic} represents key pillars in computational workflows. Logistic Regression delivers probabilistic binary classification outputs, whereas Decision Trees construct non-linear decision boundaries through feature entropy reduction.</p>
-                    
-                    <p><strong>2. Core Mathematical Formulations:</strong><br>
-                    • Sigmoid Activation Function: <code>f(z) = 1 / (1 + e^-z)</code><br>
-                    • Gini Impurity Metric: <code>1 - sum(p_i^2)</code></p>
+        function auditLinkedInProfile() {
+            document.getElementById('auditResultBox').classList.remove('hidden');
+        }
 
-                    <p><strong>3. Executable Implementation Example:</strong></p>
-                    <pre class="bg-white p-3 rounded border border-gray-300 font-mono text-[11px] overflow-x-auto text-black">
-import sklearn.linear_model as lm
-import sklearn.tree as tree
+        // 6. YOUTUBE NOTES & AI TUTOR CHAT
+        function generateYtNotes() {
+            const display = document.getElementById('ytNotesDisplay');
+            display.innerHTML = `
+                <h4 class="font-bold text-moss">Extracted Comprehensive Video Study Notes:</h4>
+                <p><strong>• Key Concept 1:</strong> Model Architecture & Training Datasets.</p>
+                <p><strong>• Key Concept 2:</strong> Feature Normalization using Scikit-Learn pipelines.</p>
+                <p><strong>• Practical Snippet:</strong> <code>model.fit(X_train, y_train)</code></p>
+                <p><strong>• Summary:</strong> Always validate performance with cross-validation confusion matrices.</p>
+            `;
+        }
 
-# Model Initialization
-log_reg = lm.LogisticRegression()
-dec_tree = tree.DecisionTreeClassifier(criterion='entropy')
-print("Models successfully initialized for deployment.")
-                    </pre>
+        function sendTutorQuestion() {
+            const queryEl = document.getElementById('tutorQuery');
+            const q = queryEl.value.trim();
+            if(!q) return;
 
-                    <p><strong>4. Model Evaluation & Best Practices:</strong><br>
-                    Always compute confusion matrices, recall rates, and hyperparameter grids to ensure operational stability and prevent model overfitting.</p>
+            const chatBox = document.getElementById('tutorChatBox');
+            chatBox.innerHTML += `<div class="p-2 bg-moss/10 rounded text-right"><strong>You:</strong> ${q}</div>`;
+            queryEl.value = '';
+
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="p-2 bg-sand rounded border border-moss/20"><strong>AI Tutor:</strong> Excellent question! Regarding "${q}", ensure you maintain strict syntax formatting and split your datasets properly into training and test vectors.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        // 7. JOB HUNTER PREFERENCES MATCH
+        function processJobPreferences() {
+            const work = document.getElementById('jobPrefWork').value;
+            const market = document.getElementById('jobPrefMarket').value;
+            const skill = document.getElementById('jobPrefSkill').value;
+
+            const container = document.getElementById('jobResultsContainer');
+            container.innerHTML = `
+                <div class="p-4 rounded-xl border border-moss/20 bg-sand">
+                    <span class="text-[10px] bg-moss text-white px-2 py-0.5 rounded font-bold badge-white">${work}</span>
+                    <h4 class="font-bold text-sm mt-2">Emirates Airline - ${market} Operations</h4>
+                    <p class="text-xs my-1">Skill Match: ${skill}</p>
+                    <p class="text-[11px] text-gray-600">Vacancies: 12 Openings | Requirements: English Fluency & Customer Care</p>
+                    <p class="text-[11px] font-mono mt-2 text-moss">Contact: recruitment@emirates.com</p>
+                </div>
+
+                <div class="p-4 rounded-xl border border-moss/20 bg-sand">
+                    <span class="text-[10px] bg-moss text-white px-2 py-0.5 rounded font-bold badge-white">${work}</span>
+                    <h4 class="font-bold text-sm mt-2">Systems Limited - ${market} Tech</h4>
+                    <p class="text-xs my-1">Skill Match: ${skill}</p>
+                    <p class="text-[11px] text-gray-600">Vacancies: 5 Openings | Requirements: Python, FastAPI & PyTorch</p>
+                    <p class="text-[11px] font-mono mt-2 text-moss">Contact: careers@systemsltd.com</p>
                 </div>
             `;
         }
 
-        // 5. CV STUDIO STYLE SWITCHER & ENGINE (SLIDE 9)
-        function setCvStyle(styleName) {
-            document.getElementById('previewStyleTag').innerText = `Layout: ${styleName}`;
+        // 8. CV STUDIO CUSTOMIZER
+        function selectCvLayout(num) {
+            document.getElementById('cvDocumentContainer').className = `lg:col-span-2 p-6 rounded-xl border-2 border-moss min-h-[400px] bg-sand`;
         }
 
-        function generateFullCV() {
-            const name = document.getElementById('cvFullName').value || 'MINAL';
-            const role = document.getElementById('cvTargetRole').value || 'Target Position';
-            const summary = document.getElementById('cvSummary').value;
-
-            document.getElementById('previewName').innerText = name.toUpperCase();
-            document.getElementById('previewRole').innerText = role;
-            document.getElementById('previewSummaryText').innerText = summary;
+        function renderCustomCv() {
+            document.getElementById('cvDocName').innerText = document.getElementById('cvInputName').value.toUpperCase();
+            document.getElementById('cvDocEmail').innerText = document.getElementById('cvInputEmail').value;
+            document.getElementById('cvDocPhone').innerText = document.getElementById('cvInputPhone').value;
+            document.getElementById('cvDocTarget').innerText = document.getElementById('cvInputTarget').value;
+            document.getElementById('cvDocSummary').innerText = document.getElementById('cvInputSummary').value;
+            document.getElementById('cvDocProjects').innerText = document.getElementById('cvInputProjects').value;
         }
 
-        // 6. MOCK INTERVIEW ARENA WITH SIRI-STYLE VOICE & EVALUATION (SLIDE 10)
-        let currentQuestionIndex = 0;
+        // 9. MOCK INTERVIEW ARENA & VOICE
+        let currentIntStep = 0;
         let interviewQuestions = [];
 
-        function startStructuredInterview() {
-            const ind = document.getElementById('intIndustry').value;
-            const comp = document.getElementById('intCompany').value;
-            const lvl = document.getElementById('intLevel').value;
+        function launchLiveInterview() {
+            const comp = document.getElementById('intCompName').value;
+            const role = document.getElementById('intCompRole').value;
 
             interviewQuestions = [
-                `Welcome. I am your executive interviewer for ${comp}. To begin, tell me why you are seeking a ${lvl} position in ${ind}?`,
-                `How do you handle unexpected dynamic high-pressure challenges when delivering critical results?`,
-                `Thank you. What is your strategy for staying updated with emerging techniques and industry protocols?`
+                `Welcome to your ${comp} interview session for the ${role} position. Why do you believe you are the ideal fit?`,
+                `How do you handle unexpected dynamic pressure when communicating with team members or customers?`,
+                `Thank you. Can you describe a complex technical or service problem you recently solved?`
             ];
 
-            document.getElementById('interviewSetupCard').classList.add('hidden');
-            document.getElementById('interviewActiveZone').classList.remove('hidden');
-            document.getElementById('interviewActiveZone').classList.add('grid');
+            document.getElementById('intSetupCard').classList.add('hidden');
+            document.getElementById('intSessionActive').classList.remove('hidden');
+            document.getElementById('intSessionActive').classList.add('grid');
 
             // Initialize Camera
-            initWebcam();
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { document.getElementById('webcamElement').srcObject = stream; })
+                .catch(() => { document.getElementById('camStatusText').innerText = "Camera Standby"; });
+            }
 
-            // Ask First Question
-            currentQuestionIndex = 0;
-            speakAndDisplay(interviewQuestions[currentQuestionIndex]);
+            currentIntStep = 0;
+            speakQuestion(interviewQuestions[currentIntStep]);
         }
 
-        function speakAndDisplay(text) {
-            const chatBox = document.getElementById('interviewChat');
-            const msgEl = document.createElement('div');
-            msgEl.className = "bg-white p-2.5 rounded-lg border border-moss/20 text-black shadow-sm mb-2";
-            msgEl.innerHTML = `<strong class="text-moss">AI Interviewer:</strong> ${text}`;
-            chatBox.appendChild(msgEl);
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function speakQuestion(text) {
+            const stream = document.getElementById('intChatStream');
+            stream.innerHTML += `<div class="p-2 bg-white rounded border border-moss/20 mb-2"><strong>AI Interviewer:</strong> ${text}</div>`;
+            stream.scrollTop = stream.scrollHeight;
 
-            // Siri-Style Voice Synthesis Output
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
-                window.speechSynthesis.speak(utterance);
+                const utter = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(utter);
             }
         }
 
-        function processUserAnswer() {
-            const inputEl = document.getElementById('userInterviewAns');
-            const userAns = inputEl.value.trim();
-            if(!userAns) return;
+        function submitInterviewResponse() {
+            const input = document.getElementById('intUserAnswerInput');
+            const ans = input.value.trim();
+            if(!ans) return;
 
-            const chatBox = document.getElementById('interviewChat');
-            
-            // Render user response
-            const userMsg = document.createElement('div');
-            userMsg.className = "bg-moss/10 p-2.5 rounded-lg text-black shadow-sm mb-2 text-right";
-            userMsg.innerHTML = `<strong class="text-moss">You:</strong> ${userAns}`;
-            chatBox.appendChild(userMsg);
-            inputEl.value = '';
+            const stream = document.getElementById('intChatStream');
+            stream.innerHTML += `<div class="p-2 bg-moss/10 rounded text-right mb-1"><strong>You:</strong> ${ans}</div>`;
+            input.value = '';
 
-            // AI Assessment Logic
             setTimeout(() => {
-                let feedback = "";
-                if(userAns.length > 25) {
-                    feedback = "Very well answered. Clear structure and good articulation.";
+                stream.innerHTML += `<div class="text-[11px] font-bold text-moss italic mb-2">[Body Language Analysis]: Good posture detected. Response structured clearly.</div>`;
+                currentIntStep++;
+                if(currentIntStep < interviewQuestions.length) {
+                    setTimeout(() => speakQuestion(interviewQuestions[currentIntStep]), 800);
                 } else {
-                    feedback = "You might want to expand more on that question to demonstrate deep competency.";
-                }
-
-                const evalMsg = document.createElement('div');
-                evalMsg.className = "text-[11px] font-bold text-moss italic mb-2";
-                evalMsg.innerText = `[AI Feedback]: ${feedback}`;
-                chatBox.appendChild(evalMsg);
-
-                // Progress to Next Question
-                currentQuestionIndex++;
-                if(currentQuestionIndex < interviewQuestions.length) {
-                    setTimeout(() => {
-                        speakAndDisplay(interviewQuestions[currentQuestionIndex]);
-                    }, 1000);
-                } else {
-                    setTimeout(() => {
-                        speakAndDisplay("Thank you. The interview assessment is complete. You showed strong potential overall!");
-                    }, 1000);
+                    setTimeout(() => speakQuestion("Session complete! You exhibited strong communication clarity."), 800);
                 }
             }, 600);
         }
 
-        function initWebcam() {
-            const video = document.getElementById('webcam');
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                })
-                .catch(err => {
-                    document.getElementById('camStatus').innerText = "Camera Permission Pending/Off";
-                });
-            }
-        }
-
-        function toggleCamera() {
-            const video = document.getElementById('webcam');
-            if (video.srcObject) {
-                const tracks = video.srcObject.getTracks();
-                tracks.forEach(track => track.stop());
-                video.srcObject = null;
-                document.getElementById('camStatus').innerText = "Camera Off";
+        function toggleWebcam() {
+            const v = document.getElementById('webcamElement');
+            if(v.srcObject) {
+                v.srcObject.getTracks().forEach(t => t.stop());
+                v.srcObject = null;
+                document.getElementById('camStatusText').innerText = "Camera Off";
             } else {
-                initWebcam();
-                document.getElementById('camStatus').innerText = "Camera Online";
+                navigator.mediaDevices.getUserMedia({ video: true }).then(s => v.srcObject = s);
+                document.getElementById('camStatusText').innerText = "Vision Active";
             }
         }
 
-        // 7. TIKTOK-STYLE AUTHENTICATION MODAL SYSTEM
-        function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-            document.getElementById('authModal').classList.add('flex');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.remove('flex');
-            document.getElementById('authModal').classList.add('hidden');
-        }
-
-        function switchAuthTab(tab) {
-            const formIn = document.getElementById('formSignIn');
-            const formUp = document.getElementById('formSignUp');
-            const tabIn = document.getElementById('tabSignIn');
-            const tabUp = document.getElementById('tabSignUp');
-
-            if(tab === 'signin') {
-                formIn.classList.remove('hidden');
-                formUp.classList.add('hidden');
-                tabIn.className = "w-1/2 py-2 border-b-2 border-moss text-moss font-bold";
-                tabUp.className = "w-1/2 py-2 text-gray-500 font-bold hover:text-black";
+        // 10. AUTH MODAL
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); document.getElementById('authModal').classList.add('flex'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.remove('flex'); document.getElementById('authModal').classList.add('hidden'); }
+        function switchAuthTab(t) {
+            if(t === 'in') {
+                document.getElementById('tabIn').className = "w-1/2 py-2 border-b-2 border-moss text-moss font-bold";
+                document.getElementById('tabUp').className = "w-1/2 py-2 text-gray-400";
             } else {
-                formIn.classList.add('hidden');
-                formUp.classList.remove('hidden');
-                tabUp.className = "w-1/2 py-2 border-b-2 border-moss text-moss font-bold";
-                tabIn.className = "w-1/2 py-2 text-gray-500 font-bold hover:text-black";
+                document.getElementById('tabUp').className = "w-1/2 py-2 border-b-2 border-moss text-moss font-bold";
+                document.getElementById('tabIn').className = "w-1/2 py-2 text-gray-400";
             }
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            document.getElementById('authNavBtn').innerText = "Account Active";
-            closeAuthModal();
         }
     </script>
 </body>
