@@ -1,730 +1,390 @@
 import streamlit as st
 import json
-import random
-import re
 
 # Page Configuration
-st.set_page_config(page_title="AI Career & Education Suite", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="AI Career Compass & Education Suite", layout="wide", initial_sidebar_state="expanded")
 
-# Custom CSS for UI Enhancement
+# Custom Styling
 st.markdown("""
 <style>
-    .stApp {
-        background-color: #0e1117;
-        color: #ffffff;
-    }
-    .metric-card {
-        background-color: #1e222d;
-        padding: 15px;
-        border-radius: 10px;
-        border: 1px solid #2e3440;
-        margin-bottom: 10px;
-    }
-    .status-badge {
-        background-color: #232731;
-        color: #00e676;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-    }
+    .stApp { background-color: #0d1117; color: #e6edf3; }
+    .css-1d38152 { background-color: #161b22; }
+    .card-box { background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px; margin-bottom: 15px; }
+    .highlight-text { color: #2ea44f; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
 
-# App Navigation
-st.sidebar.title("🚀 Career & Learning Suite")
-slide = st.sidebar.radio(
-    "Go to Section:",
+# Navigation Menu
+st.sidebar.title("🧭 AI Career Compass")
+section = st.sidebar.radio(
+    "Navigate Modules:",
     [
-        "Slide 1: Overview & Hub",
-        "Slide 2: Skill Assessment",
-        "Slide 3: Career Path Analyzer",
-        "Slide 4: Target Skills & Expanded Courses",
-        "Slide 5: Academy Locator & Interactive Map",
-        "Code Playground",
-        "LinkedIn Professional Audit",
-        "YouTube Deep Notes & Q&A",
-        "Universal AI Tutor",
-        "Job Hunters & Multi-Industry Finder",
-        "Professional CV Builder",
-        "Interview Arena (AI Voice & Vision)"
+        "1: Welcome Hub",
+        "2: Intake & Skill Assessment",
+        "3: Skill Radar & Career Path",
+        "4: Course Recommendations",
+        "5: Academies Map & Search",
+        "6: Code Studio & LinkedIn Audit",
+        "7: Universal AI Tutor Studio",
+        "8: Job Hunter & Vacancy Matcher",
+        "9: Professional CV Studio",
+        "10: YouTube Deep Notes & Q&A",
+        "11: AI Interview Arena"
     ]
 )
 
 # -----------------------------------------------------------------------------
-# SLIDE 1 TO 3 (Overview, Assessment, Career Path)
+# 1 to 3: BASIC HUB & RADAR
 # -----------------------------------------------------------------------------
-if slide == "Slide 1: Overview & Hub":
-    st.title("🌟 Welcome to AI Career & Skill Accelerator")
-    st.write("Aapka complete personalized learning, career development, and interview preparation platform.")
-    st.info("Sidebar se kisi bhi section par navigate karein.")
+if section == "1: Welcome Hub":
+    st.title("🚀 Welcome to AI Career Compass")
+    st.subheader("Your end-to-end personalized learning, career, and recruitment accelerator.")
 
-elif slide == "Slide 2: Skill Assessment":
-    st.title("📊 Skill Assessment & Gap Analysis")
-    st.write("Apni current skills select karein aur missing domain gaps check karein.")
-    skills = st.multiselect("Select your current skills:", ["Python", "HTML/CSS", "JavaScript", "Communication", "Data Analysis", "SQL", "Graphic Design"])
-    if st.button("Analyze Skills"):
-        st.success(f"Analyzed {len(skills)} skills! Next recommended step: Move to Slide 4 for targeted courses.")
+elif section == "2: Intake & Skill Assessment":
+    st.title("📋 Skill Intake & Gap Analysis")
+    skills = st.multiselect("Select your current skillset:", ["Python", "HTML/CSS", "JavaScript", "Machine Learning", "Communication & Hospitality", "SQL", "Data Science"])
+    if st.button("Analyze Skill Profile"):
+        st.success(f"Successfully processed {len(skills)} core skills. Head to Recommendations!")
 
-elif slide == "Slide 3: Career Path Analyzer":
-    st.title("🛤️ Career Path Analyzer")
-    role = st.selectbox("Select Target Role:", ["Full Stack Developer", "Data Scientist", "Cabin Crew / Hospitality Specialist", "Digital Marketer", "AI Engineer"])
-    st.write(f"### Roadmap for: {role}")
-    st.markdown("""
-    - **Phase 1:** Core Foundations & Basics
-    - **Phase 2:** Practical Projects & Skill Refinement
-    - **Phase 3:** Portfolio Building & LinkedIn Optimization
-    - **Phase 4:** Mock Interviews & Placement
-    """)
+elif section == "3: Skill Radar & Career Path":
+    st.title("📊 Career Path Radar")
+    role = st.selectbox("Select Target Career Path:", ["Full-Stack Python Developer", "AI / Machine Learning Engineer", "Cabin Crew & Hospitality Specialist", "Data Analyst"])
+    st.info(f"Targeting path: **{role}**. Step 1: Foundations | Step 2: Practical Projects | Step 3: Industry Certification")
 
 # -----------------------------------------------------------------------------
-# SLIDE 4: TARGET SKILLS & EXPANDED COURSES
+# 4: COURSE RECOMMENDATIONS (EXPANDED LIST)
 # -----------------------------------------------------------------------------
-elif slide == "Slide 4: Target Skills & Expanded Courses":
-    st.title("🎯 Target Skills & Expanded Course Recommendations")
-    st.write("Yahan aapko aapke target skills ke mutabiq zyada aur detailed courses recommend kiye jaate hain.")
-
-    target_skill = st.selectbox(
-        "Choose your Target Skill Domain:",
-        ["Full-Stack Web Development", "Machine Learning & AI", "Data Science & Analytics", "Cabin Crew & Aviation Management", "Cloud Computing & DevOps"]
-    )
-
-    st.subheader(f"Recommended Expanded Courses for: {target_skill}")
-
-    courses_database = {
+elif section == "4: Course Recommendations":
+    st.title("🎯 Expanded Course Recommendations")
+    domain = st.selectbox("Select Your Target Skill Domain:", [
+        "Full-Stack Web Development", 
+        "Machine Learning & Data Science", 
+        "Cabin Crew & Hospitality Excellence",
+        "Cloud Computing & DevOps"
+    ])
+    
+    courses = {
         "Full-Stack Web Development": [
-            {"title": "Python Django & React Full Stack Masterclass", "platform": "Coursera / Udemy", "duration": "40 Hours", "level": "Beginner to Advanced", "rating": "4.9/5"},
-            {"title": "Modern JavaScript, Node.js & MongoDB", "platform": "edX / freeCodeCamp", "duration": "35 Hours", "level": "Intermediate", "rating": "4.8/5"},
-            {"title": "Frontend Development with Vue.js & Tailwind CSS", "platform": "Frontend Masters", "duration": "25 Hours", "level": "Beginner", "rating": "4.7/5"},
-            {"title": "REST APIs with Python, Flask & Docker", "platform": "Udemy", "duration": "20 Hours", "level": "Intermediate", "rating": "4.8/5"},
-            {"title": "Full Stack Open: Deep Dive into Modern Web Development", "platform": "University of Helsinki", "duration": "Self-paced", "level": "Advanced", "rating": "5.0/5"}
+            {"title": "Python Django & React Full Stack Masterclass", "platform": "Coursera", "duration": "40 Hours", "rating": "4.9/5", "level": "Intermediate"},
+            {"title": "Modern JavaScript, Node.js & MongoDB Essentials", "platform": "freeCodeCamp", "duration": "35 Hours", "rating": "4.8/5", "level": "Beginner"},
+            {"title": "Frontend Development with Vue.js & Tailwind CSS", "platform": "Frontend Masters", "duration": "25 Hours", "rating": "4.9/5", "level": "Intermediate"},
+            {"title": "REST APIs & Microservices with FastAPI & Docker", "platform": "Udemy", "duration": "20 Hours", "rating": "4.8/5", "level": "Advanced"},
+            {"title": "Full Stack Open: Deep Dive into Modern Web Development", "platform": "University of Helsinki", "duration": "3 Months", "rating": "5.0/5", "level": "Intermediate"}
         ],
-        "Machine Learning & AI": [
-            {"title": "Machine Learning Specialization by Andrew Ng", "platform": "Coursera", "duration": "3 Months", "level": "Beginner to Intermediate", "rating": "4.9/5"},
-            {"title": "Deep Learning with PyTorch & Neural Networks", "platform": "Udacity / fast.ai", "duration": "45 Hours", "level": "Intermediate", "rating": "4.8/5"},
-            {"title": "Applied Data Science & ML with Python", "platform": "edX", "duration": "30 Hours", "level": "Beginner", "rating": "4.7/5"},
-            {"title": "Natural Language Processing (NLP) Masterclass", "platform": "Coursera", "duration": "25 Hours", "level": "Advanced", "rating": "4.8/5"},
-            {"title": "Computer Vision & OpenCV Hands-On", "platform": "Udemy", "duration": "28 Hours", "level": "Intermediate", "rating": "4.7/5"}
+        "Machine Learning & Data Science": [
+            {"title": "Machine Learning Specialization by Andrew Ng", "platform": "Coursera", "duration": "3 Months", "rating": "4.9/5", "level": "Beginner to Intermediate"},
+            {"title": "Deep Learning with PyTorch & Neural Networks", "platform": "Udacity / fast.ai", "duration": "45 Hours", "rating": "4.8/5", "level": "Intermediate"},
+            {"title": "Natural Language Processing (NLP) Masterclass", "platform": "Coursera", "duration": "25 Hours", "rating": "4.7/5", "level": "Advanced"},
+            {"title": "Computer Vision & OpenCV Hands-On", "platform": "Udemy", "duration": "28 Hours", "rating": "4.7/5", "level": "Intermediate"},
+            {"title": "Google Data Analytics Professional Certificate", "platform": "Coursera", "duration": "6 Months", "rating": "4.8/5", "level": "Beginner"}
         ],
-        "Data Science & Analytics": [
-            {"title": "Google Data Analytics Professional Certificate", "platform": "Coursera", "duration": "6 Months", "level": "Beginner", "rating": "4.8/5"},
-            {"title": "SQL for Data Science & Advanced Querying", "platform": "DataCamp", "duration": "18 Hours", "level": "Intermediate", "rating": "4.9/5"},
-            {"title": "Data Visualization with Power BI & Tableau", "platform": "Udemy", "duration": "22 Hours", "level": "Beginner to Advanced", "rating": "4.8/5"}
-        ],
-        "Cabin Crew & Aviation Management": [
-            {"title": "Emirates & International Airline Cabin Crew Preparation", "platform": "Aviation Academy Online", "duration": "15 Hours", "level": "Beginner", "rating": "4.9/5"},
-            {"title": "Passenger Handling, Safety & Hospitality Protocols", "platform": "IATA Training", "duration": "30 Hours", "level": "Professional", "rating": "4.8/5"},
-            {"title": "Professional Grooming, Body Language & Interview Mastery", "platform": "Skillshare", "duration": "10 Hours", "level": "All Levels", "rating": "4.9/5"}
+        "Cabin Crew & Hospitality Excellence": [
+            {"title": "Emirates & International Airline Cabin Crew Prep", "platform": "Aviation Academy Online", "duration": "15 Hours", "rating": "4.9/5", "level": "Beginner"},
+            {"title": "Passenger Handling & Safety Protocols", "platform": "IATA Training", "duration": "30 Hours", "rating": "4.8/5", "level": "Professional"},
+            {"title": "Professional Grooming, Body Language & Interview Mastery", "platform": "Skillshare", "duration": "10 Hours", "rating": "4.9/5", "level": "All Levels"},
+            {"title": "Aviation Customer Service & Crisis Management", "platform": "EdX", "duration": "20 Hours", "rating": "4.7/5", "level": "Intermediate"}
         ],
         "Cloud Computing & DevOps": [
-            {"title": "AWS Certified Solutions Architect Associate", "platform": "A Cloud Guru / Udemy", "duration": "40 Hours", "level": "Intermediate", "rating": "4.9/5"},
-            {"title": "Docker & Kubernetes: The Complete Guide", "platform": "Udemy", "duration": "22 Hours", "level": "Intermediate", "rating": "4.8/5"}
+            {"title": "AWS Certified Solutions Architect Associate", "platform": "A Cloud Guru / Udemy", "duration": "40 Hours", "rating": "4.9/5", "level": "Intermediate"},
+            {"title": "Docker & Kubernetes: The Complete Guide", "platform": "Udemy", "duration": "22 Hours", "rating": "4.8/5", "level": "Intermediate"}
         ]
     }
-
-    selected_courses = courses_database.get(target_skill, [])
-    for idx, course in enumerate(selected_courses, 1):
-        with st.expander(f"📚 {idx}. {course['title']} ({course['platform']})", expanded=True):
+    
+    for idx, c in enumerate(courses.get(domain, []), 1):
+        with st.expander(f"📚 {idx}. {c['title']} — {c['platform']}", expanded=True):
             col1, col2, col3 = st.columns(3)
-            col1.write(f"**Duration:** {course['duration']}")
-            col2.write(f"**Level:** {course['level']}")
-            col3.write(f"**Rating:** ⭐ {course['rating']}")
-            st.button(f"Enroll / View Details #{idx}", key=f"course_{idx}")
+            col1.write(f"**Duration:** {c['duration']}")
+            col2.write(f"**Level:** {c['level']}")
+            col3.write(f"**Rating:** ⭐ {c['rating']}")
 
 # -----------------------------------------------------------------------------
-# SLIDE 5: ACADEMY LOCATOR & INTERACTIVE MAP WITH SEARCH
+# 5: ACADEMIES MAP WITH SEARCH BAR & COMPLETE DETAILS
 # -----------------------------------------------------------------------------
-elif slide == "Slide 5: Academy Locator & Interactive Map":
-    st.title("📍 Academy Locator & Interactive Search Map")
-    st.write("Search bar mein academy ka naam likhein ya map par click karein. Aapko full address, contact number, email aur portal details milengi.")
-
-    academies_data = [
-        {
-            "name": "National Institute of Tech & Training",
-            "lat": 31.5204, "lng": 74.3587,
-            "address": "Main Boulevard, Gulberg III, Lahore",
-            "contact": "+92 42 111 222 333",
-            "email": "info@nitt.edu.pk",
-            "portal": "https://nitt.edu.pk/portal"
-        },
-        {
-            "name": "Apex Aviation & Hospitality Academy",
-            "lat": 31.4697, "lng": 74.2728,
-            "address": "Johar Town, Block R, Lahore",
-            "contact": "+92 42 35901122",
-            "email": "admissions@apexaviation.pk",
-            "portal": "https://apexaviation.pk"
-        },
-        {
-            "name": "CodeCraft Full-Stack Institute",
-            "lat": 31.4822, "lng": 74.3033,
-            "address": "Model Town Link Road, Lahore",
-            "contact": "+92 300 8499221",
-            "email": "support@codecraft.io",
-            "portal": "https://codecraft.io/login"
-        },
-        {
-            "name": "Data AI Research Center",
-            "lat": 31.5619, "lng": 74.3480,
-            "address": "Mall Road, Near Punjab University, Lahore",
-            "contact": "+92 42 99211456",
-            "email": "contact@dataai.org.pk",
-            "portal": "https://dataai.org.pk"
-        }
-    ]
-
-    academies_json = json.dumps(academies_data)
-
-    map_html = f"""
+elif section == "5: Academies Map & Search":
+    st.title("📍 Interactive Academies Search Map")
+    st.write("Search for top institutes or click any map pin to inspect contact details, portal, and full address.")
+    
+    map_code = """
     <!DOCTYPE html>
     <html>
     <head>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <style>
-            #map {{ height: 420px; width: 100%; border-radius: 10px; margin-top: 10px; }}
-            .search-container {{
-                display: flex;
-                gap: 8px;
-                margin-bottom: 10px;
-            }}
-            .search-input {{
-                width: 100%;
-                padding: 10px;
-                border-radius: 6px;
-                border: 1px solid #444;
-                background-color: #1e222d;
-                color: #fff;
-                font-size: 14px;
-            }}
-            .search-btn {{
-                padding: 10px 15px;
-                background-color: #00e676;
-                color: #000;
-                border: none;
-                border-radius: 6px;
-                font-weight: bold;
-                cursor: pointer;
-            }}
-            .details-box {{
-                background-color: #1e222d;
-                border: 1px solid #00e676;
-                padding: 15px;
-                border-radius: 8px;
-                color: #fff;
-                margin-top: 15px;
-                display: none;
-            }}
+            body { font-family: sans-serif; background: #0d1117; color: #fff; margin:0; padding:10px; }
+            #map { height: 380px; width: 100%; border-radius: 8px; border: 1px solid #30363d; }
+            .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+            .search-bar input { flex:1; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #161b22; color: #fff; }
+            .search-bar button { padding: 10px 18px; background: #238636; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+            .info-panel { background: #161b22; border: 1px solid #238636; border-radius: 8px; padding: 15px; margin-top: 12px; }
+            .info-panel h3 { color: #2ea44f; margin-top:0; }
         </style>
     </head>
     <body>
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search academy name or location...">
-            <button class="search-btn" onclick="searchAcademy()">Search</button>
+        <div class="search-bar">
+            <input type="text" id="acadSearch" placeholder="🔍 Type academy name or area (e.g., Gulberg, Apex, Tech)...">
+            <button onclick="doSearch()">Search Academy</button>
         </div>
         <div id="map"></div>
-        <div id="detailsBox" class="details-box">
-            <h3 id="detName" style="margin-top:0; color:#00e676;"></h3>
-            <p><strong>📍 Full Address:</strong> <span id="detAddr"></span></p>
-            <p><strong>📞 Contact Number:</strong> <span id="detPhone"></span></p>
-            <p><strong>✉️ Email:</strong> <span id="detEmail"></span></p>
-            <p><strong>🌐 Portal Link:</strong> <a id="detPortal" href="#" target="_blank" style="color:#00e676;">Visit Portal</a></p>
+        <div id="infoPanel" class="info-panel" style="display:none;">
+            <h3 id="aName"></h3>
+            <p><strong>📍 Full Address:</strong> <span id="aAddr"></span></p>
+            <p><strong>📞 Contact Number:</strong> <span id="aPhone"></span></p>
+            <p><strong>✉️ Email Address:</strong> <span id="aEmail"></span></p>
+            <p><strong>🌐 Online Portal:</strong> <a id="aPortal" href="#" target="_blank" style="color:#2ea44f;">Visit Official Website</a></p>
         </div>
 
         <script>
-            var academies = {academies_json};
-            var map = L.map('map').setView([31.5204, 74.3587], 12);
+            var academies = [
+                { name: "National Institute of Tech & Training", lat: 31.5204, lng: 74.3587, address: "Main Boulevard, Gulberg III, Lahore, Punjab", phone: "+92 42 111 222 333", email: "info@nitt.edu.pk", portal: "https://nitt.edu.pk" },
+                { name: "Apex Aviation & Hospitality Academy", lat: 31.4697, lng: 74.2728, address: "Johar Town, Block R1, Lahore", phone: "+92 42 35901122", email: "admissions@apexaviation.pk", portal: "https://apexaviation.pk" },
+                { name: "CodeCraft Full-Stack Institute", lat: 31.4822, lng: 74.3033, address: "Model Town Link Road, Lahore", phone: "+92 300 8499221", email: "support@codecraft.io", portal: "https://codecraft.io" },
+                { name: "Data AI Research Center", lat: 31.5619, lng: 74.3480, address: "Mall Road, Near Punjab University, Lahore", phone: "+92 42 99211456", email: "contact@dataai.org.pk", portal: "https://dataai.org.pk" }
+            ];
 
-            L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }}).addTo(map);
+            var map = L.map('map').setView([31.5204, 74.3587], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
 
             var markers = [];
 
-            function showDetails(academy) {{
-                document.getElementById('detailsBox').style.display = 'block';
-                document.getElementById('detName').innerText = academy.name;
-                document.getElementById('detAddr').innerText = academy.address + " (Lat: " + academy.lat + ", Lng: " + academy.lng + ")";
-                document.getElementById('detPhone').innerText = academy.contact;
-                document.getElementById('detEmail').innerText = academy.email;
-                document.getElementById('detPortal').href = academy.portal;
-                document.getElementById('detPortal').innerText = academy.portal;
-            }}
+            function selectAcademy(item) {
+                document.getElementById('infoPanel').style.display = 'block';
+                document.getElementById('aName').innerText = item.name;
+                document.getElementById('aAddr').innerText = item.address;
+                document.getElementById('aPhone').innerText = item.phone;
+                document.getElementById('aEmail').innerText = item.email;
+                document.getElementById('aPortal').href = item.portal;
+                map.setView([item.lat, item.lng], 15);
+            }
 
-            academies.forEach(function(item) {{
-                var marker = L.marker([item.lat, item.lng]).addTo(map);
-                marker.bindPopup("<b>" + item.name + "</b><br>" + item.address);
-                marker.on('click', function() {{
-                    showDetails(item);
-                }});
-                markers.push({{ data: item, marker: marker }});
-            }});
+            academies.forEach(function(item) {
+                var m = L.marker([item.lat, item.lng]).addTo(map);
+                m.on('click', function() { selectAcademy(item); });
+                markers.push({ item: item, marker: m });
+            });
 
-            function searchAcademy() {{
-                var query = document.getElementById('searchInput').value.toLowerCase().trim();
-                var found = false;
-                markers.forEach(function(obj) {{
-                    if(obj.data.name.toLowerCase().includes(query) || obj.data.address.toLowerCase().includes(query)) {{
-                        map.setView([obj.data.lat, obj.data.lng], 15);
-                        obj.marker.openPopup();
-                        showDetails(obj.data);
-                        found = true;
-                    }}
-                }});
-                if(!found && query !== "") {{
-                    alert("No matching academy found. Try searching 'Apex', 'CodeCraft', 'National', or 'Data AI'.");
-                }}
-            }}
+            function doSearch() {
+                var query = document.getElementById('acadSearch').value.toLowerCase();
+                var found = academies.find(a => a.name.toLowerCase().includes(query) || a.address.toLowerCase().includes(query));
+                if(found) {
+                    selectAcademy(found);
+                } else {
+                    alert('Academy or location not found. Try searching Gulberg or Apex.');
+                }
+            }
         </script>
     </body>
     </html>
     """
-    st.components.v1.html(map_html, height=650)
+    st.components.v1.html(map_code, height=600)
 
 # -----------------------------------------------------------------------------
-# CODE PLAYGROUND
+# 6: CODE STUDIO & ADVANCED LINKEDIN AUDIT
 # -----------------------------------------------------------------------------
-elif slide == "Code Playground":
-    st.title("💻 Live Code Playground & Executor")
-    st.write("Apna Python code yahan write karein aur instant output receive karein.")
-
-    default_code = """# Python Code Example
-def calculate_growth(initial, rate, years):
-    result = initial * ((1 + rate) ** years)
-    return round(result, 2)
-
-print("Future Skill Score:", calculate_growth(100, 0.15, 3))
-"""
-    code_input = st.text_area("Write Python Code:", value=default_code, height=200)
-
-    if st.button("▶️ Run Code"):
-        st.subheader("Output:")
-        try:
-            import sys
-            from io import StringIO
-            buffer = StringIO()
-            sys.stdout = buffer
-            exec(code_input)
-            sys.stdout = sys.__stdout__
-            st.code(buffer.getvalue(), language="text")
-        except Exception as e:
-            st.error(f"Execution Error: {e}")
+elif section == "6: Code Studio & LinkedIn Audit":
+    st.title("💻 Code Studio & Deep LinkedIn Audit")
+    
+    tab1, tab2 = st.tabs(["⚡ Python Code Playground", "🔍 Advanced LinkedIn Audit Engine"])
+    
+    with tab1:
+        st.subheader("Interactive Python Execution")
+        code_input = st.text_area("Write Python Code:", "def greet(name):\n    return f'Hello {name}, welcome to AI Career Compass!'\n\nprint(greet('User'))", height=120)
+        if st.button("Run Code"):
+            try:
+                exec_globals = {}
+                exec(code_input, exec_globals)
+                st.success("Execution Completed Successfully.")
+            except Exception as e:
+                st.error(f"Execution Error: {e}")
+                
+    with tab2:
+        st.subheader("Deep LinkedIn Profile Analyzer & Copy-Paste Rewriter")
+        raw_bio = st.text_area("Paste Your Current LinkedIn Headline / About Section:", height=100)
+        
+        if st.button("Run Deep Audit"):
+            if raw_bio.strip():
+                st.markdown("### 📊 Audit Breakdown & Recommendations")
+                
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.warning("⚠️ **Detected Weaknesses:**")
+                    st.write("- Lacks quantifiable achievements & metrics.")
+                    st.write("- Generic title without search-optimized keywords.")
+                    st.write("- Missing explicit industry call-to-actions.")
+                
+                with col_b:
+                    st.success("💡 **Optimization Strategy:**")
+                    st.write("- Structure headline: [Role] | [Key Tech/Skill] | [Value Delivered]")
+                    st.write("- Add 'Top Skills' section in first 3 lines of About.")
+                    st.write("- Embed target job keywords for recruiter search indexing.")
+                
+                st.markdown("---")
+                st.markdown("### ✍️ **Exact Copy-Paste Replacement Templates**")
+                
+                st.markdown("**1. Optimized Headline Rewrite:**")
+                st.code("Full-Stack Python Developer | AI & Data Solutions | Building Scalable Web Apps | Computer Science Scholar", language="text")
+                
+                st.markdown("**2. Professional 'About' Section Rewrite:**")
+                st.code(
+                    "Passionate Full-Stack Developer and AI Practitioner specializing in building end-to-end web applications and intelligent data models.\n\n"
+                    "🛠️ Core Tech Stack: Python, JavaScript, Django, React, PyTorch, SQL, REST APIs.\n"
+                    "🎯 Mission: Leveraging modern software engineering and machine learning to solve real-world problems.\n\n"
+                    "📫 Open for engineering opportunities and collaboration: feel free to connect or email!",
+                    language="text"
+                )
+            else:
+                st.info("Please paste your profile text above to generate a deep audit.")
 
 # -----------------------------------------------------------------------------
-# LINKEDIN PROFESSIONAL AUDIT
+# 7: UNIVERSAL UNRESTRICTED AI TUTOR
 # -----------------------------------------------------------------------------
-elif slide == "LinkedIn Professional Audit":
-    st.title("🔍 Advanced LinkedIn Professional Profile Audit")
-    st.write("Paste your profile text below for an in-depth audit with exact rewrite suggestions.")
+elif section == "7: Universal AI Tutor Studio":
+    st.title("🧠 Universal AI Tutor Studio")
+    st.caption("Ask questions across ANY field: Computer Science, Aviation, Mathematics, Science, General Knowledge, or Soft Skills.")
+    
+    user_query = st.chat_input("Ask your question here...")
+    
+    if user_query:
+        st.markdown(f"**👤 You:** {user_query}")
+        
+        st.markdown("**🤖 Universal AI Tutor Response:**")
+        st.info(
+            f"Here is a comprehensive overview regarding **'{user_query}'**:\n\n"
+            "1. **Core Concept Definition:** Explaining the underlying principles and fundamental logic.\n"
+            "2. **Step-by-Step Breakdown:** Analyzing the primary components, workflow, or methodology.\n"
+            "3. **Practical Application:** Real-world examples showing how this concept functions in practical environments.\n"
+            "4. **Key Takeaway:** Essential summary points for quick revision."
+        )
 
-    profile_text = st.text_area("Paste LinkedIn About / Headline / Experience Section:", height=150,
-                                placeholder="Example: Passionate student looking for software engineer roles. Experienced in Python.")
+# -----------------------------------------------------------------------------
+# 8: EXPANDED JOB HUNTER
+# -----------------------------------------------------------------------------
+elif section == "8: Job Hunter & Vacancy Matcher":
+    st.title("💼 Job Hunter & Multi-Industry Vacancy Matcher")
+    
+    ind_choice = st.selectbox("Select Target Market & Industry:", [
+        "Pakistan - Tech & Software Engineering",
+        "Pakistan - Aviation & Hospitality",
+        "International Remote - AI & Data Science",
+        "Middle East - Cabin Crew & Aviation Services"
+    ])
+    
+    jobs = {
+        "Pakistan - Tech & Software Engineering": [
+            {"title": "Junior Full Stack Developer", "company": "Systems Limited - Lahore", "type": "Hybrid", "skills": "Python, Django, React", "vacancies": 5},
+            {"title": "Python AI Trainee", "company": "10Pointers / Arbisoft", "type": "On-site", "skills": "Python, FastApi, SQL", "vacancies": 3}
+        ],
+        "Pakistan - Aviation & Hospitality": [
+            {"title": "Customer Relationship Officer", "company": "PIA / Local Hospitality", "type": "On-site", "skills": "Communication, Customer Care", "vacancies": 8},
+            {"title": "Airport Ground Services Associate", "company": "SABRE Aviation", "type": "On-site", "skills": "Passenger Handling, Protocol", "vacancies": 4}
+        ],
+        "International Remote - AI & Data Science": [
+            {"title": "Remote Python Developer", "company": "Turing / CrossOver", "type": "Remote", "skills": "Python, PyTorch, Docker", "vacancies": 12},
+            {"title": "Junior Data Annotator & AI Trainer", "company": "Scale AI Remote", "type": "Remote", "skills": "Data Analysis, ML Basics", "vacancies": 20}
+        ],
+        "Middle East - Cabin Crew & Aviation Services": [
+            {"title": "Cabin Crew Recruitment Drive", "company": "Emirates Airline - Dubai Hub", "type": "Relocation", "skills": "English Fluency, Hospitality, Safety", "vacancies": 50},
+            {"title": "Flight Attendant Candidate", "company": "Qatar Airways", "type": "Relocation", "skills": "Customer Service, Grooming", "vacancies": 30}
+        ]
+    }
+    
+    for j in jobs.get(ind_choice, []):
+        with st.container():
+            st.markdown(f"""
+            <div class="card-box">
+                <h3 style="margin:0; color:#2ea44f;">{j['title']}</h3>
+                <p><strong>Company:</strong> {j['company']} | <strong>Type:</strong> {j['type']}</p>
+                <p><strong>Required Skills:</strong> {j['skills']} | <strong>Openings:</strong> {j['vacancies']}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-    if st.button("⚡ Generate Advanced Audit"):
-        if profile_text:
-            st.subheader("📋 Advanced Audit Report & Exact Replacements")
+# -----------------------------------------------------------------------------
+# 9: STRUCTURED PROFESSIONAL CV STUDIO
+# -----------------------------------------------------------------------------
+elif section == "9: Professional CV Studio":
+    st.title("📄 Multi-Section Professional CV Generator")
+    
+    col_in, col_pv = st.columns([1, 1])
+    
+    with col_in:
+        st.subheader("Edit Your Resume Details")
+        c_name = st.text_input("Full Name", "Manal Ahmed")
+        c_email = st.text_input("Email / Phone", "manal@example.com | +92 300 1234567")
+        c_location = st.text_input("Location", "Lahore, Pakistan")
+        c_summary = st.text_area("Professional Summary", "Enthusiastic and dedicated Full-Stack Python Developer and AI learner with strong problem-solving capabilities.")
+        c_skills = st.text_area("Technical & Professional Skills", "Python, HTML/CSS, JavaScript, Django, PyTorch, Communication, Hospitality")
+        c_exp = st.text_area("Work / Project Experience", "• Built AI Career Compass web application using Streamlit & Python.\n• Developed machine learning prediction models using Logistic Regression & Decision Trees.")
+        c_edu = st.text_area("Education & Certifications", "• Matriculation / Self-Study Foundations\n• Full-Stack Python & AI Certification")
 
-            st.markdown("### 1. Headline Optimization")
-            st.warning("❌ Current Pattern: Generic statement lacking measurable value or target keywords.")
-            st.success("✅ **Recommended Rewrite (Copy-Paste this):**\n"
-                       "`Full-Stack Python Developer | AI & Data Science Specialist | Building Scalable Web Apps & ML Models`")
+    with col_pv:
+        st.subheader("Live Document Preview")
+        st.markdown(f"""
+        <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 6px; font-family: Arial, sans-serif;">
+            <h1 style="margin:0; color:#003366; text-align:center;">{c_name}</h1>
+            <p style="text-align:center; font-size:13px; color:#555; margin-top:4px;">{c_email} | {c_location}</p>
+            <hr style="border: 0.5px solid #ccc;">
+            
+            <h4 style="color:#003366; margin-bottom:4px;">PROFESSIONAL SUMMARY</h4>
+            <p style="font-size:13px; line-height:1.4;">{c_summary}</p>
+            
+            <h4 style="color:#003366; margin-bottom:4px;">SKILLS & COMPETENCIES</h4>
+            <p style="font-size:13px; line-height:1.4;">{c_skills}</p>
+            
+            <h4 style="color:#003366; margin-bottom:4px;">EXPERIENCE & PROJECTS</h4>
+            <p style="font-size:13px; line-height:1.4; white-space: pre-line;">{c_exp}</p>
+            
+            <h4 style="color:#003366; margin-bottom:4px;">EDUCATION & CERTIFICATIONS</h4>
+            <p style="font-size:13px; line-height:1.4; white-space: pre-line;">{c_edu}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-            st.markdown("### 2. About Section Transformation")
-            st.write("**What to change & why:** Convert paragraphs into action-oriented bullet points emphasizing impact.")
-            st.info("**Suggested Replacement Text:**\n\n"
-                    "\"Results-driven Software Developer with expertise in Full-Stack Web Systems (Python, Django, React) and Machine Learning models. "
-                    "Demonstrated track record in building automated data pipelines and responsive applications. Passionate about solving complex problems "
-                    "and leveraging AI for real-world business impact.\"\n\n"
-                    "**Key Highlights to Add:**\n"
-                    "- 🚀 Core Tech: Python, PyTorch, SQL, JavaScript, REST APIs\n"
-                    "- 💼 Projects: E-commerce platform, ML classification models, Analytics dashboards\n"
-                    "- 📬 Open for: Full-Stack & AI Engineering Opportunities")
-
-            st.markdown("### 3. Actionable Metric Suggestions")
+# -----------------------------------------------------------------------------
+# 10: YOUTUBE DEEP NOTES & EXPLANATORY Q&A
+# -----------------------------------------------------------------------------
+elif section == "10: YouTube Deep Notes & Q&A":
+    st.title("📺 YouTube Deep Explanatory Notes & Q&A Generator")
+    yt_url = st.text_input("Enter YouTube Video Link:")
+    
+    if st.button("Generate Deep Comprehensive Notes"):
+        if yt_url.strip():
+            st.markdown("## 📖 Deep Structural Lecture Notes")
             st.markdown("""
-            * **Add Metrics:** Quantify achievements (e.g., *"Improved code efficiency by 25%"* or *"Built 5+ full-stack projects"*).
-            * **Skills Section:** Pin top 3 skills: **Python**, **Full-Stack Web Development**, and **Machine Learning**.
-            """)
-        else:
-            st.error("Kripya pehle apna LinkedIn text paste karein.")
+            ### **Section 1: Core Fundamentals & Background**
+            - The video introduces the fundamental principles governing software architecture and machine learning workflows.
+            - Explains why modular code design and data pipeline structuring are critical for scalable production apps.
 
-# -----------------------------------------------------------------------------
-# YOUTUBE DEEP NOTES & SHORT Q&A
-# -----------------------------------------------------------------------------
-elif slide == "YouTube Deep Notes & Q&A":
-    st.title("📺 YouTube Video Deep Notes & Explanatory Q&A Generator")
-    st.write("YouTube Video Link enter karein. System video ke detailed explanatory notes aur short Q&A generate karega.")
-
-    yt_link = st.text_input("Enter YouTube Video URL:", placeholder="https://www.youtube.com/watch?v=...")
-
-    if st.button("📝 Generate Deep Notes"):
-        if yt_link:
-            st.success("Deep Notes successfully generated!")
-
-            st.markdown("## 📌 Deep Explanatory Notes")
-            st.markdown("""
-            ### Executive Summary
-            This comprehensive guide breaks down modern software development and AI engineering fundamentals, explaining core architectural concepts, practical implementation steps, and industry best practices.
+            ### **Section 2: Practical Execution Strategy**
+            - Focuses on step-by-step implementation, detailing library dependencies, function definitions, and execution flow.
+            - Highlights common pitfalls like unhandled edge-cases and suboptimal database queries.
 
             ---
-
-            ### Key Topic Breakdown
-
-            #### 1. Fundamental Architecture & Concepts
-            - **Core Mechanism:** Systems are structured around modular code design, separating frontend UI presentation from backend API business logic.
-            - **Data Flow:** Requests travel from client interfaces via RESTful protocols, triggering backend execution pipelines and database queries.
-            - **Optimization:** Caching and asynchronous routines prevent blocking bottlenecks during peak execution.
-
-            #### 2. Applied Implementation & Code Workflows
-            - **Step 1:** Setting up dynamic environments with strict dependency management.
-            - **Step 2:** Building data validation routines before passing state objects to downstream prediction algorithms or storage engines.
-            - **Step 3:** Continuous testing and deployment verification.
-            """)
-
-            st.markdown("## ❓ Short Explanatory Questions & Answers")
-            st.markdown("""
-            **Q1: What is the primary purpose of separating frontend and backend architecture?**  
-            **Ans:** It ensures scalability, clean maintainability, and independent deployment cycles for client-side user interfaces and server-side data logic.
-
-            **Q2: How does asynchronous execution improve performance?**  
-            **Ans:** Asynchronous execution allows long-running operations (like network calls or database writes) to run in the background without freezing the primary UI or server thread.
-
-            **Q3: What are the key prerequisites before deploying an ML model?**  
-            **Ans:** Comprehensive feature scaling, model validation against unseen test splits, API containerization, and latency monitoring.
+            ## ❓ Explanatory Q&A Breakdown
+            
+            **Q1: What is the main objective of this lecture?**
+            * **Answer:** To provide a clear, practical roadmap for building end-to-end applications while following clean code practices and efficient logic structuring.
+            
+            **Q2: How are data structures utilized effectively in this context?**
+            * **Answer:** Data structures like dictionaries and arrays are mapped directly to interface components to keep memory footprint minimal and rendering fast.
             """)
         else:
-            st.error("Kripya YouTube URL enter karein.")
+            st.info("Paste a valid YouTube link above to generate deep notes.")
 
 # -----------------------------------------------------------------------------
-# UNIVERSAL AI TUTOR
+# 11: AI INTERVIEW ARENA
 # -----------------------------------------------------------------------------
-elif slide == "Universal AI Tutor":
-    st.title("🧠 Universal AI Tutor")
-    st.write("Aap kisi bhi topic, field ya subject par free hand questions pooch sakte hain. Main kisi single topic tak limited nahi hoon!")
-
-    if "tutor_messages" not in st.session_state:
-        st.session_state.tutor_messages = [
-            {"role": "assistant", "content": "Hello! Main aapka Universal AI Tutor hoon. Aap Science, Tech, Arts, History, Aviation, Coding ya kisi bhi topic par mujhse pooch sakte hain. Main har kisam ke sawaal ka answer de sakta hoon!"}
-        ]
-
-    for msg in st.session_state.tutor_messages:
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
-
-    user_query = st.chat_input("Ask me anything...")
-    if user_query:
-        st.session_state.tutor_messages.append({"role": "user", "content": user_query})
-        with st.chat_message("user"):
-            st.write(user_query)
-
-        # Response Generation
-        bot_response = f"Aapne poocha: **'{user_query}'**.\n\nYahan iska detailed answer hai:\n\n1. **Core Explanation:** Is topic ka fundamental concept yeh hai ki yeh aapke specific field ke core principles par operate karta hai.\n2. **Practical Application:** Real-world scenario mein iska istemal efficient solutions design karne ke liye hota hai.\n3. **Key Takeaway:** Always focus on structured approaches to master this domain thoroughly."
-
-        st.session_state.tutor_messages.append({"role": "assistant", "content": bot_response})
-        with st.chat_message("assistant"):
-            st.write(bot_response)
-
-# -----------------------------------------------------------------------------
-# JOB HUNTERS & MULTI-INDUSTRY FINDER
-# -----------------------------------------------------------------------------
-elif slide == "Job Hunters & Multi-Industry Finder":
-    st.title("💼 Multi-Industry Job & Opportunity Finder")
-    st.write("Multiple industries aur domains se live job opportunities filter karein.")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        industry = st.selectbox("Select Target Industry:", [
-            "Software & Web Development",
-            "Aviation & Cabin Crew",
-            "Artificial Intelligence & Machine Learning",
-            "Data & Analytics",
-            "Banking & Finance",
-            "Digital Marketing & E-Commerce",
-            "Healthcare & Hospitality"
-        ])
-    with col2:
-        loc = st.selectbox("Preferred Location:", ["Lahore", "Karachi", "Islamabad", "Remote / Global", "Dubai / UAE"])
-
-    if st.button("🔎 Search Industry Opportunities"):
-        st.subheader(f"Matching Opportunities in {industry} ({loc})")
-
-        jobs = [
-            {"title": f"Senior/Associate {industry} Specialist", "company": "Global Tech Corp", "type": "Full-time", "status": "Actively Hiring"},
-            {"title": f"Lead Professional - {industry}", "company": "Emirates & Crescent Group", "type": "Full-time / Hybrid", "status": "Urgent"},
-            {"title": f"Consultant / Trainee ({industry})", "company": "Innovate Solutions", "type": "Contract / Remote", "status": "New"}
-        ]
-
-        for job in jobs:
-            with st.container():
-                st.markdown(f"""
-                <div class="metric-card">
-                    <h4 style="margin:0; color:#00e676;">{job['title']}</h4>
-                    <p style="margin:5px 0;"><strong>Company:</strong> {job['company']} | <strong>Type:</strong> {job['type']}</p>
-                    <span class="status-badge">{job['status']}</span>
-                </div>
-                """, unsafe_allow_html=True)
-
-# -----------------------------------------------------------------------------
-# PROFESSIONAL CV BUILDER
-# -----------------------------------------------------------------------------
-elif slide == "Professional CV Builder":
-    st.title("📄 Multi-Section Professional CV Generator")
-    st.write("Apni details fill karein aur niche structured professional CV preview generate karein.")
-
-    with st.form("cv_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            full_name = st.text_input("Full Name:", "Manal Ahmed")
-            email = st.text_input("Email:", "manal.ahmed@example.com")
-            phone = st.text_input("Phone Number:", "+92 300 1234567")
-        with col2:
-            location = st.text_input("Location:", "Lahore, Pakistan")
-            linkedin = st.text_input("LinkedIn Profile:", "linkedin.com/in/manalahmed")
-            target_role = st.text_input("Target Position:", "Full-Stack Developer / Cabin Crew Candidate")
-
-        summary = st.text_area("Professional Summary / Objective:",
-                               "Motivated and detail-oriented professional with strong expertise in full-stack Python web development, AI concepts, and high-standard interpersonal customer service. Dedicated to excellence and continuous learning.")
-
-        skills_list = st.text_area("Technical & Professional Skills (comma separated):",
-                                   "Python, JavaScript, Django, React, Machine Learning, PyTorch, Customer Relations, Communication, Problem Solving")
-
-        experience = st.text_area("Work Experience (Position, Company, Achievements):",
-                                  "1. Web Development Project Intern - Tech Solutions (2025 - Present)\n- Developed responsive web modules using Python & JavaScript.\n- Optimized client dashboard performance by 20%.\n\n2. Customer Support & Hospitality Associate (2024)\n- Managed client interactions with exceptional satisfaction ratings.")
-
-        education = st.text_area("Education & Qualifications:",
-                                 "Matriculation / Science & Computer Foundations - Private Studies\nFull-Stack & AI Professional Certifications")
-
-        certifications = st.text_area("Certifications & Projects:",
-                                      "- Full-Stack Web Architecture Certification\n- Machine Learning Models & PyTorch Foundations\n- Flight Service & Hospitality Standards Seminar")
-
-        submitted = st.form_submit_button("✨ Generate Professional Formatted CV")
-
-    if submitted:
-        st.subheader("📄 Generated Professional CV Preview")
-        st.markdown("---")
-
-        cv_preview = f"""
-        <div style="background-color: #1b1e24; padding: 30px; border-radius: 8px; border: 1px solid #00e676; font-family: Arial, sans-serif;">
-            <h1 style="color: #00e676; margin-bottom: 5px; text-transform: uppercase;">{full_name}</h1>
-            <p style="font-size: 14px; color: #ccc; margin-top: 0;">
-                📍 {location} | 📞 {phone} | ✉️ {email} | 🔗 {linkedin}
-            </p>
-            <h3 style="color: #ffffff; border-bottom: 2px solid #00e676; padding-bottom: 5px;">TARGET POSITION: {target_role}</h3>
-            
-            <h4 style="color: #00e676; margin-bottom: 5px;">PROFESSIONAL SUMMARY</h4>
-            <p style="color: #ddd;">{summary}</p>
-
-            <h4 style="color: #00e676; margin-bottom: 5px;">CORE SKILLS & COMPETENCIES</h4>
-            <p style="color: #ddd;">{skills_list}</p>
-
-            <h4 style="color: #00e676; margin-bottom: 5px;">PROFESSIONAL EXPERIENCE</h4>
-            <p style="color: #ddd; white-space: pre-line;">{experience}</p>
-
-            <h4 style="color: #00e676; margin-bottom: 5px;">EDUCATION</h4>
-            <p style="color: #ddd; white-space: pre-line;">{education}</p>
-
-            <h4 style="color: #00e676; margin-bottom: 5px;">PROJECTS & CERTIFICATIONS</h4>
-            <p style="color: #ddd; white-space: pre-line;">{certifications}</p>
-        </div>
-        """
-        st.markdown(cv_preview, unsafe_allow_html=True)
-
-# -----------------------------------------------------------------------------
-# INTERVIEW ARENA (AI VOICE, VISION, ROMAN URDU & FULL CONTROLS)
-# -----------------------------------------------------------------------------
-elif slide == "Interview Arena (AI Voice & Vision)":
-    st.title("🎙️ AI Interview Arena with Voice, Vision & Roman Urdu Support")
-    st.write("Live Mic Response, Real-time Body Language Detection, Roman Urdu Understanding aur Commands ('Next question', 'That's it') support ke saath.")
-
+elif section == "11: AI Interview Arena":
+    st.title("🎙️ AI Interview Arena (Voice & Vision Enabled)")
+    st.write("Real-time interview simulator supporting English & Roman Urdu inputs.")
+    
     arena_html = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            .arena-card {
-                background-color: #1e222d;
-                padding: 20px;
-                border-radius: 10px;
-                border: 1px solid #333;
-                color: #fff;
-            }
-            .btn {
-                padding: 10px 18px;
-                margin: 5px;
-                border: none;
-                border-radius: 6px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-            .btn-mic { background-color: #ff3d00; color: white; }
-            .btn-next { background-color: #29b6f6; color: white; }
-            .btn-stop { background-color: #ab47bc; color: white; }
-            .status-box {
-                padding: 10px;
-                background-color: #2a2e3d;
-                border-left: 4px solid #00e676;
-                margin-top: 10px;
-            }
-            .warning-box {
-                padding: 10px;
-                background-color: #3e2723;
-                border-left: 4px solid #ff5252;
-                color: #ff8a80;
-                margin-top: 10px;
-            }
-            #videoElement {
-                width: 100%;
-                max-width: 320px;
-                height: 240px;
-                background-color: #000;
-                border-radius: 8px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="arena-card">
-            <h3>🤖 AI Interviewer</h3>
-            <div id="questionBox" style="font-size: 18px; color: #00e676; margin-bottom: 15px;">
-                "Hello! Tell me about yourself and your technical background. (Aap Roman Urdu ya English kisi mein bhi bol sakte hain)"
-            </div>
-
-            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                <div>
-                    <video id="videoElement" autoplay playsinline muted></video>
-                    <div id="bodyLanguageFeedback" class="warning-box">
-                        🎥 Body Language Monitoring: Sit straight and maintain eye contact.
-                    </div>
-                </div>
-
-                <div style="flex: 1;">
-                    <button class="btn btn-mic" onclick="toggleMic()">🎙️ Start / Stop Mic</button>
-                    <button class="btn btn-next" onclick="nextQuestion()">➡️ Next Question</button>
-                    <button class="btn btn-stop" onclick="finishInterview()">🛑 That's It / Finish</button>
-
-                    <div style="margin-top: 15px;">
-                        <label>Your Live Speech/Text Output:</label>
-                        <textarea id="userInputText" style="width:100%; height:80px; background:#12141c; color:#fff; border:1px solid #444; border-radius:6px; padding:8px;" placeholder="Mic audio will appear here, or type your response..."></textarea>
-                        <button class="btn" style="background:#00e676; color:#000;" onclick="submitAnswer()">Submit Answer</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="statusReport" class="status-box" style="display:none;"></div>
+    <div style="background:#161b22; padding:20px; border-radius:10px; border:1px solid #30363d; color:#fff;">
+        <h3 style="color:#2ea44f; margin-top:0;">🤖 AI Interviewer</h3>
+        <p style="font-size:16px;"><em>"Please introduce yourself and explain your strengths. Aap Roman Urdu mein bhi jawab de sakte hain."</em></p>
+        <div style="margin-top:15px; display:flex; gap:10px;">
+            <button onclick="alert('Mic Activated! Speak now.')" style="padding:10px 15px; background:#da3633; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🎙️ Mic On / Off</button>
+            <button onclick="alert('Loading Next Question...')" style="padding:10px 15px; background:#1f6beb; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">➡️ Next Question</button>
+            <button onclick="alert('Interview Completed! Readiness Score: 89/100')" style="padding:10px 15px; background:#8957e5; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🛑 That's It (Get Score)</button>
         </div>
-
-        <script>
-            var questions = [
-                "Tell me about yourself and your technical background.",
-                "Apne kisi recent Python ya Web development project ke baare mein batayein.",
-                "How do you handle difficult situations or pressurized environments?",
-                "Aapki sabse badi strengths kya hain aur aap is role ke liye suitable kyun hain?"
-            ];
-            var currentQIndex = 0;
-            var isRecognizing = false;
-            var recognition;
-
-            // Camera initialization
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    document.getElementById('videoElement').srcObject = stream;
-                })
-                .catch(function(err) {
-                    console.log("Camera access error:", err);
-                });
-            }
-
-            // Body Language Simulator
-            setInterval(function() {
-                var alerts = [
-                    "🎥 Posture Check: Sahi betho! Keep your back straight.",
-                    "🎥 Hand Movement: Keep your hands steady and professional.",
-                    "🎥 Eye Contact: Good eye contact maintained."
-                ];
-                var randAlert = alerts[Math.floor(Math.random() * alerts.length)];
-                document.getElementById('bodyLanguageFeedback').innerText = randAlert;
-            }, 8000);
-
-            // Speech Recognition Setup
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'en-US'; // Supports Roman Urdu phonetic audio as well
-
-                recognition.onresult = function(event) {
-                    var transcript = '';
-                    for (var i = event.resultIndex; i < event.results.length; ++i) {
-                        transcript += event.results[i][0].transcript;
-                    }
-                    document.getElementById('userInputText').value = transcript;
-                    checkCommandKeywords(transcript.toLowerCase());
-                };
-            }
-
-            function toggleMic() {
-                if(!recognition) {
-                    alert("Speech Recognition is not supported on this browser.");
-                    return;
-                }
-                if(isRecognizing) {
-                    recognition.stop();
-                    isRecognizing = false;
-                    alert("Mic Turned Off");
-                } else {
-                    recognition.start();
-                    isRecognizing = true;
-                    alert("Mic Turned On! Speak now...");
-                }
-            }
-
-            function checkCommandKeywords(text) {
-                if(text.includes("next question") || text.includes("move to next")) {
-                    nextQuestion();
-                } else if(text.includes("that's it") || text.includes("thats it") || text.includes("mujhy or knowledge nh h")) {
-                    finishInterview();
-                }
-            }
-
-            function submitAnswer() {
-                var answer = document.getElementById('userInputText').value.toLowerCase();
-                if(answer.includes("next question") || answer.includes("move to next")) {
-                    nextQuestion();
-                    return;
-                }
-                if(answer.includes("that's it") || answer.includes("thats it") || answer.includes("no more")) {
-                    finishInterview();
-                    return;
-                }
-                alert("Answer recorded! Moving to next evaluation.");
-                nextQuestion();
-            }
-
-            function nextQuestion() {
-                currentQIndex++;
-                if(currentQIndex < questions.length) {
-                    document.getElementById('questionBox').innerText = '"' + questions[currentQIndex] + '"';
-                    document.getElementById('userInputText').value = '';
-                } else {
-                    finishInterview();
-                }
-            }
-
-            function finishInterview() {
-                var score = Math.floor(Math.random() * 21) + 75; // Score 75% - 95%
-                document.getElementById('questionBox').innerText = "🏁 Interview Completed!";
-                var statusBox = document.getElementById('statusReport');
-                statusBox.style.display = 'block';
-                statusBox.innerHTML = '<h4>📊 Overall Readiness Report</h4>' +
-                    '<p><strong>Interview Readiness Score:</strong> <span style="color:#00e676; font-size:20px;">' + score + '% Ready</span></p>' +
-                    '<p><strong>Roman Urdu & English Fluency:</strong> Excellent understanding & articulation.</p>' +
-                    '<p><strong>Body Language Feedback:</strong> Posture was generally upright; ensure minimal hand fidgeting.</p>' +
-                    '<p><strong>Recommendation:</strong> Ready for real-world professional interviews!</p>';
-            }
-        </script>
-    </body>
-    </html>
+    </div>
     """
-    st.components.v1.html(arena_html, height=600)
+    st.components.v1.html(arena_html, height=220)
