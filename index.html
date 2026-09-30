@@ -13,13 +13,13 @@
             theme: {
                 extend: {
                     colors: {
-                        forest: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
+                        navy: {
+                            50: '#f0f4ff',
+                            100: '#e0e7ff',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
                         }
                     }
                 }
@@ -27,21 +27,21 @@
         }
     </script>
 </head>
-<body class="bg-forest-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col" x-data="careerApp()">
+<body class="bg-navy-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col" x-data="careerApp()">
 
     <!-- Header / Navigation Bar -->
-    <header class="bg-forest-900 text-white shadow-md sticky top-0 z-50">
+    <header class="bg-navy-900 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" @click="currentStep = 'welcome'">
-                <div class="bg-forest-700 p-2 rounded-lg font-bold text-lg tracking-wider">AI Compass</div>
-                <span class="text-xs bg-forest-800 px-2 py-1 rounded text-forest-100 border border-forest-600">Dual-Track Engine</span>
+                <div class="bg-navy-700 p-2 rounded-lg font-bold text-lg tracking-wider">AI Compass</div>
+                <span class="text-xs bg-navy-800 px-2 py-1 rounded text-navy-100 border border-navy-600">Dual-Track Engine</span>
             </div>
             
             <!-- Step Navigation Tabs -->
             <nav class="flex flex-wrap gap-1 mt-2 md:mt-0 text-xs font-medium">
                 <template x-for="(stepName, key) in steps" :key="key">
                     <button @click="currentStep = key" 
-                        :class="currentStep === key ? 'bg-forest-700 text-white shadow-inner' : 'bg-forest-800/60 text-forest-100 hover:bg-forest-700/50'"
+                        :class="currentStep === key ? 'bg-navy-700 text-white shadow-inner' : 'bg-navy-800/60 text-navy-100 hover:bg-navy-700/50'"
                         class="px-3 py-1.5 rounded transition-all"
                         x-text="stepName">
                     </button>
@@ -53,278 +53,348 @@
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 
-        <!-- STEP 1: WELCOME -->
-        <section x-show="currentStep === 'welcome'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100">
+        <!-- 1: WELCOME -->
+        <section x-show="currentStep === 'welcome'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100">
             <div class="max-w-3xl mx-auto text-center space-y-6">
-                <span class="bg-forest-100 text-forest-800 text-sm font-semibold px-4 py-1.5 rounded-full inline-block">Welcome to Your Future</span>
-                <h1 class="text-4xl font-extrabold text-forest-900 tracking-tight">AI Career Compass</h1>
+                <span class="bg-navy-100 text-navy-800 text-sm font-semibold px-4 py-1.5 rounded-full inline-block">Discover & Engineer Your Ideal Career Path</span>
+                <h1 class="text-4xl font-extrabold text-navy-900 tracking-tight">AI Career Compass</h1>
                 <p class="text-slate-600 text-lg leading-relaxed">
-                    Navigate your unique dual-track trajectory bridging high-end technology (Python, Machine Learning & Full-Stack Development) and global aviation excellence (Emirates Cabin Crew & International Hospitality).
+                    Welcome to AI Career Compass. Complete your personal evaluation, leverage live skill-gap analysis, explore targeted academies, audit your LinkedIn profile, and train with live AI interviews.
                 </p>
                 <div class="pt-4 flex justify-center gap-4">
-                    <button @click="currentStep = 'intake'" class="bg-forest-700 hover:bg-forest-800 text-white font-medium px-8 py-3 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5">
-                        Start Intake Questionnaire &rarr;
-                    </button>
-                    <button @click="currentStep = 'radar'" class="bg-white border-2 border-forest-700 text-forest-700 hover:bg-forest-50 font-medium px-6 py-3 rounded-xl transition-all">
-                        View APEX Radar
+                    <button @click="currentStep = 'intake'" class="bg-navy-700 hover:bg-navy-800 text-white font-medium px-8 py-3 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5">
+                        Start Assessment &rarr;
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- STEP 2: INTAKE -->
-        <section x-show="currentStep === 'intake'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
+        <!-- 2: INTAKE -->
+        <section x-show="currentStep === 'intake'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-4xl mx-auto">
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 2: Profile Intake & Track Definition</h2>
-                <p class="text-slate-500 text-sm">Configure your personal background and goals to calibrate custom insights.</p>
+                <h2 class="text-2xl font-bold text-navy-900">Step 1: Personal Intake & Academic Background</h2>
+                <p class="text-slate-500 text-sm">Please enter your exact details so the compass can map precise local and international trajectory options.</p>
             </div>
             <form @submit.prevent="submitIntake()" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                        <input type="text" x-model="formData.fullName" required class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-forest-600 focus:outline-none">
+                        <input type="text" x-model="formData.fullName" required class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Age / Stage</label>
-                        <input type="text" x-model="formData.ageStage" placeholder="e.g. Matriculation / Self-Study 2026" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-forest-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Age</label>
+                        <input type="text" x-model="formData.age" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Target Primary Track</label>
-                        <select x-model="formData.primaryTrack" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-forest-600 focus:outline-none">
-                            <option value="tech">Full-Stack Python, ML & Data Engineering</option>
-                            <option value="aviation">Aviation & Emirates Cabin Crew Training</option>
-                            <option value="dual">Dual-Track Synergy Model</option>
-                        </select>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Country</label>
+                        <input type="text" x-model="formData.country" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Focus / Key Skillsets</label>
-                        <input type="text" x-model="formData.skills" placeholder="Python, PyTorch, English Communication, Styling" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-forest-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">City</label>
+                        <input type="text" x-model="formData.city" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
                     </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Personal Career Objective</label>
-                    <textarea x-model="formData.objective" rows="3" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-forest-600 focus:outline-none" placeholder="Describe your near-term milestone..."></textarea>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Education Level</label>
+                        <input type="text" x-model="formData.education" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Technical Skills & Interests</label>
+                        <input type="text" x-model="formData.skills" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
+                    </div>
                 </div>
                 <div class="flex justify-end">
-                    <button type="submit" class="bg-forest-700 hover:bg-forest-800 text-white font-medium px-8 py-3 rounded-xl shadow transition-all">
-                        Submit Intake & Compute APEX Radar &rarr;
+                    <button type="submit" class="bg-navy-700 hover:bg-navy-800 text-white font-medium px-8 py-3 rounded-xl shadow transition-all">
+                        Submit Intake & Compute APEX Radar ⚡
                     </button>
                 </div>
             </form>
         </section>
 
-        <!-- STEP 3: RADAR -->
-        <section x-show="currentStep === 'radar'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
+        <!-- 3: RADAR -->
+        <section x-show="currentStep === 'radar'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-4xl mx-auto text-center">
+            <div class="mb-4 border-b pb-4 text-left">
+                <h2 class="text-2xl font-bold text-navy-900">APEX Competency Radar Analysis</h2>
+                <p class="text-slate-500 text-sm">Processing skill vectors in nanoseconds...</p>
+            </div>
+            <div class="py-12 bg-navy-50/50 rounded-xl border border-navy-100 my-6 flex flex-col items-center justify-center space-y-4">
+                <div class="w-64 h-64 rounded-full border-4 border-dashed border-navy-500 flex items-center justify-center relative shadow-inner bg-white">
+                    <span class="text-xs font-bold text-navy-800 absolute top-4">Python Dev</span>
+                    <span class="text-xs font-bold text-navy-800 absolute right-4">ML & PyTorch</span>
+                    <span class="text-xs font-bold text-navy-800 absolute bottom-4">Data Analysis</span>
+                    <span class="text-xs font-bold text-navy-800 absolute left-4">Communication</span>
+                    <div class="w-32 h-32 bg-navy-600/20 rounded-full flex items-center justify-center font-bold text-navy-900 text-sm">
+                        Optimal Fit
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 italic">⚡ Computing gap vectors... Redirecting to Recommendations...</p>
+            </div>
+            <div class="flex justify-between">
+                <button @click="currentStep = 'intake'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'recommendations'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Recommendations &rarr;</button>
+            </div>
+        </section>
+
+        <!-- 4: RECOMMENDATIONS -->
+        <section x-show="currentStep === 'recommendations'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 3: APEX Radar Analysis</h2>
-                <p class="text-slate-500 text-sm">Vector competency mapping across technical execution and professional poise.</p>
+                <h2 class="text-2xl font-bold text-navy-900">Targeted Skill & Pathway Recommendations</h2>
+                <p class="text-slate-500 text-sm">Click on any recommendation below to instantly jump into the Academies Map with filtered institute contacts.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-forest-50 p-6 rounded-xl border border-forest-200 text-center">
-                    <span class="text-xs uppercase font-bold text-forest-700 tracking-wider">Tech Competency Index</span>
-                    <div class="text-4xl font-extrabold text-forest-900 mt-2">88%</div>
-                    <p class="text-xs text-slate-600 mt-1">Python, Pandas, PyTorch & Web Architecture</p>
+                <div class="border border-navy-200 rounded-xl p-6 bg-navy-50/30 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-navy-900 mb-2">Full-Stack Python & Data Engineering</h3>
+                        <p class="text-xs text-slate-600 mb-4">Master FastAPI, Django, and PyTorch for backend system engineering.</p>
+                    </div>
+                    <button @click="currentStep = 'academies'" class="text-xs bg-navy-700 text-white py-2 rounded-lg font-medium hover:bg-navy-800">Find IT Academies &rarr;</button>
                 </div>
-                <div class="bg-forest-50 p-6 rounded-xl border border-forest-200 text-center">
-                    <span class="text-xs uppercase font-bold text-forest-700 tracking-wider">Aviation & Poise Metric</span>
-                    <div class="text-4xl font-extrabold text-forest-900 mt-2">92%</div>
-                    <p class="text-xs text-slate-600 mt-1">Cross-Cultural Communication & Grooming Standards</p>
+                <div class="border border-navy-200 rounded-xl p-6 bg-navy-50/30 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-navy-900 mb-2">Aviation & Emirates Cabin Crew Training</h3>
+                        <p class="text-xs text-slate-600 mb-4">Elevate English fluency, emergency protocols, and high-standard customer care.</p>
+                    </div>
+                    <button @click="currentStep = 'academies'" class="text-xs bg-navy-700 text-white py-2 rounded-lg font-medium hover:bg-navy-800">Find Cabin Crew Academies &rarr;</button>
                 </div>
-                <div class="bg-forest-50 p-6 rounded-xl border border-forest-200 text-center">
-                    <span class="text-xs uppercase font-bold text-forest-700 tracking-wider">Academic Readiness</span>
-                    <div class="text-4xl font-extrabold text-forest-900 mt-2">85%</div>
-                    <p class="text-xs text-slate-600 mt-1">Matriculation & Higher Education Progression</p>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'intake'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back to Intake</button>
-                <button @click="currentStep = 'recommendations'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Proceed to Recommendations &rarr;</button>
-            </div>
-        </section>
-
-        <!-- STEP 4: RECOMMENDATIONS -->
-        <section x-show="currentStep === 'recommendations'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 4: Tailored Dual-Track Recommendations</h2>
-                <p class="text-slate-500 text-sm">Strategic milestones aligned with your profile.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="border border-forest-200 rounded-xl p-6 bg-forest-50/50">
-                    <h3 class="font-bold text-lg text-forest-900 mb-2">Track A: Full-Stack Python & Data Engineering</h3>
-                    <ul class="text-sm text-slate-700 space-y-2 list-disc list-inside">
-                        <li>Master Jupyter Notebook environment management & PyTorch data pipelines.</li>
-                        <li>Finalize brand styling & component architecture for web applications (e.g., *azure by minal*).</li>
-                        <li>Build full-stack backend integrations using Python web frameworks.</li>
-                    </ul>
-                </div>
-                <div class="border border-forest-200 rounded-xl p-6 bg-forest-50/50">
-                    <h3 class="font-bold text-lg text-forest-900 mb-2">Track B: Aviation & Emirates Cabin Crew Training</h3>
-                    <ul class="text-sm text-slate-700 space-y-2 list-disc list-inside">
-                        <li>Refine English fluency, active listening, and multicultural hospitality responses.</li>
-                        <li>Prepare professional portfolio credentials, attire standards, and tailored CV layout.</li>
-                        <li>Simulate rigorous assessment center roleplays and emergency protocol evaluations.</li>
-                    </ul>
+                <div class="border border-navy-200 rounded-xl p-6 bg-navy-50/30 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-navy-900 mb-2">United World Colleges & Global Diplomas</h3>
+                        <p class="text-xs text-slate-600 mb-4">Explore international pre-university scholarships in UK, Australia, and UWC campuses.</p>
+                    </div>
+                    <button @click="currentStep = 'academies'" class="text-xs bg-navy-700 text-white py-2 rounded-lg font-medium hover:bg-navy-800">Find Global Institutes &rarr;</button>
                 </div>
             </div>
             <div class="flex justify-between">
-                <button @click="currentStep = 'radar'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'academies'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">View Academies Map &rarr;</button>
+                <button @click="currentStep = 'radar'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'academies'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next &rarr;</button>
             </div>
         </section>
 
-        <!-- STEP 5: ACADEMIES MAP -->
-        <section x-show="currentStep === 'academies'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
+        <!-- 5: ACADEMIES MAP -->
+        <section x-show="currentStep === 'academies'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-4xl mx-auto">
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 5: Global Academies & Pathway Map</h2>
-                <p class="text-slate-500 text-sm">Explore regional and international college pathways, coding bootcamps, and aviation training centers.</p>
+                <h2 class="text-2xl font-bold text-navy-900">Step 5: Global Academies & Pathway Map</h2>
+                <p class="text-slate-500 text-sm">Filtered institute contacts based on your dual-track focus.</p>
             </div>
             <div class="space-y-4 mb-8">
                 <div class="p-4 border rounded-xl flex justify-between items-center bg-slate-50">
                     <div>
-                        <h4 class="font-bold text-slate-800">International College & Matriculation Bridge Programs</h4>
-                        <p class="text-xs text-slate-500">Self-study acceleration and exam support for higher education entry.</p>
-                    </div>
-                    <span class="bg-forest-100 text-forest-800 text-xs px-3 py-1 rounded-full font-semibold">Active Milestone</span>
-                </div>
-                <div class="p-4 border rounded-xl flex justify-between items-center bg-slate-50">
-                    <div>
-                        <h4 class="font-bold text-slate-800">Emirates Aviation College & Training Hubs</h4>
+                        <h4 class="font-bold text-slate-800">Emirates Aviation College & Hubs (Dubai)</h4>
                         <p class="text-xs text-slate-500">Cabin crew recruitment prep camps and service excellence seminars.</p>
                     </div>
-                    <span class="bg-forest-100 text-forest-800 text-xs px-3 py-1 rounded-full font-semibold">Target Route</span>
+                    <span class="bg-navy-100 text-navy-800 text-xs px-3 py-1 rounded-full font-semibold">Active Match</span>
+                </div>
+                <div class="p-4 border rounded-xl flex justify-between items-center bg-slate-50">
+                    <div>
+                        <h4 class="font-bold text-slate-800">Python & Data Science Bootcamp Global Network</h4>
+                        <p class="text-xs text-slate-500">Advanced full-stack and machine learning training modules.</p>
+                    </div>
+                    <span class="bg-navy-100 text-navy-800 text-xs px-3 py-1 rounded-full font-semibold">Target Route</span>
                 </div>
             </div>
             <div class="flex justify-between">
-                <button @click="currentStep = 'recommendations'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'code'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Open Code & LinkedIn Studio &rarr;</button>
+                <button @click="currentStep = 'recommendations'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'code'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Code & LinkedIn &rarr;</button>
             </div>
         </section>
 
-        <!-- STEP 6: CODE & LINKEDIN -->
-        <section x-show="currentStep === 'code'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
+        <!-- 6: CODE & LINKEDIN -->
+        <section x-show="currentStep === 'code'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 6: Code & LinkedIn Brand Studio</h2>
-                <p class="text-slate-500 text-sm">Test snippets and review professional portfolio copy.</p>
+                <h2 class="text-2xl font-bold text-navy-900">Code Studio & LinkedIn Profile Audit</h2>
+                <p class="text-slate-500 text-sm">Test live HTML/CSS/JavaScript code snippets and perform a deep LinkedIn profile verification audit.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-slate-900 text-forest-100 p-4 rounded-xl font-mono text-xs overflow-x-auto">
-                    <p class="text-forest-400"># Python Full-Stack & ML Snippet</p>
-                    <p>import torch</p>
-                    <p>import torch.nn as nn</p>
-                    <p class="mt-2">model = nn.Sequential(</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;nn.Linear(10, 32),</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;nn.ReLU(),</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;nn.Linear(32, 1)</p>
-                    <p>)</p>
-                </div>
-                <div class="border rounded-xl p-4 bg-slate-50 text-sm">
-                    <h4 class="font-bold text-slate-800 mb-2">LinkedIn Professional Headline Generator</h4>
-                    <p class="text-slate-600 italic bg-white p-3 rounded border">
-                        "Aspiring Full-Stack Developer & Data Science Enthusiast | Aviation Professional focused on Service Excellence & Global Cross-Cultural Communication."
-                    </p>
-                    <button class="mt-3 bg-forest-700 text-white text-xs px-4 py-2 rounded-lg">Copy Optimized Headline</button>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'academies'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'tutor'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Open AI Tutor Studio &rarr;</button>
-            </div>
-        </section>
-
-        <!-- STEP 7: AI TUTOR STUDIO -->
-        <section x-show="currentStep === 'tutor'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 7: AI Tutor Studio & Video Note Generator</h2>
-                <p class="text-slate-500 text-sm">Ask technical or professional development questions and parse learning sessions.</p>
-            </div>
-            <div class="bg-slate-50 rounded-xl p-4 h-48 overflow-y-auto mb-4 border space-y-3 text-sm">
-                <div class="bg-white p-3 rounded-lg shadow-sm border max-w-lg">
-                    <span class="font-bold text-forest-800 text-xs block mb-1">AI Tutor Companion</span>
-                    Hello! Ready to study Python algorithms or practice cabin crew situational judgment questions today?
-                </div>
-            </div>
-            <div class="flex gap-2 mb-6">
-                <input type="text" placeholder="Ask a question about Python, Machine Learning, or Aviation protocols..." class="flex-grow rounded-lg border border-slate-300 px-4 py-2.5 focus:ring-2 focus:ring-forest-600 focus:outline-none text-sm">
-                <button class="bg-forest-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium">Send</button>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'code'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'hunter'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Proceed to Job Hunter &rarr;</button>
-            </div>
-        </section>
-
-        <!-- STEP 8: JOB HUNTER -->
-        <section x-show="currentStep === 'hunter'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 8: Job Hunter & Target Matching</h2>
-                <p class="text-slate-500 text-sm">Match your skill sets with active roles across software development and premier aviation brands.</p>
-            </div>
-            <div class="space-y-4 mb-8">
-                <div class="border p-4 rounded-xl flex justify-between items-center hover:bg-forest-50/50 transition-colors">
+                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
                     <div>
-                        <h4 class="font-bold text-slate-800">Cabin Crew Member — Emirates</h4>
-                        <p class="text-xs text-slate-500">Global Hub • Dubai, UAE • Focus on world-class guest experience</p>
+                        <h4 class="font-bold text-slate-800 mb-2 text-sm">Interactive Live Code Sandbox</h4>
+                        <textarea rows="4" class="w-full text-xs font-mono p-2 border rounded bg-white" placeholder="Write HTML/JS snippet here...">console.log('Running Azure by Minal code builder...');</textarea>
                     </div>
-                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">98% Match</span>
+                    <button class="mt-3 bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-medium">Run Code Snippet</button>
                 </div>
-                <div class="border p-4 rounded-xl flex justify-between items-center hover:bg-forest-50/50 transition-colors">
+                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
                     <div>
-                        <h4 class="font-bold text-slate-800">Junior Python Developer / Data Analyst</h4>
-                        <p class="text-xs text-slate-500">Remote / Hybrid • Full-Stack Python & ML Pipelines</p>
+                        <h4 class="font-bold text-slate-800 mb-2 text-sm">LinkedIn Professional Profile Audit</h4>
+                        <input type="text" value="https://linkedin.com/in/minal-profile" class="w-full text-xs p-2 border rounded bg-white mb-2">
                     </div>
-                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">94% Match</span>
+                    <button class="bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-medium">Run Profile Audit</button>
                 </div>
             </div>
+            <div class="p-4 bg-navy-50 rounded-xl border border-navy-100 text-xs space-y-1 mb-6">
+                <p class="font-bold text-navy-900">Audit Findings & Enhancement Playbook:</p>
+                <p>• **Headline Recommendation:** Change to "Full-Stack Python Developer | AI Model Engineer | High-Standard Customer Service Specialist"</p>
+                <p>• **Profile Banner & Photo:** Ensure clear lighting, neutral backdrop, and structured professional posture.</p>
+                <p>• **Content Strategy:** Publish 2 technical posts per week documenting working code demos, PyTorch model results, or aviation customer excellence principles.</p>
+            </div>
             <div class="flex justify-between">
-                <button @click="currentStep = 'tutor'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'cv'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Open CV Studio &rarr;</button>
+                <button @click="currentStep = 'academies'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'tutor'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: AI Tutor Studio &rarr;</button>
             </div>
         </section>
 
-        <!-- STEP 9: CV STUDIO -->
-        <section x-show="currentStep === 'cv'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
+        <!-- 7: AI TUTOR STUDIO -->
+        <section x-show="currentStep === 'tutor'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 9: ATS-Optimized CV Studio</h2>
-                <p class="text-slate-500 text-sm">Tailor your curriculum vitae specifically for executive cabin crew recruitment or technical engineering roles.</p>
+                <h2 class="text-2xl font-bold text-navy-900">AI Tutor Studio & Video Note Generator</h2>
+                <p class="text-slate-500 text-sm">Convert YouTube learning video URLs into comprehensive structured study notes, or chat directly with the trained AI tutor.</p>
             </div>
-            <div class="bg-forest-50 border border-forest-200 rounded-xl p-6 mb-8 space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="font-bold text-forest-900">Active Template: Emirates Cabin Crew & Technical Hybrid</span>
-                    <button class="bg-forest-700 text-white text-xs px-3 py-1.5 rounded-lg">Export ATS PDF</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2 text-sm">YouTube Video Note Generator</h4>
+                        <input type="text" value="https://www.youtube.com/watch?v=rfcV50vtbw" class="w-full text-xs p-2 border rounded bg-white mb-3">
+                        <div class="bg-white p-3 rounded border text-xs space-y-1 text-slate-600">
+                            <p class="font-bold text-slate-800">Extracted Comprehensive Video Study Notes:</p>
+                            <p>- Key Concept 1: Model Architecture & Training Datasets</p>
+                            <p>- Key Concept 2: Feature Normalization using Scikit-Learn pipelines</p>
+                            <p>- Practical Snippet: model.fit(X_train, y_train)</p>
+                        </div>
+                    </div>
+                    <button class="mt-3 bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-medium">Extract & Build Comprehensive Notes</button>
                 </div>
-                <div class="bg-white p-4 rounded-lg border text-xs text-slate-700 space-y-2 font-mono">
-                    <p class="font-bold text-slate-900">[YOUR FULL NAME] - Professional Resume Summary</p>
-                    <p>Dedicated professional combining exceptional interpersonal communication, customer-first service delivery, and strong technical foundations in Python and software problem-solving.</p>
+                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2 text-sm">Well-Trained AI Learning Companion</h4>
+                        <div class="bg-white p-3 rounded border text-xs space-y-2 h-36 overflow-y-auto mb-3">
+                            <p><span class="font-bold text-navy-800">AI Tutor:</span> Hello Minal! I am trained on full-stack development, Python ML models, and cabin crew hospitality protocols. Ask me anything!</p>
+                            <p><span class="font-bold text-slate-700">You:</span> ok whats difference between sigmoid and relu?</p>
+                            <p><span class="font-bold text-navy-800">AI Tutor:</span> Excellent question! Regarding "ok whats difference between sigmoid and relu", ensure you maintain strict syntax formatting and split your datasets properly into training and test vectors.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="Ask a question..." class="flex-grow text-xs p-2 border rounded bg-white">
+                        <button class="bg-navy-700 text-white text-xs px-4 py-2 rounded-lg">Ask</button>
+                    </div>
                 </div>
             </div>
             <div class="flex justify-between">
-                <button @click="currentStep = 'hunter'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'interview'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Enter Interview Arena &rarr;</button>
+                <button @click="currentStep = 'code'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'hunter'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Job Hunter &rarr;</button>
             </div>
         </section>
 
-        <!-- STEP 10: INTERVIEW ARENA -->
-        <section x-show="currentStep === 'interview'" class="bg-white rounded-2xl shadow-xl p-8 border border-forest-100 max-w-4xl mx-auto">
+        <!-- 8: JOB HUNTER -->
+        <section x-show="currentStep === 'hunter'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-forest-900">Step 10: Interview Arena Simulator</h2>
-                <p class="text-slate-500 text-sm">Simulate live interview scenarios with AI voice/text prompts tailored for cabin crew assessment days and technical panels.</p>
+                <h2 class="text-2xl font-bold text-navy-900">Job Hunter & Vacancy Matcher</h2>
+                <p class="text-slate-500 text-sm">Answer these 3 core questions to find accurate local and international industry openings.</p>
             </div>
-            <div class="bg-slate-900 text-white rounded-xl p-6 mb-6 space-y-4">
-                <div class="flex items-center space-x-2">
-                    <span class="h-3 w-3 bg-red-500 rounded-full animate-pulse"></span>
-                    <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Live Simulation Active</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">1. Work Preference</label>
+                    <select class="w-full text-xs p-2 border rounded bg-white"><option>Remote</option><option>On-Site / Relocation</option></select>
                 </div>
-                <p class="text-lg font-medium text-forest-100">
-                    "Scenario: A passenger is upset about a delayed connecting flight during international service. How would you handle this with poise and empathy?"
-                </p>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">2. Target Market Industry</label>
+                    <select class="w-full text-xs p-2 border rounded bg-white"><option>Pakistan Industry</option><option>Global Aviation & Tech</option></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">3. Skillset You Serve</label>
+                    <input type="text" value="Python, AI & Cabin Crew Customer Care" class="w-full text-xs p-2 border rounded bg-white">
+                </div>
             </div>
-            <div class="flex gap-3 mb-8">
-                <input type="text" placeholder="Type your professional response..." class="flex-grow rounded-lg border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-forest-600 focus:outline-none text-sm">
-                <button class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-3 rounded-lg text-sm font-medium">Evaluate Answer</button>
+            <div class="flex justify-center mb-6">
+                <button class="bg-navy-700 hover:bg-navy-800 text-white text-xs px-6 py-2.5 rounded-lg font-medium">Match Industries & Open Vacancies</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div class="border p-4 rounded-xl bg-slate-50">
+                    <span class="text-[10px] bg-navy-100 text-navy-800 px-2 py-0.5 rounded font-semibold">Remote</span>
+                    <h4 class="font-bold text-slate-800 mt-2 text-sm">Emirates Airline - Pakistan Operations</h4>
+                    <p class="text-xs text-slate-500">Skill Match: Python, AI & Cabin Crew Customer Care</p>
+                    <p class="text-xs text-slate-500">Vacancies: 12 Openings | Requirements: English Fluency & Customer Care</p>
+                    <p class="text-xs text-navy-700 font-mono mt-2">Contact: recruitment@emirates.com</p>
+                </div>
+                <div class="border p-4 rounded-xl bg-slate-50">
+                    <span class="text-[10px] bg-navy-100 text-navy-800 px-2 py-0.5 rounded font-semibold">Remote</span>
+                    <h4 class="font-bold text-slate-800 mt-2 text-sm">Systems Limited - Pakistan Tech</h4>
+                    <p class="text-xs text-slate-500">Skill Match: Python, AI & Cabin Crew Customer Care</p>
+                    <p class="text-xs text-slate-500">Vacancies: 5 Openings | Requirements: Python, FastAPI & PyTorch</p>
+                    <p class="text-xs text-navy-700 font-mono mt-2">Contact: careers@systemsltd.com</p>
+                </div>
             </div>
             <div class="flex justify-between">
-                <button @click="currentStep = 'cv'" class="text-slate-600 hover:text-forest-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'welcome'" class="bg-forest-700 hover:bg-forest-800 text-white px-6 py-2.5 rounded-xl">Return to Welcome</button>
+                <button @click="currentStep = 'tutor'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'cv'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: CV Studio &rarr;</button>
+            </div>
+        </section>
+
+        <!-- 9: CV STUDIO -->
+        <section x-show="currentStep === 'cv'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
+            <div class="mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold text-navy-900">CV Studio & Layout Customizer</h2>
+                <p class="text-slate-500 text-sm">Enter your details and requirements to auto-generate from 5 professional layout styles with live editing.</p>
+            </div>
+            <div class="mb-4">
+                <label class="block text-xs font-medium text-slate-700 mb-2">Select Layout Style Example:</label>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+                    <button class="p-2 border rounded bg-navy-700 text-white font-medium">1. Modern Executive</button>
+                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">2. Aviation Premium</button>
+                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">3. Minimalist Tech</button>
+                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">4. Academic Clean</button>
+                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">5. Creative Brand</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="space-y-3">
+                    <input type="text" value="Minal" class="w-full text-xs p-2 border rounded">
+                    <input type="text" value="minal@example.com" class="w-full text-xs p-2 border rounded">
+                    <input type="text" value="+92 300 1234567" class="w-full text-xs p-2 border rounded">
+                    <input type="text" value="Emirates Cabin Crew / Full-Stack Python Developer" class="w-full text-xs p-2 border rounded">
+                    <textarea rows="3" class="w-full text-xs p-2 border rounded">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</textarea>
+                    <button class="w-full bg-navy-700 text-white text-xs py-2 rounded font-medium">Build & Update CV</button>
+                </div>
+                <div class="border rounded-xl p-4 bg-slate-50 text-[11px] font-mono space-y-3">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="font-bold text-slate-900 text-sm">MINAL</span>
+                        <span class="text-slate-500">minal@example.com<br>+92 300 1234567</span>
+                    </div>
+                    <p class="font-semibold text-navy-800">Emirates Cabin Crew / Full-Stack Python Developer</p>
+                    <div>
+                        <p class="font-bold text-slate-800 uppercase text-[10px]">Professional Summary</p>
+                        <p class="text-slate-600">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800 uppercase text-[10px]">Key Projects & Built Applications</p>
+                        <p class="text-slate-600">1. Azure E-Commerce Web App<br>2. PyTorch Machine Learning Classifier<br>3. AI Career Compass Portal</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between">
+                <button @click="currentStep = 'hunter'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'interview'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Interview Arena &rarr;</button>
+            </div>
+        </section>
+
+        <!-- 10: INTERVIEW ARENA -->
+        <section x-show="currentStep === 'interview'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
+            <div class="mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold text-navy-900">Live AI Mock Interview Arena</h2>
+                <p class="text-slate-500 text-sm">Interactive interviewer voice simulation, webcam posture detection, and immediate evaluation response.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-900 text-white rounded-xl p-4 flex flex-col justify-between h-56">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="bg-green-600 text-white px-2 py-0.5 rounded">Camera Active</span>
+                        <span class="text-slate-400">Posture: Excellent</span>
+                    </div>
+                    <div class="text-center text-slate-500 text-xs">
+                        [ Simulated Video Feed / Avatar ]
+                    </div>
+                    <button class="bg-slate-800 text-white text-xs py-1.5 rounded">Toggle Camera</button>
+                </div>
+                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between h-56">
+                    <div>
+                        <span class="text-[10px] bg-navy-100 text-navy-800 px-2 py-0.5 rounded font-semibold">AI Interviewer</span>
+                        <p class="text-xs text-slate-800 mt-2 font-medium">
+                            "Welcome to your cabin crew interview session for the Cabin Crew Specialist position. Why do you believe you are the ideal fit?"
+                        </p>
+                    </div>
+                    <textarea rows="2" class="w-full text-xs p-2 border rounded bg-white" placeholder="Type or speak your answer here..."></textarea>
+                    <button class="bg-navy-700 text-white text-xs py-2 rounded font-medium">Submit Answer</button>
+                </div>
+            </div>
+            <div class="flex justify-between">
+                <button @click="currentStep = 'cv'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
+                <button @click="currentStep = 'welcome'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Return to Welcome</button>
             </div>
         </section>
 
@@ -353,14 +423,14 @@
                     interview: '10. Interview Arena'
                 },
                 formData: {
-                    fullName: '',
-                    ageStage: 'Self-Study & Matriculation Prep',
-                    primaryTrack: 'dual',
-                    skills: 'Python, Machine Learning, Communication, Styling',
-                    objective: 'Achieving excellence across technology and aviation career paths.'
+                    fullName: 'Minal',
+                    age: '18',
+                    country: 'Pakistan',
+                    city: 'Lahore',
+                    education: 'Matriculation / Self-Study Preparation',
+                    skills: 'Python, Basic Web Development, Customer Communication, Model Training'
                 },
                 submitIntake() {
-                    alert('Intake data saved successfully! Computing APEX Radar vectors...');
                     this.currentStep = 'radar';
                 }
             }
