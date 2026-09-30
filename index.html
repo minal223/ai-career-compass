@@ -2,13 +2,12 @@ import streamlit as st
 import json
 
 # Page Configuration
-st.set_page_config(page_title="AI Career Compass & Education Suite", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="AI Career & Education Suite", layout="wide", initial_sidebar_state="expanded")
 
 # Custom Styling
 st.markdown("""
 <style>
     .stApp { background-color: #0d1117; color: #e6edf3; }
-    .css-1d38152 { background-color: #161b22; }
     .card-box { background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px; margin-bottom: 15px; }
     .highlight-text { color: #2ea44f; font-weight: bold; }
 </style>
@@ -289,14 +288,13 @@ elif section == "8: Job Hunter & Vacancy Matcher":
     }
     
     for j in jobs.get(ind_choice, []):
-        with st.container():
-            st.markdown(f"""
-            <div class="card-box">
-                <h3 style="margin:0; color:#2ea44f;">{j['title']}</h3>
-                <p><strong>Company:</strong> {j['company']} | <strong>Type:</strong> {j['type']}</p>
-                <p><strong>Required Skills:</strong> {j['skills']} | <strong>Openings:</strong> {j['vacancies']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="card-box">
+            <h3 style="margin:0; color:#2ea44f;">{j['title']}</h3>
+            <p><strong>Company:</strong> {j['company']} | <strong>Type:</strong> {j['type']}</p>
+            <p><strong>Required Skills:</strong> {j['skills']} | <strong>Openings:</strong> {j['vacancies']}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 # 9: STRUCTURED PROFESSIONAL CV STUDIO
@@ -339,7 +337,7 @@ elif section == "9: Professional CV Studio":
         """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 10: YOUTUBE DEEP NOTES & EXPLANATORY Q&A
+# 10: YOUTUBE DEEP NOTES & Q&A
 # -----------------------------------------------------------------------------
 elif section == "10: YouTube Deep Notes & Q&A":
     st.title("📺 YouTube Deep Explanatory Notes & Q&A Generator")
