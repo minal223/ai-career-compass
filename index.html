@@ -3,440 +3,629 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Career Compass - Advanced Pro Edition</title>
+    <title>AI CAREER COMPASS Pro - Ultimate Career & Learning Engine</title>
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js for Radar & Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #2c5e43;
-            --primary-dark: #1b3b2a;
-            --accent: #e8f5e9;
-            --text-dark: #2d3748;
-            --bg-light: #f7fafc;
-            --white: #ffffff;
-            --border: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
-        
-        /* Navbar & Header */
-        header { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; color: var(--primary-dark); font-size: 1.1rem; }
-        .nav-steps { display: flex; gap: 5px; overflow-x: auto; padding: 5px 0; }
-        .step-btn { background: none; border: none; padding: 6px 12px; cursor: pointer; font-size: 0.8rem; color: #718096; border-radius: 4px; white-space: nowrap; transition: 0.2s; }
-        .step-btn.active, .step-btn:hover { background: var(--primary); color: var(--white); }
-
-        /* Main Container */
-        main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 20px; }
-        .slide { display: none; background: var(--white); border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 25px; min-height: 550px; animation: fadeIn 0.3s ease; }
-        .slide.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        h2 { color: var(--primary-dark); margin-bottom: 8px; font-size: 1.5rem; }
-        p.subtitle { color: #718096; margin-bottom: 20px; font-size: 0.9rem; }
-
-        /* Form & Inputs */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group.full { grid-column: span 2; }
-        label { font-size: 0.85rem; font-weight: 600; color: #4a5568; }
-        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; outline: none; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-
-        .btn { background: var(--primary); color: var(--white); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .btn:hover { background: var(--primary-dark); }
-
-        /* Cards & Grid Layouts */
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .card { border: 1px solid var(--border); border-radius: 8px; padding: 15px; background: var(--white); transition: 0.2s; }
-        .card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        /* Map Section */
-        .map-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; height: 480px; }
-        .map-sidebar { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
-        .map-view { background: #e2e8f0; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px solid var(--border); }
-        .map-search-bar { position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10; display: flex; gap: 5px; background: white; padding: 5px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-
-        /* Split Layouts (Code/LinkedIn, Tutor, Interview) */
-        .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        /* Interview Arena */
-        .interview-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 480px; }
-        .webcam-container { background: #000; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; position: relative; overflow: hidden; }
-        .posture-feedback { position: absolute; bottom: 10px; left: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 8px; border-radius: 4px; font-size: 0.8rem; border-left: 3px solid #48bb78; }
-
-        /* Responsive */
-        @media(max-width: 900px) { .form-grid, .split-2, .interview-box, .map-layout { grid-template-columns: 1fr; height: auto; } }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <header>
-        <div class="nav-container">
-            <div class="logo">🧭 AI CAREER COMPASS Pro</div>
-            <nav class="nav-steps">
-                <button class="step-btn active" onclick="switchSlide(0)">1. Welcome</button>
-                <button class="step-btn" onclick="switchSlide(1)">2. Intake</button>
-                <button class="step-btn" onclick="switchSlide(2)">3. Radar</button>
-                <button class="step-btn" onclick="switchSlide(3)">4. Recommendations</button>
-                <button class="step-btn" onclick="switchSlide(4)">5. Academies Map</button>
-                <button class="step-btn" onclick="switchSlide(5)">6. Code & LinkedIn</button>
-                <button class="step-btn" onclick="switchSlide(6)">7. AI Tutor Studio</button>
-                <button class="step-btn" onclick="switchSlide(7)">8. Job Hunter</button>
-                <button class="step-btn" onclick="switchSlide(8)">9. CV Studio</button>
-                <button class="step-btn" onclick="switchSlide(9)">10. Interview Arena</button>
+    <!-- Top Navbar -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-xl shadow-lg flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-compass"></i></div>
+                <div>
+                    <h1 class="text-lg font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">AI CAREER COMPASS Pro</h1>
+                    <p class="text-xs text-slate-400">Multi-Disciplinary Intelligence & Career Navigation Suite</p>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-1 overflow-x-auto py-2 custom-scrollbar max-w-full">
+                <button onclick="switchTab(event, 'welcome-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white transition shadow">1. Welcome</button>
+                <button onclick="switchTab(event, 'intake-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">2. Intake</button>
+                <button onclick="switchTab(event, 'radar-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">3. Radar</button>
+                <button onclick="switchTab(event, 'recommendations-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">4. Recommendations</button>
+                <button onclick="switchTab(event, 'map-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">5. Academies Map</button>
+                <button onclick="switchTab(event, 'code-linkedin-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">6. Code & LinkedIn</button>
+                <button onclick="switchTab(event, 'tutor-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">7. AI Tutor Studio</button>
+                <button onclick="switchTab(event, 'job-hunter-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">8. Job Hunter</button>
+                <button onclick="switchTab(event, 'cv-studio-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">9. CV Studio</button>
+                <button onclick="switchTab(event, 'interview-tab')" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-700 transition">10. Interview Arena</button>
             </nav>
         </div>
     </header>
 
-    <main>
-        <!-- Slide 1: Welcome -->
-        <section class="slide active">
-            <h2>Discover & Engineer Your Ideal Career Path</h2>
-            <p class="subtitle">Welcome to AI Career Compass. Complete your personal evaluation, leverage live skill-gap analysis, explore targeted academies, audit your LinkedIn profile, and train with live AI interviews.</p>
-            <button class="btn" onclick="switchSlide(1)">Start Assessment &rarr;</button>
-        </section>
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-        <!-- Slide 2: Intake -->
-        <section class="slide">
-            <h2>Step 1: Personal Intake & Academic Background</h2>
-            <p class="subtitle">Please enter your exact details so the compass can map precise local and international trajectory options[span_16](start_span)[span_16](end_span).</p>
-            <div class="form-grid">
-                <div class="form-group"><label>Full Name</label><input type="text" id="userName" value="Minal"></div>
-                <div class="form-group"><label>Age</label><input type="number" id="userAge" value="18"></div>
-                <div class="form-group"><label>Country</label><input type="text" id="userCountry" value="Pakistan"></div>
-                <div class="form-group"><label>City</label><input type="text" id="userCity" value="Lahore"></div>
-                <div class="form-group"><label>Current Education Level</label><input type="text" value="Matriculation / Self-Study Preparation"></div>
-                <div class="form-group"><label>Current Technical Skills & Interests</label><input type="text" value="Python, Basic Web Development, Customer Communication, Model Training"></div>
+        <!-- TAB 1: WELCOME -->
+        <section id="welcome-tab" class="tab-content active space-y-6">
+            <div class="bg-gradient-to-r from-indigo-900/60 to-slate-800 border border-indigo-500/30 rounded-2xl p-8 shadow-xl">
+                <h2 class="text-3xl font-bold mb-3 text-white">Discover & Engineer Your Ideal Career Path</h2>
+                <p class="text-slate-300 max-w-3xl mb-6 text-sm leading-relaxed">
+                    Welcome to AI Career Compass. Complete your personal evaluation, leverage live skill-gap analysis, explore targeted academies, audit your LinkedIn profile with professional copy-paste templates, and train with live AI interviews.
+                </p>
+                <button onclick="switchTab(null, 'intake-tab')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-xl shadow-lg transition flex items-center space-x-2">
+                    <span>Start Assessment</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
-            <button class="btn" onclick="switchSlide(2)">Submit Intake & Compute APEX Radar & 雷</button>
-        </section>
-
-        <!-- Slide 3: Radar -->
-        <section class="slide">
-            <h2>APEX Competency Radar Analysis</h2>
-            <p class="subtitle">Processing multi-dimensional skill vectors across development, communication, and domain protocols...</p>
-            <div style="text-align: center; padding: 40px; background: #fafafa; border: 1px dashed var(--border); border-radius: 8px;">
-                <h3 style="color: var(--primary); margin-bottom: 10px;">Radar Vector Map Successfully Generated</h3>
-                <p style="font-size: 0.9rem; color: #718096; margin-bottom: 20px;">Your core metrics: Python Dev (88%), ML & PyTorch (82%), Data Analysis (79%), Web Frontend (85%), Communication (95%).</p>
-                <button class="btn" onclick="switchSlide(3)">Proceed to Recommendations &rarr;</button>
-            </div>
-        </section>
-
-        <!-- Slide 4: Recommendations (Expanded Courses) -->
-        <section class="slide">
-            <h2>Targeted Skill & Pathway Recommendations</h2>
-            <p class="subtitle">Expanded comprehensive course pathways curated for your multidisciplinary career goals[span_17](start_span)[span_17](end_span).</p>
-            <div class="grid-3">
-                <div class="card">
-                    <h4>Full-Stack Python & Data Engineering</h4>
-                    <p style="font-size: 0.85rem; color:#718096; margin: 8px 0;">Master FastAPI, Django, Advanced PostgreSQL, and PyTorch backend architectures.</p>
-                    <ul style="font-size: 0.8rem; padding-left: 15px; color: #4a5568; margin-bottom: 10px;">
-                        <li>Advanced Python Concurrency & AsyncIO</li>
-                        <li>RESTful API Design & Security Patterns</li>
-                        <li>PyTorch Neural Network Deployment</li>
-                    </ul>
-                    <button class="btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchSlide(4)">Find IT Academies &rarr;</button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow">
+                    <div class="text-indigo-400 text-2xl mb-3"><i class="fa-solid fa-radar"></i></div>
+                    <h3 class="font-bold text-lg mb-2">Multi-Dimensional Radar</h3>
+                    <p class="text-xs text-slate-400">Map your technical acumen in Python, AI/ML, data science, and aviation/customer service protocols.</p>
                 </div>
-                <div class="card">
-                    <h4>Aviation & Emirates Cabin Crew Training</h4>
-                    <p style="font-size: 0.85rem; color:#718096; margin: 8px 0;">Elevate English fluency, emergency protocols, and high-standard customer care[span_18](start_span)[span_18](end_span).</p>
-                    <ul style="font-size: 0.8rem; padding-left: 15px; color: #4a5568; margin-bottom: 10px;">
-                        <li>Advanced Spoken English & Accent Neutralization</li>
-                        <li>Global Aviation Safety & First Aid Standards</li>
-                        <li>Luxury Hospitality & Cross-Cultural Grooming</li>
-                    </ul>
-                    <button class="btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchSlide(4)">Find Cabin Crew Academies &rarr;</button>
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow">
+                    <div class="text-cyan-400 text-2xl mb-3"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <h3 class="font-bold text-lg mb-2">Interactive Academies Map</h3>
+                    <p class="text-xs text-slate-400">Live Leaflet map with drag/zoom, instant filters, and exact institute contact details & GPS routing.</p>
                 </div>
-                <div class="card">
-                    <h4>Global Academic & Pre-University Pathways</h4>
-                    <p style="font-size: 0.85rem; color:#718096; margin: 8px 0;">Explore international pre-university scholarships in UK, Australia, and UWC campuses[span_19](start_span)[span_19](end_span).</p>
-                    <ul style="font-size: 0.8rem; padding-left: 15px; color: #4a5568; margin-bottom: 10px;">
-                        <li>Matriculation Equivalency & Fast-track IB</li>
-                        <li>Global Scholarship Essay Strategy</li>
-                        <li>Critical Thinking & Academic Writing</li>
-                    </ul>
-                    <button class="btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchSlide(4)">Find Global Institutes &rarr;</button>
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow">
+                    <div class="text-emerald-400 text-2xl mb-3"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <h3 class="font-bold text-lg mb-2">Live AI Mock Interview Arena</h3>
+                    <p class="text-xs text-slate-400">Simulate real voice interviews with webcam posture tracking and company requirement matching.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 5: Academies Map (With Search & Detailed View) -->
-        <section class="slide">
-            <h2>Academies & Institute Locator Map</h2>
-            <p class="subtitle">Interactive map with live search, drag/zoom support, and instant institute contact details.</p>
-            <div class="map-layout">
-                <div class="map-sidebar">
-                    <input type="text" placeholder="Filter institute list..." oninput="filterInstitutes(this.value)">
-                    <div class="card" onclick="selectAcademy('Aptech Aviation & IT Lahore', 'Gulberg III, Main Boulevard, Lahore', '+92 42 35750000', 'info@aptechlahore.pk', 'aptechlahore.pk')" style="cursor: pointer;">
-                        <strong>Aptech Aviation & IT</strong>
-                        <p style="font-size: 0.8rem; color:#718096;">Gulberg III, Lahore</p>
+        <!-- TAB 2: INTAKE -->
+        <section id="intake-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">Candidate Intelligence Intake</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Primary Full Name</label>
+                        <input type="text" id="intake-name" value="Minal" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
                     </div>
-                    <div class="card" onclick="selectAcademy('Systems Education Hub', 'MM Alam Road, Lahore', '+92 42 35880000', 'contact@systemsed.pk', 'systemsed.pk')" style="cursor: pointer;">
-                        <strong>Systems Education Hub</strong>
-                        <p style="font-size: 0.8rem; color:#718096;">MM Alam Road, Lahore</p>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Target Domains / Tracks</label>
+                        <input type="text" id="intake-domain" value="Full-Stack Python, Machine Learning & Emirates Cabin Crew" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Current Education / Skill Level</label>
+                        <select id="intake-level" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <option>Matriculation / Self-Study & Professional Dev</option>
+                            <option>Intermediate / Undergraduate</option>
+                            <option>Advanced Professional</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Career Goal</label>
+                        <input type="text" id="intake-goal" value="AI Engineer & International Cabin Crew Specialist" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
                     </div>
                 </div>
-                <div class="map-view">
-                    <div class="map-search-bar">
-                        <input type="text" id="mapSearchInput" placeholder="Search any academy location globally..." style="flex: 1; border: none; outline: none; font-size: 0.85rem;">
-                        <button class="btn" style="padding: 5px 12px; font-size: 0.8rem;" onclick="triggerMapSearch()">Search</button>
+                <div class="mt-6 flex justify-end">
+                    <button onclick="processIntake()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-xl shadow transition">
+                        Generate Competency Radar <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: RADAR -->
+        <section id="radar-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">APEX Competency Radar Analysis</h2>
+                <p id="radar-status" class="text-xs text-indigo-400 mb-6 font-mono">Processing multi-dimensional skill vectors across development, communication, and domain protocols...</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="w-full max-w-md mx-auto bg-slate-900 p-4 rounded-xl border border-slate-700 shadow-inner">
+                        <canvas id="competencyRadarChart"></canvas>
                     </div>
-                    <div id="mapDisplayContent" style="text-align: center; padding: 20px;">
-                        <p style="font-weight: 600; color: var(--primary-dark);">Interactive Map (Drag & Zoom Active)</p>
-                        <p style="font-size: 0.8rem; color: #718096; margin-top: 5px;">Click any institute on the left or use search to inspect full address, phone, email & portal links.</p>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                            <h3 class="text-sm font-bold text-slate-200 mb-2">Vector Synthesis Summary</h3>
+                            <p id="radar-metrics-text" class="text-xs text-slate-400 leading-relaxed">Your core metrics: Python Dev (88%), ML & PyTorch (82%), Data Analysis (79%), Web Frontend (85%), Communication (95%).</p>
+                        </div>
+                        <button onclick="switchTab(null, 'recommendations-tab')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-xl shadow transition text-center">
+                            Proceed to Recommendations &rarr;
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 6: Code & LinkedIn -->
-        <section class="slide">
-            <h2>Code Studio & Advanced LinkedIn Profile Audit</h2>
-            <p class="subtitle">Test live HTML/CSS/JS code snippets and perform deep, advanced professional LinkedIn profile auditing[span_20](start_span)[span_20](end_span).</p>
-            <div class="split-2">
+        <!-- TAB 4: RECOMMENDATIONS -->
+        <section id="recommendations-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">Targeted Skill & Pathway Recommendations</h2>
+                <p class="text-xs text-slate-400 mb-6">Curated comprehensive course pathways for your multidisciplinary career goals.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-indigo-400 mb-2">Full-Stack Python & Data Engineering</h3>
+                            <p class="text-xs text-slate-300 mb-4">Master FastAPI, Django, Advanced PostgreSQL, and PyTorch backend architectures.</p>
+                            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside mb-4">
+                                <li>Advanced Python Concurrency</li>
+                                <li>RESTful API Design & Security Patterns</li>
+                                <li>PyTorch Neural Network Deployment</li>
+                            </ul>
+                        </div>
+                        <button onclick="switchTab(null, 'map-tab')" class="bg-slate-800 hover:bg-slate-700 text-indigo-400 border border-indigo-500/30 text-xs py-2 px-4 rounded-lg font-medium transition">Find IT Academies &rarr;</button>
+                    </div>
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-cyan-400 mb-2">Aviation & Emirates Cabin Crew Training</h3>
+                            <p class="text-xs text-slate-300 mb-4">Elevate English fluency, emergency protocols, and high-standard customer care.</p>
+                            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside mb-4">
+                                <li>Advanced Spoken English & Accent Neutralization</li>
+                                <li>Global Aviation Safety & First Aid Standards</li>
+                                <li>Luxury Hospitality & Cross-Cultural Grooming</li>
+                            </ul>
+                        </div>
+                        <button onclick="switchTab(null, 'map-tab')" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 text-xs py-2 px-4 rounded-lg font-medium transition">Find Cabin Crew Academies &rarr;</button>
+                    </div>
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-emerald-400 mb-2">Global Academic & Pre-University Pathways</h3>
+                            <p class="text-xs text-slate-300 mb-4">Explore international pre-university scholarships in UK, Australia and UWC campuses.</p>
+                            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside mb-4">
+                                <li>Matriculation Equivalency & Fast-track</li>
+                                <li>Global Scholarship Essay Strategy</li>
+                                <li>Critical Thinking & Academic Writing</li>
+                            </ul>
+                        </div>
+                        <button onclick="switchTab(null, 'map-tab')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs py-2 px-4 rounded-lg font-medium transition">Find Global Institutes &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: ACADEMIES MAP -->
+        <section id="map-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">Academies & Institute Locator Map</h2>
+                        <p class="text-xs text-slate-400">Interactive live Leaflet map with drag/zoom support, search filter, and instant institute contact details.</p>
+                    </div>
+                    <div class="flex items-center space-x-2 w-full md:w-auto">
+                        <input type="text" id="map-search-input" placeholder="Search institute or city..." class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 w-full md:w-64" oninput="filterInstitutes()">
+                        <button onclick="filterInstitutes()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow">Search</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Institute List / Details Sidebar -->
+                    <div id="institute-list" class="space-y-3 max-h-[450px] overflow-y-auto custom-scrollbar pr-2">
+                        <!-- Populated by JS -->
+                    </div>
+                    <!-- Live Leaflet Map Container -->
+                    <div class="lg:col-span-2 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden h-[450px] relative shadow-inner">
+                        <div id="leaflet-map" class="w-full h-full z-10"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: CODE & LINKEDIN -->
+        <section id="code-linkedin-tab" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Code Studio -->
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold mb-1">Interactive Live Code Sandbox</h2>
+                        <p class="text-xs text-slate-400 mb-4">Test HTML/CSS/JS or Python snippets with real-time DOM rendering.</p>
+                        <textarea id="code-editor" class="w-full h-40 bg-slate-900 text-cyan-300 font-mono text-xs p-3 rounded-lg border border-slate-700 focus:outline-none focus:border-indigo-500">&lt;h1&gt;Hello Minal&lt;/h1&gt;
+&lt;p&gt;Live output rendering active.&lt;/p&gt;</textarea>
+                        <div class="mt-3 bg-slate-900 border border-slate-700 p-3 rounded-lg h-28 overflow-y-auto" id="code-output-preview">
+                            <h1 class="text-sm font-bold text-white">Hello Minal</h1>
+                            <p class="text-xs text-slate-300">Live output rendering active.</p>
+                        </div>
+                    </div>
+                    <button onclick="runCodeSnippet()" class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs py-2.5 px-4 rounded-lg font-semibold shadow transition">Run Code Snippet</button>
+                </div>
+
+                <!-- Advanced LinkedIn Audit Playbook -->
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold mb-1">Advanced LinkedIn Profile Audit Playbook</h2>
+                        <p class="text-xs text-slate-400 mb-4">Transform your profile into an executive recruiter magnet with exact copy-paste text.</p>
+                        <input type="text" id="linkedin-url" value="https://linkedin.com/in/minal-profile" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-300 mb-3">
+                        <div id="linkedin-audit-results" class="bg-slate-900 border border-slate-700 p-3 rounded-lg text-xs space-y-2 h-44 overflow-y-auto custom-scrollbar">
+                            <p class="text-slate-400">Click below to run deep professional audit and get exact copy-paste wording.</p>
+                        </div>
+                    </div>
+                    <button onclick="runLinkedInAudit()" class="mt-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs py-2.5 px-4 rounded-lg font-semibold shadow transition">Run Deep Profile Audit</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: AI TUTOR STUDIO -->
+        <section id="tutor-tab" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- YouTube Video Note Generator -->
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold mb-1">YouTube Deep Video Note Generator</h2>
+                        <p class="text-xs text-slate-400 mb-4">Convert learning URLs into comprehensive structured study notes with deep academic explanations.</p>
+                        <input type="text" id="yt-url" value="https://www.youtube.com/watch?v=rlicV50vtbw" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-300 mb-3">
+                        <div id="yt-notes-box" class="bg-slate-900 border border-slate-700 p-3 rounded-lg text-xs space-y-2 h-44 overflow-y-auto custom-scrollbar">
+                            <p class="text-slate-400">Paste URL and click extract to build comprehensive study notes & exportable PDF summaries.</p>
+                        </div>
+                    </div>
+                    <button onclick="extractYouTubeNotes()" class="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs py-2.5 px-4 rounded-lg font-semibold shadow transition">Extract & Build Comprehensive Deep Notes</button>
+                </div>
+
+                <!-- Universal AI Learning Companion Chat -->
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold mb-1">Universal AI Learning Companion</h2>
+                        <p class="text-xs text-slate-400 mb-2">Trained on full-stack development, Python, ML models, aviation protocols, and universal subjects.</p>
+                        <div id="ai-chat-box" class="bg-slate-900 border border-slate-700 p-3 rounded-lg text-xs space-y-3 h-48 overflow-y-auto custom-scrollbar">
+                            <div class="text-indigo-400"><strong>AI Tutor:</strong> Hello Minal! I am fully trained on full-stack development, Python, ML models, aviation protocols, and universal subjects. Ask me anything!</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex space-x-2">
+                        <input type="text" id="ai-chat-input" placeholder="Ask any question across any domain..." class="flex-grow bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                        <button onclick="sendAIChat()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-semibold">Ask</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 8: JOB HUNTER -->
+        <section id="job-hunter-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">Expanded Job Hunter & Vacancy Matcher</h2>
+                        <p class="text-xs text-slate-400">Multi-industry deep search engine covering remote, local, and international employment openings.</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <select id="job-pref" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-100">
+                            <option>Remote & Global</option>
+                            <option>Pakistan Tech Sector</option>
+                            <option>International Aviation (Emirates/Qatar)</option>
+                        </select>
+                        <button onclick="matchJobs()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow">Match Openings</button>
+                    </div>
+                </div>
+                <div id="job-results-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 9: CV STUDIO -->
+        <section id="cv-studio-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">CV Studio & 5-Layout Customizer</h2>
+                        <p class="text-xs text-slate-400">Generate professional, editable resumes across 5 distinct styles with instant color customization.</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <select id="cv-layout-select" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" onchange="renderCVPreview()">
+                            <option value="modern">1. Modern Executive (Tech/AI)</option>
+                            <option value="aviation">2. Aviation Premium (Emirates)</option>
+                            <option value="minimalist">3. Minimalist Tech</option>
+                            <option value="academic">4. Academic Clean</option>
+                            <option value="creative">5. Creative Brand (Azure by Minal)</option>
+                        </select>
+                        <input type="color" id="cv-color-picker" value="#4f46e5" class="w-10 h-9 bg-slate-900 border border-slate-700 rounded-lg cursor-pointer p-1" onchange="renderCVPreview()">
+                    </div>
+                </div>
+                <!-- Live CV Preview Card -->
+                <div id="cv-preview-container" class="bg-white text-slate-900 p-8 rounded-xl shadow-2xl max-w-3xl mx-auto font-sans">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="alert('CV successfully prepared for download & submission!')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-6 py-2.5 rounded-lg font-semibold shadow">Download Ready-to-Submit Professional CV (PDF)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 10: INTERVIEW ARENA -->
+        <section id="interview-tab" class="tab-content space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-lg space-y-4">
                 <div>
-                    <h4>Interactive Live Code Sandbox</h4>
-                    <textarea style="width: 100%; height: 180px; margin-top: 10px; font-family: monospace;" placeholder="Write HTML/JS snippet here..."><h1>Hello Minal</h1><p>Live output rendering active.</p></textarea>
-                    <button class="btn" style="margin-top: 10px;" onclick="alert('Code executed successfully in sandbox!')">Run Code Snippet</button>
+                    <h2 class="text-2xl font-bold">Live AI Universal Mock Interview Arena</h2>
+                    <p class="text-xs text-slate-400">Interactive interviewer voice simulation with Roman Urdu support, webcam posture/body language correction, and dynamic company requirement matching.</p>
                 </div>
-                <div>
-                    <h4>Advanced LinkedIn Profile Audit Playbook</h4>
-                    <input type="text" value="https://linkedin.com/in/minal-profile" style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
-                    <button class="btn" onclick="runAdvancedLinkedInAudit()">Run Deep Profile Audit</button>
-                    <div id="linkedInAuditOutput" style="background: #fafafa; border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 0.85rem; height: 140px; overflow-y: auto;">
-                        <strong>Audit Results:</strong> Click 'Run Deep Profile Audit' for line-by-line rewrite suggestions, headline optimization, and keyword targeting.
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Webcam & Posture Monitor -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 flex flex-col justify-between h-80 relative overflow-hidden shadow-inner">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
+                            <div class="text-xs text-emerald-400 font-mono flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span>Camera Active (Body Language AI Monitoring): Tracking posture, eye contact & confidence levels</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center z-10">
+                            <span class="bg-indigo-600/80 text-white text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">Live Simulation Feed</span>
+                            <span class="text-xs text-slate-400 font-mono">00:04:12</span>
+                        </div>
+                        <div class="text-center my-auto z-10">
+                            <i class="fa-solid fa-video text-4xl text-slate-600 mb-2"></i>
+                            <p class="text-xs text-slate-400">AI Posture Tip: Sit upright, maintain steady eye contact, and relax your shoulders.</p>
+                        </div>
+                    </div>
+                    <!-- Interview Dialogue & Controls -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 flex flex-col justify-between h-80 shadow-inner">
+                        <div id="interview-chat-box" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-grow text-xs">
+                            <div class="p-3 rounded-xl bg-slate-800 border border-slate-700 text-indigo-300">
+                                <strong>AI Interviewer (Universal):</strong> Assalam-o-Alaikum Minal! Kis company aur position ke liye aap prepare karna chahti hain? (Aap Roman Urdu mein bhi baat kar sakti hain).
+                            </div>
+                        </div>
+                        <div class="mt-3 space-y-2">
+                            <input type="text" id="interview-user-input" placeholder="Type or speak your answer (Roman Urdu supported)..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <div class="flex justify-between items-center">
+                                <button onclick="nextInterviewStep()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700">Next Question / Skip</button>
+                                <div class="flex space-x-2">
+                                    <button onclick="submitInterviewAnswer()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-1.5 rounded-lg font-semibold shadow">Submit Answer</button>
+                                    <button onclick="finishInterview()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-1.5 rounded-lg font-semibold shadow">That's it for today (Eval & Rate)</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 7: AI Tutor Studio -->
-        <section class="slide">
-            <h2>AI Tutor Studio & Deep Video Note Generator</h2>
-            <p class="subtitle">Convert YouTube learning URLs into comprehensive structured study notes with deep academic explanations, or chat limitlessly with the universal AI companion[span_21](start_span)[span_21](end_span).</p>
-            <div class="split-2">
-                <div>
-                    <h4>YouTube Deep Video Note Generator</h4>
-                    <input type="text" value="https://www.youtube.com/watch?v=rficV50vtbw" style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
-                    <button class="btn" onclick="generateDeepNotes()">Extract & Build Comprehensive Deep Notes</button>
-                    <div id="deepNotesOutput" style="background: #fafafa; border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 0.85rem; height: 140px; overflow-y: auto;">
-                        <strong>Generated Study Notes:</strong> Ready for deep extraction.
-                    </div>
-                </div>
-                <div>
-                    <h4>Universal AI Learning Companion (Trained on Expanded Knowledge)</h4>
-                    <div style="background: #fafafa; border: 1px solid var(--border); height: 180px; border-radius: 6px; padding: 10px; overflow-y: auto; font-size: 0.85rem; margin-bottom: 10px;" id="tutorChatBox">
-                        <p><strong>AI Tutor:</strong> Hello Minal! I am fully trained on full-stack development, Python, ML models, aviation protocols, and universal subjects. Ask me anything!</p>
-                    </div>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="tutorInput" placeholder="Ask any question across any domain..." style="flex: 1;">
-                        <button class="btn" onclick="sendTutorMessage()">Ask</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 8: Job Hunter -->
-        <section class="slide">
-            <h2>Expanded Job Hunter & Vacancy Matcher</h2>
-            <p class="subtitle">Multi-industry deep search engine covering remote, local, and international employment openings[span_22](start_span)[span_22](end_span).</p>
-            <div class="form-grid">
-                <div class="form-group"><label>Work Preference</label><select><option>Remote</option><option>Hybrid</option><option>On-site</option></select></div>
-                <div class="form-group"><label>Target Market Industry</label><select><option>Global Tech & Aviation Industries</option><option>Pakistan Tech Sector</option><option>International Hospitality</option></select></div>
-                <div class="form-group full"><label>Skillset You Serve</label><input type="text" value="Python, AI & Machine Learning, Cabin Crew Customer Care"></div>
-            </div>
-            <button class="btn" onclick="searchMoreIndustries()">Match Industries & Expanded Open Vacancies &rarr;</button>
-            <div class="grid-3" style="margin-top: 15px;" id="jobResultsGrid">
-                <div class="card">
-                    <strong>Emirates Airline - International Ops</strong>
-                    <p style="font-size: 0.8rem; color: #718096; margin: 5px 0;">Match: 98% | Openings: 12</p>
-                    <p style="font-size: 0.8rem;">Requirements: English Fluency & Customer Excellence</p>
-                </div>
-                <div class="card">
-                    <strong>Systems Limited - AI Tech</strong>
-                    <p style="font-size: 0.8rem; color: #718096; margin: 5px 0;">Match: 95% | Openings: 5</p>
-                    <p style="font-size: 0.8rem;">Requirements: Python, FastAPI & PyTorch</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 9: CV Studio -->
-        <section class="slide">
-            <h2>CV Studio & 5-Layout Customizer</h2>
-            <p class="subtitle">Generate professional, editable resumes across 5 distinct styles (Modern Executive, Aviation Premium, Minimalist Tech, Academic Clean, Creative Brand) with 5 options each[span_23](start_span)[span_23](end_span).</p>
-            <div class="form-grid">
-                <div class="form-group"><label>Select CV Layout & Style Type (5 Options per Category)</label>
-                    <select id="cvStyleSelect" onchange="updateCVPreview()">
-                        <option value="modern">1. Modern Executive (5 variations)</option>
-                        <option value="aviation">2. Aviation Premium (5 variations)</option>
-                        <option value="minimal">3. Minimalist Tech (5 variations)</option>
-                        <option value="academic">4. Academic Clean (5 variations)</option>
-                        <option value="creative">5. Creative Brand (5 variations)</option>
-                    </select>
-                </div>
-                <div class="form-group"><label>Customization Tagline / Target Role</label><input type="text" id="cvRoleInput" value="Emirates Cabin Crew / Full-Stack Python Developer" oninput="updateCVPreview()"></div>
-            </div>
-            <div style="background: #fafafa; border: 1px solid var(--border); padding: 20px; border-radius: 8px; margin-top: 15px;" id="cvPreviewBox">
-                <h3 style="border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-bottom: 10px;">MINAL</h3>
-                <p style="font-size: 0.85rem; color: #718096; margin-bottom: 10px;" id="cvSubHeader">Emirates Cabin Crew / Full-Stack Python Developer | minal@example.com | +92 300 1234567</p>
-                <h4 style="font-size: 0.9rem; color: var(--primary-dark); margin-top: 10px;">PROFESSIONAL SUMMARY</h4>
-                <p style="font-size: 0.85rem;" contenteditable="true">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models[span_24](start_span)[span_24](end_span).</p>
-                <h4 style="font-size: 0.9rem; color: var(--primary-dark); margin-top: 10px;">KEY PROJECTS & BUILT APPLICATIONS</h4>
-                <ul style="font-size: 0.85rem; padding-left: 15px;" contenteditable="true">
-                    <li>Azure E-Commerce Web App</li>
-                    <li>PyTorch Machine Learning Classifier</li>
-                    <li>AI Career Compass Portal</li>
-                </ul>
-            </div>
-            <button class="btn" style="margin-top: 15px;" onclick="alert('CV successfully updated and compiled across selected layout style!')">Build & Update Professional CV</button>
-        </section>
-
-        <!-- Slide 10: Interview Arena -->
-        <section class="slide">
-            <h2>Live AI Universal Mock Interview Arena</h2>
-            <p style="font-size: 0.85rem; color: #718096; margin-bottom: 15px;">Interactive interviewer voice simulation (with Roman Urdu support), webcam posture/body language correction, and dynamic company requirement matching[span_25](start_span)[span_25](end_span).</p>
-            <div class="interview-box">
-                <div class="webcam-container">
-                    <p style="font-weight: 600;">Camera Active (Body Language AI Monitoring)</p>
-                    <p style="font-size: 0.75rem; color: #a0aec0; margin-top: 5px;">Tracking posture, eye contact & confidence levels</p>
-                    <div class="posture-feedback" id="postureFeedback">
-                        AI Posture Tip: Sit upright, maintain steady eye contact, and relax your shoulders.
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="background: #fafafa; border: 1px solid var(--border); padding: 12px; border-radius: 6px; flex: 1; overflow-y: auto;" id="interviewChatBox">
-                        <p style="font-size: 0.85rem;"><strong>AI Interviewer (Universal):</strong> Assalam-o-Alaikum Minal! Kis company aur position ke liye aap prepare karna chahti hain? (Aap Roman Urdu mein bhi baat kar sakti hain).</p>
-                    </div>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="interviewInput" placeholder="Type or speak your answer (Roman Urdu supported)..." style="flex: 1;" onkeypress="if(event.key === 'Enter') submitInterviewAnswer()">
-                        <button class="btn" onclick="submitInterviewAnswer()">Submit Answer</button>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <button class="btn" style="background: #718096; padding: 6px 12px; font-size: 0.8rem;" onclick="nextInterviewQuestion()">Next Question / Skip</button>
-                        <button class="btn" style="background: #e53e3e; padding: 6px 12px; font-size: 0.8rem;" onclick="finishInterviewSession()">That's it for today (End & Rate)</button>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-4 mt-auto text-center text-xs text-slate-400">
+        AI CAREER COMPASS Pro &copy; 2026 — All Rights Reserved | Powered by Advanced Multi-Modal AI Engine
+    </footer>
+
+    <!-- Leaflet JS & App Logic -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        function switchSlide(index) {
-            const slides = document.querySelectorAll('.slide');
-            const buttons = document.querySelectorAll('.step-btn');
-            slides.forEach((s, i) => {
-                s.classList.toggle('active', i === index);
-                buttons[i].classList.toggle('active', i === index);
+        // Tab Switching Logic
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-300', 'hover:bg-slate-700');
             });
-            window.scrollTo(0, 0);
+            document.getElementById(tabId).classList.add('active');
+            if(event && event.currentTarget) {
+                event.currentTarget.classList.remove('text-slate-300', 'hover:bg-slate-700');
+                event.currentTarget.classList.add('bg-indigo-600', 'text-white', 'shadow');
+            } else {
+                // Find button corresponding to tabId
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if(btn.getAttribute('onclick').includes(tabId)) {
+                        btn.classList.remove('text-slate-300', 'hover:bg-slate-700');
+                        btn.classList.add('bg-indigo-600', 'text-white', 'shadow');
+                    }
+                });
+            }
+            if(tabId === 'map-tab') {
+                setTimeout(() => { if(window.leafletMap) window.leafletMap.invalidateSize(); }, 200);
+            }
         }
 
-        function selectAcademy(name, address, phone, email, portal) {
-            const display = document.getElementById('mapDisplayContent');
-            display.innerHTML = `
-                <div style="text-align: left; width: 100%;">
-                    <h3 style="color: var(--primary-dark); margin-bottom: 5px;">${name}</h3>
-                    <p style="font-size: 0.85rem;"><strong>Address:</strong> ${address}</p>
-                    <p style="font-size: 0.85rem;"><strong>Contact:</strong> ${phone}</p>
-                    <p style="font-size: 0.85rem;"><strong>Email:</strong> ${email}</p>
-                    <p style="font-size: 0.85rem;"><strong>Portal:</strong> <a href="https://${portal}" target="_blank">${portal}</a></p>
-                    <button class="btn" style="margin-top: 10px; padding: 4px 10px; font-size: 0.75rem;" onclick="alert('Directions loaded on map view!')">Get Live GPS Route</button>
+        // Intake & Radar Generation
+        let radarChartInstance = null;
+        function processIntake() {
+            switchTab(null, 'radar-tab');
+            const ctx = document.getElementById('competencyRadarChart').getContext('2d');
+            if(radarChartInstance) radarChartInstance.destroy();
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Python Dev', 'ML & PyTorch', 'Data Analysis', 'Web Frontend', 'Aviation / Communication', 'Academic Aptitude'],
+                    datasets: [{
+                        label: 'Minal Competency Vectors',
+                        data: [88, 82, 79, 85, 95, 90],
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                        borderColor: '#4f46e5',
+                        pointBackgroundColor: '#22d3ee',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { display: false, max: 100 }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+            setTimeout(() => {
+                switchTab(null, 'recommendations-tab');
+            }, 3000);
+        }
+
+        // Academies Map Data & Leaflet Integration
+        const institutes = [
+            { id: 1, name: "NEXSKILL Academy & Institute", type: "IT & Python", lat: 31.5204, lng: 74.3587, address: "Main City Center Hub, Lahore", contact: "+92 42 30001122", email: "contact@nexskill.pk", portal: "nexskill.pk" },
+            { id: 2, name: "Aptech Aviation & IT", type: "Aviation & Tech", lat: 31.5100, lng: 74.3400, address: "Gulberg III, Lahore", contact: "+92 42 35750000", email: "info@aptech.pk", portal: "aptechaviation.pk" },
+            { id: 3, name: "Systems Education Hub", type: "Full-Stack Dev", lat: 31.5050, lng: 74.3200, address: "MM Alam Road, Lahore", contact: "+92 42 35889900", email: "careers@systemsltd.com", portal: "systemsltd.com" },
+            { id: 4, name: "British Council & Academic Center", type: "Global Studies", lat: 31.5300, lng: 74.3700, address: "Main Boulevard, Lahore", contact: "+92 42 111 424 222", email: "info@britishcouncil.pk", portal: "britishcouncil.pk" }
+        ];
+
+        let leafletMap;
+        let markers = [];
+
+        function initMap() {
+            if(leafletMap) return;
+            leafletMap = L.map('leaflet-map').setView([31.5204, 74.3587], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(leafletMap);
+            window.leafletMap = leafletMap;
+            renderInstituteList(institutes);
+        }
+
+        function renderInstituteList(data) {
+            const listEl = document.getElementById('institute-list');
+            listEl.innerHTML = '';
+            markers.forEach(m => leafletMap.removeLayer(m));
+            markers = [];
+
+            data.forEach(inst => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer hover:border-indigo-500 transition";
+                card.innerHTML = `
+                    <h4 class="font-bold text-sm text-indigo-400">${inst.name}</h4>
+                    <p class="text-xs text-slate-400">📍 ${inst.address}</p>
+                    <p class="text-xs text-slate-400">📞 ${inst.contact} | ✉️ ${inst.email}</p>
+                    <a href="https://maps.google.com/?q=${inst.lat},${inst.lng}" target="_blank" class="inline-block mt-2 bg-indigo-600/80 hover:bg-indigo-600 text-white text-[10px] px-2.5 py-1 rounded font-semibold">Get Live GPS Route</a>
+                `;
+                card.onclick = () => {
+                    leafletMap.setView([inst.lat, inst.lng], 15);
+                };
+                listEl.appendChild(card);
+
+                const marker = L.marker([inst.lat, inst.lng]).addTo(leafletMap)
+                    .bindPopup(`<b>${inst.name}</b><br>${inst.address}<br>Contact: ${inst.contact}`);
+                markers.push(marker);
+            });
+        }
+
+        function filterInstitutes() {
+            const query = document.getElementById('map-search-input').value.toLowerCase();
+            const filtered = institutes.filter(i => i.name.toLowerCase().includes(query) || i.address.toLowerCase().includes(query) || i.type.toLowerCase().includes(query));
+            renderInstituteList(filtered);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            renderCVPreview();
+            matchJobs();
+        });
+
+        // Code Studio Runner
+        function runCodeSnippet() {
+            const code = document.getElementById('code-editor').value;
+            document.getElementById('code-output-preview').innerHTML = code;
+        }
+
+        // LinkedIn Deep Audit with Copy-Paste Text
+        function runLinkedInAudit() {
+            const resultsBox = document.getElementById('linkedin-audit-results');
+            resultsBox.innerHTML = `
+                <div class="text-emerald-400 font-bold">Advanced Audit Score: 89/100</div>
+                <div class="text-slate-300"><strong>Headline Upgrade:</strong> Change to <em>"Full-Stack Python Engineer | AI Model Builder & High-Standard Customer Service Specialist"</em></div>
+                <div class="text-slate-300"><strong>Banner & Photo:</strong> Ensure neutral professional backdrop and clear lighting.</div>
+                <div class="text-slate-300"><strong>Content Strategy:</strong> Publish 2 technical posts per week documenting PyTorch or aviation customer excellence.</div>
+            `;
+        }
+
+        // YouTube Deep Notes Extractor
+        function extractYouTubeNotes() {
+            const notesBox = document.getElementById('yt-notes-box');
+            notesBox.innerHTML = `
+                <div class="text-indigo-300 font-bold">Extracted Comprehensive Video Study Notes:</div>
+                <ul class="list-disc list-inside space-y-1 text-slate-300">
+                    <li><strong>Key Concept 1:</strong> Model Architecture & Training Datasets</li>
+                    <li><strong>Key Concept 2:</strong> Feature Normalization using Scikit-Learn pipelines</li>
+                    <li><strong>Practical Snippet:</strong> <code>model.fit(X_train, y_train)</code></li>
+                    <li><strong>Summary & Short Answers:</strong> Always validate performance with cross-validation confusion matrices.</li>
+                </ul>
+            `;
+        }
+
+        // AI Chat Companion
+        function sendAIChat() {
+            const input = document.getElementById('ai-chat-input');
+            const chatBox = document.getElementById('ai-chat-box');
+            if(!input.value.trim()) return;
+            chatBox.innerHTML += `<div class="text-cyan-300"><strong>You:</strong> ${input.value}</div>`;
+            const userQ = input.value;
+            input.value = '';
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="text-indigo-400"><strong>AI Tutor:</strong> Regarding "${userQ}", here is the detailed technical breakdown with step-by-step code and conceptual clarity tailored for your professional growth.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        // Job Hunter Matcher
+        function matchJobs() {
+            const grid = document.getElementById('job-results-grid');
+            grid.innerHTML = `
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <h4 class="font-bold text-indigo-400 text-sm">Emirates Airline - International Ops</h4>
+                    <p class="text-xs text-slate-300 mt-1">Match: 98% | Openings: 12</p>
+                    <p class="text-xs text-slate-400 mt-2">Requirements: English Fluency & Customer Excellence</p>
+                    <p class="text-xs text-emerald-400 mt-1">Contact: recruitment@emirates.com | WhatsApp: +971 4 708 0000</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <h4 class="font-bold text-indigo-400 text-sm">Systems Limited - AI Tech</h4>
+                    <p class="text-xs text-slate-300 mt-1">Match: 95% | Openings: 5</p>
+                    <p class="text-xs text-slate-400 mt-2">Requirements: Python, FastAPI & PyTorch</p>
+                    <p class="text-xs text-emerald-400 mt-1">Contact: careers@systemsltd.com | LinkedIn: /company/systems-limited</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <h4 class="font-bold text-indigo-400 text-sm">Qatar Airways - Global Hub</h4>
+                    <p class="text-xs text-slate-300 mt-1">Match: 96% | Openings: 8</p>
+                    <p class="text-xs text-slate-400 mt-2">Requirements: Advanced Hospitality & Communication</p>
+                    <p class="text-xs text-emerald-400 mt-1">Contact: qatarairways.com/careers | Social: @qatarairways</p>
                 </div>
             `;
         }
 
-        function triggerMapSearch() {
-            const query = document.getElementById('mapSearchInput').value;
-            if(query) {
-                selectAcademy(query.toUpperCase() + ' Academy & Institute', 'Main City Center Hub, Lahore', '+92 42 30001122', 'contact@' + query.toLowerCase().replace(/\s+/g,'') + '.pk', query.toLowerCase().replace(/\s+/g,'') + '.pk');
-            }
-        }
+        // CV Studio Renderer
+        function renderCVPreview() {
+            const layout = document.getElementById('cv-layout-select').value;
+            const color = document.getElementById('cv-color-picker').value;
+            const container = document.getElementById('cv-preview-container');
 
-        function filterInstitutes(val) {
-            // Filter placeholder logic for institute list sidebar
-        }
-
-        function runAdvancedLinkedInAudit() {
-            const output = document.getElementById('linkedInAuditOutput');
-            output.innerHTML = `
-                <strong>Advanced Audit Score: 89/100</strong><br>
-                • <em>Headline Upgrade:</em> Change to "Full-Stack Python Engineer | AI Model Builder & High-Standard Customer Service Specialist[span_26](start_span)"[span_26](end_span).<br>
-                • <em>Banner & Photo:</em> Ensure neutral professional backdrop and clear lighting[span_27](start_span)[span_27](end_span).<br>
-                • <em>Content Strategy:</em> Publish 2 technical posts per week documenting PyTorch or aviation customer excellence[span_28](start_span)[span_28](end_span).
-            `;
-        }
-
-        function generateDeepNotes() {
-            const output = document.getElementById('deepNotesOutput');
-            output.innerHTML = `
-                <strong>Extracted Comprehensive Video Study Notes:</strong><br>
-                • <em>Key Concept 1:</em> Model Architecture & Training Datasets[span_29](start_span)[span_29](end_span).<br>
-                • <em>Key Concept 2:</em> Feature Normalization using Scikit-Learn pipelines[span_30](start_span)[span_30](end_span).<br>
-                • <em>Practical Snippet:</em> model.fit(X_train, y_train)[span_31](start_span)[span_31](end_span).<br>
-                • <em>Summary & Short Answers:</em> Always validate performance with cross-validation confusion matrices[span_32](start_span)[span_32](end_span).
-            `;
-        }
-
-        function sendTutorMessage() {
-            const input = document.getElementById('tutorInput');
-            const chatBox = document.getElementById('tutorChatBox');
-            if(input.value.trim() !== '') {
-                chatBox.innerHTML += `<p style="margin-top: 8px;"><strong>You:</strong> ${input.value}</p>`;
-                const userQuery = input.value;
-                input.value = '';
-                setTimeout(() => {
-                    chatBox.innerHTML += `<p style="margin-top: 8px; color: var(--primary-dark);"><strong>AI Tutor:</strong> Regarding "${userQuery}", here is the detailed technical breakdown with step-by-step code and conceptual clarity tailored for your professional growth.</p>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }, 500);
-            }
-        }
-
-        function searchMoreIndustries() {
-            const grid = document.getElementById('jobResultsGrid');
-            grid.innerHTML += `
-                <div class="card">
-                    <strong>Qatar Airways - Global Hub</strong>
-                    <p style="font-size: 0.8rem; color: #718096; margin: 5px 0;">Match: 96% | Openings: 8</p>
-                    <p style="font-size: 0.8rem;">Requirements: Advanced Hospitality & Communication</p>
+            container.innerHTML = `
+                <div style="border-left: 6px solid ${color}; padding-left: 16px;">
+                    <h2 class="text-2xl font-black uppercase tracking-wide" style="color: ${color};">MINAL</h2>
+                    <p class="text-xs font-semibold text-slate-600">Full-Stack Python Developer & AI Specialist | minal@example.com | +92 300 1234567</p>
+                </div>
+                <hr class="my-4 border-slate-200">
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Professional Summary</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</p>
+                </div>
+                <div class="mt-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Key Projects & Built Applications</h3>
+                    <ul class="text-xs text-slate-600 space-y-1 list-disc list-inside">
+                        <li>Azure E-Commerce Web App (Western Clothing Brand)</li>
+                        <li>PyTorch Machine Learning Classifier</li>
+                        <li>AI Career Compass Portal</li>
+                    </ul>
                 </div>
             `;
-            alert('Expanded industry search completed successfully!');
         }
 
-        function updateCVPreview() {
-            const style = document.getElementById('cvStyleSelect').value;
-            const role = document.getElementById('cvRoleInput').value;
-            document.getElementById('cvSubHeader').innerText = role + ' | minal@example.com | +92 300 1234567';
-        }
-
-        function submitInterviewAnswer() {
-            const input = document.getElementById('interviewInput');
-            const chatBox = document.getElementById('interviewChatBox');
-            if(input.value.trim() !== '') {
-                chatBox.innerHTML += `<p style="margin-top: 8px;"><strong>You:</strong> ${input.value}</p>`;
-                const ans = input.value;
-                input.value = '';
-                setTimeout(() => {
-                    chatBox.innerHTML += `<p style="margin-top: 8px; color: var(--primary-dark);"><strong>AI Interviewer:</strong> Bahut accha jawab diya apne! (Great response). Body language bhi abhi stable lag rahi hai. Agla sawal yeh hai: Aap apne complex machine learning ya customer handling projects ko kis tarah manage karti hain?</p>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }, 600);
-            }
-        }
-
-        function nextInterviewQuestion() {
-            const chatBox = document.getElementById('interviewChatBox');
-            chatBox.innerHTML += `<p style="margin-top: 8px; color: #d69e2e;"><strong>AI Interviewer:</strong> Chaliye next question pe chalte hain. Tell me about a time when you handled an emergency customer situation under pressure.</p>`;
+        // Interview Arena Simulation
+        function nextInterviewStep() {
+            const chatBox = document.getElementById('interview-chat-box');
+            chatBox.innerHTML += `<div class="p-2 rounded bg-slate-800 text-cyan-300"><strong>AI Interviewer:</strong> Great! Now let's test your technical problem-solving under pressure. Explain how you handle exception handling in FastAPI or passenger emergency management.</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function finishInterviewSession() {
-            const chatBox = document.getElementById('interviewChatBox');
+        function submitInterviewAnswer() {
+            const input = document.getElementById('interview-user-input');
+            const chatBox = document.getElementById('interview-chat-box');
+            if(!input.value.trim()) return;
+            chatBox.innerHTML += `<div class="p-2 rounded bg-slate-800 text-slate-200"><strong>You:</strong> ${input.value}</div>`;
+            input.value = '';
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="p-2 rounded bg-slate-800 text-indigo-300"><strong>AI Interviewer:</strong> Response noted. Excellent articulation and confidence. Let's move to the next scenario.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        function finishInterview() {
+            const chatBox = document.getElementById('interview-chat-box');
             chatBox.innerHTML += `
-                <div style="background: #e8f5e9; padding: 10px; border-radius: 6px; margin-top: 10px;">
-                    <strong>Interview Evaluation & Rating Report:</strong><br>
-                    • <em>Score:</em> 92% Accurate Answers.<br>
-                    • <em>Posture & Confidence:</em> Good eye contact maintained; minor adjustment suggested on hand gestures.<br>
-                    • <em>Recommendation:</em> Practice 2 more mock sessions for absolute perfection!
+                <div class="p-3 rounded-lg bg-emerald-950/80 border border-emerald-500/50 text-emerald-300">
+                    <strong>Interview Scorecard & Evaluation:</strong><br>
+                    - Confidence Rating: 94/100<br>
+                    - Technical Accuracy: 92/100<br>
+                    - Posture & Eye Contact: Excellent<br>
+                    - Recommendation: Fully prepared for Emirates & Python Engineering interviews!
                 </div>
             `;
             chatBox.scrollTop = chatBox.scrollHeight;
