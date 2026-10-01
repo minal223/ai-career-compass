@@ -199,7 +199,7 @@ const _fin=finish;finish=function(){going=0;try{rec&&rec.abort()}catch(e){}_fin(
 tr();
 </script>
 <script>
-const PROXY='',MODELS=['gemini-2.5-flash','gemini-2.0-flash'];
+const PROXY='https://script.google.com/macros/s/AKfycbxhVzcTzEVsf3w71XEYX0QCgVL8U9q6ucY9P579-Bpd9SVxbpraPmB5es8AY2Fund0_/exec',MODELS=['gemini-2.5-flash','gemini-2.0-flash'];
 async function gem(parts,o={}){const k=localStorage.k;if(!k&&!PROXY)throw new Error('No API key. Paste it in Tutor tab and press Save & Test.');let last;
 for(const m of MODELS){const body={contents:[{role:'user',parts:typeof parts=='string'?[{text:parts}]:parts}],generationConfig:{maxOutputTokens:o.max||4096,temperature:.7}};if(m.startsWith('gemini-2.5'))body.generationConfig.thinkingConfig={thinkingBudget:0};if(o.search)body.tools=[{googleSearch:{}}];
 const url=PROXY||(k.startsWith('AQ.')?`https://aiplatform.googleapis.com/v1/publishers/google/models/${m}:generateContent?key=${k}`:`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`);
@@ -248,5 +248,161 @@ cv=function(){const i=+$('cs').value,g=i/5|0,p=$('cvp'),ac=$('cc').value,fm=['Ge
 const l=x=>$(x).value.split('\n').filter(Boolean).map(z=>'<li>'+E(z)+'</li>').join(''),ct=[$('c3').value,$('c8').value,$('c9').value].filter(Boolean).map(E).join(' &nbsp;|&nbsp; ');
 p.innerHTML=`<h1>${E($('c1').value||'YOUR NAME')}</h1><div>${E($('c2').value||'Target Role')}</div><div style="margin:4px 0 12px;font-size:13px">${ct||'Email | Phone | City'}</div><h3>SUMMARY</h3><p>${E($('c4').value||'Write a 2–3 line summary.')}</p><h3>EXPERIENCE &amp; PROJECTS</h3><ul>${l('c5')||'<li>Add entries</li>'}</ul><h3>SKILLS</h3><p>${E($('c6').value)}</p><h3>EDUCATION</h3><ul>${l('c7')}</ul>`};
 const _g3=go;go=function(i){if(i==8&&!$('c9').value&&S.p)$('c9').value=S.p.c+', '+S.p.k;_g3(i)};
+</script>
+  <!-- ===== AI CAREER COMPASS FIXES: paste this whole block just before </body> (after your last </script>) ===== -->
+<style>
+/* Matte theme, black fonts */
+:root{--bg:#d3d6d2;--c:#e4e6e2;--c2:#c4c9c3;--g:#a9b5a6;--t:#000;--m:#33383a}
+body{background:#d3d6d2!important;color:#000}
+h1,h2,h3{color:#000!important}
+nav{background:#c4c9c3ee;border-bottom:1px solid #8f9791}nav b{color:#000}
+button,.btn{background:#c4c9c3;color:#000;border:1px solid #7f8882;box-shadow:none}
+button:hover,nav button.on{background:#26292b;color:#f1f2ef}
+.gold{background:#a9b5a6;color:#000;font-weight:700;box-shadow:none;border-color:#6f7a72}
+.gold:hover{background:#26292b;color:#f1f2ef}
+#xp{background:#b3b9b2}#xp i{background:#26292b}
+.card{background:#e4e6e2;border:1px solid #a6ada6;box-shadow:none}
+input,select,textarea{background:#f2f3f0;color:#000;border:1px solid #8f9791}
+::placeholder{color:#5d6460}
+.chip{border-color:#7f8882}.chip.on{background:#26292b;color:#f1f2ef}
+.out{background:#f2f3f0;color:#000;border:1px solid #b9beb8}
+.msg{background:#d6dad5;color:#000;white-space:pre-wrap}.me{background:#bfc7bf}
+a[style*="d4af37"],a[style*="var(--g)"]{color:#000!important;text-decoration:underline}
+#st{color:#33383a}
+#km{display:none;position:fixed;inset:0;background:#0007;z-index:99;align-items:center;justify-content:center}
+#tbox{display:none;text-align:center}
+</style>
+<script>
+/* ---------- 0. Radar (matte colours) ---------- */
+radar=function(){const c=$('rd').getContext('2d');let a=0;clearInterval(rt);rt=setInterval(()=>{c.fillStyle='#e4e6e2';c.fillRect(0,0,320,320);c.strokeStyle='#8f9791';for(let r=40;r<=150;r+=37){c.beginPath();c.arc(160,160,r,0,7);c.stroke()}c.strokeStyle='#000';c.lineWidth=3;c.beginPath();c.moveTo(160,160);c.lineTo(160+150*Math.cos(a),160+150*Math.sin(a));c.stroke();c.lineWidth=1;a+=.08},30);setTimeout(()=>{clearInterval(rt);if(S.cur==2){xp(30);go(3)}},3500)};
+
+/* ---------- 1. Global API key button (works from every tab) ---------- */
+MODELS.push('gemini-flash-latest');
+document.body.insertAdjacentHTML('beforeend','<div id="km"><div class="card" style="width:min(380px,92%)"><h3>🔑 AI key</h3><input id="key2" type="password" placeholder="Paste your Gemini API key"><button class="gold" onclick="saveKey2()">Save &amp; Test</button> <button onclick="$(\'km\').style.display=\'none\'">Close</button><p id="ks2"></p><small>Saved only in this browser. Free key: aistudio.google.com/apikey</small></div></div>');
+{const b=document.createElement('button');b.id='kb';b.onclick=()=>{$('key2').value=localStorage.k||'';$('km').style.display='flex'};nav.append(b)}
+function kstat(){$('kb').textContent=localStorage.k?'🔑 AI: connected':'🔑 Add AI key'}kstat();
+async function saveKey2(){$('key').value=$('key2').value;$('ks2').textContent='Testing…';await saveKey();$('ks2').textContent=$('ks').textContent;kstat()}
+
+/* ---------- 2. AI Tutor: real errors, memory, any language ---------- */
+const HIST=[];
+ask=async function(){const q=$('ci').value.trim();if(!q)return;$('ci').value='';const c=$('chat');c.innerHTML+=`<div class="msg me">${E(q)}</div>`;let a=null;S.err='';
+if(hasAI()){const h=HIST.slice(-6).map(x=>x[0]+': '+x[1]).join('\n');a=await llm(`You are a patient expert tutor for any subject or programming language. Current course: ${S.course||'general'}. Reply in the language the student writes in (English, Urdu or Roman Urdu). Be clear, give short examples and code blocks when useful.\nConversation so far:\n${h}\nStudent: ${q}`)}
+if(!a){const l=q.toLowerCase(),k=Object.keys(KB).filter(x=>l.includes(x)).map(x=>KB[x]);a=(S.err?'⚠ AI error: '+S.err+'\n\n':(hasAI()?'':'Tap 🔑 Add AI key (top bar) and I can answer any topic.\n\n'))+(k.length?k.join('\n\n'):'Meanwhile tell me the subject and I will break it into steps.')}
+else{HIST.push(['Student',q],['Tutor',a.slice(0,600)])}
+c.innerHTML+=`<div class="msg">${md(a)}</div>`;c.scrollTop=1e9;xp(5)};
+
+/* ---------- 3. Academies: reliable search, pin, contacts, socials ---------- */
+let RES=[],CURX=null;const DC={};
+const cl=u=>String(u||'').replace(/['"<>\s]/g,''),dg=u=>String(u||'').replace(/\D/g,'');
+async function geo(q,any){const out=[],b=map?map.getCenter():{lat:31.52,lng:74.36},ct=((S.p&&S.p.k)||'').toLowerCase(),cc=any?'':({pakistan:'pk',india:'in',uk:'gb','united kingdom':'gb',usa:'us','united states':'us',uae:'ae',canada:'ca',australia:'au','saudi arabia':'sa'})[ct]||'';
+try{const j=await(await fetch(`https://photon.komoot.io/api/?limit=8&lat=${b.lat}&lon=${b.lng}&q=${encodeURIComponent(q)}`)).json();(j.features||[]).filter(f=>!cc||((f.properties||{}).countrycode||'').toLowerCase()==cc).forEach(f=>{const p=f.properties||{};out.push({name:p.name||p.street||q,addr:[p.name,p.housenumber,p.street,p.district,p.city,p.state,p.country].filter(Boolean).join(', '),lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0]})})}catch(e){}
+if(!out.length)try{const j=await(await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=8${cc?'&countrycodes='+cc:''}&q=${encodeURIComponent(q)}`)).json();j.forEach(x=>out.push({name:x.display_name.split(',')[0],addr:x.display_name,lat:+x.lat,lng:+x.lon}))}catch(e){}
+return out}
+msearch=async function(q,auto){q=typeof q=='string'?q:$('ms').value;q=(q||'').trim();if(!q)return;const al=$('al'),city=S.p?S.p.c:'Lahore',w=q.split(/\s+/);al.innerHTML='<div class="card">🔎 Searching maps…</div>';let r=[];
+for(const t of [q,`${q} ${city}`,`${w.slice(0,3).join(' ')} ${city}`,`${w.slice(-2).join(' ')} ${city}`]){r=await geo(t);if(r.length)break}
+if(!r.length&&!auto)r=await geo(q,1);
+if(!r.length&&!auto&&hasAI()){al.innerHTML='<div class="card">🤖 Not in the map database, searching the web for it…</div>';try{const a=await gem(`Using web search, find the real place "${q}" (near ${city}, ${S.p?S.p.k:''}). Reply ONLY with JSON {"name":"","address":"","phone":"","whatsapp":"","email":"","website":"","facebook":"","instagram":"","linkedin":""}. Use "" for anything you cannot verify.`,{search:1,max:800}),j=JSON.parse(a.text.match(/\{[\s\S]*\}/)[0]);let g=await geo(j.address||`${j.name} ${city}`),ap=0;if(!g.length){g=await geo(city);ap=1}if(g.length&&j.name){r=[{...g[0],name:j.name,addr:j.address||g[0].addr,approx:ap}];DC[j.name]=j}}catch(e){}}
+mk.forEach(m=>m.remove());mk=[];RES=r;
+if(!r.length){al.innerHTML=`<div class="card">No match found. ${hasAI()?'':'Tap 🔑 Add AI key and I will find any academy from the web. '}<a target=_blank style="color:#000" href="${gl(q+' '+city)}">Search on Google</a></div>`;return}
+al.innerHTML=r.map((x,i)=>`<div class="card"><b>${E(x.name)}</b><br>${E(x.addr)}${x.approx?'<br><small>📍 approximate pin (city level)</small>':''}<br><button onclick="showD(${i},1)">📍 Pin &amp; contact details</button><br><span style="color:var(--m)">Est. fees from ${money(25000)}/month · confirm with the academy</span></div>`).join('');
+r.forEach((x,i)=>mk.push(L.marker([x.lat,x.lng]).addTo(map).on('click',()=>showD(i,0))));map.setView([r[0].lat,r[0].lng],r.length>1?12:16);if(!auto)showD(0,1)};
+async function showD(i,fly){const x=RES[i];if(!x)return;CURX=x;if(fly)map.setView([x.lat,x.lng],16);L.popup().setLatLng([x.lat,x.lng]).setContent(`<b>${E(x.name)}</b><br>${E(x.addr)}`).openOn(map);
+let d=$('ad');if(!d){d=document.createElement('div');d.id='ad';d.className='card';$('al').before(d)}
+const A='target=_blank',pin=`https://www.google.com/maps/search/?api=1&query=${x.lat},${x.lng}`;if($('gmf').style.display!='none')$('gmf').src=`https://maps.google.com/maps?q=${x.lat},${x.lng}&z=16&output=embed`;
+d.innerHTML=`<h3>${E(x.name)}</h3>📍 ${E(x.addr)}<br><a ${A} href="${pin}">🗺 Open pin in Google Maps</a> · <a ${A} href="https://www.google.com/maps/dir/?api=1&destination=${x.lat},${x.lng}">🧭 Directions</a> · <a ${A} href="${gl(x.name+' phone number')}">📞 Search phone</a> · <a ${A} href="${gl(x.name+' facebook instagram')}">📱 Search socials</a><div id="adx"></div>`;
+let j=DC[x.name];
+if(!j&&hasAI()){$('adx').textContent='⏳ Finding phone, website and social handles…';try{const a=await gem(`Using web search, find contact details for "${x.name}" at or near "${x.addr}". Reply ONLY with JSON {"phone":"","whatsapp":"","email":"","website":"","facebook":"","instagram":"","linkedin":"","tiktok":"","youtube":"","hours":""}. Use "" if you cannot verify. Never invent.`,{search:1,max:800});j=JSON.parse(a.text.match(/\{[\s\S]*\}/)[0]);DC[x.name]=j}catch(e){$('adx').textContent='Could not load contacts: '+e.message;return}}
+if(!j){$('adx').innerHTML='<br><small>Tap 🔑 Add AI key to auto-load phone numbers and social handles.</small>';return}
+const so=(k,base)=>{const v=cl(j[k]);return v?`<br>${k[0].toUpperCase()+k.slice(1)}: <a ${A} href="${/^http/.test(v)?v:base+v.replace(/^@/,'')}">${E(j[k])}</a>`:''};
+$('adx').innerHTML=`<br>`+(j.phone?`📞 <a href="tel:+${dg(j.phone)}">${E(j.phone)}</a>`:'📞 phone not published')+(j.whatsapp?` · 💬 <a ${A} href="https://wa.me/${dg(j.whatsapp)}">WhatsApp</a>`:'')+(j.email?`<br>✉ <a href="mailto:${cl(j.email)}">${E(j.email)}</a>`:'')+(j.website?`<br>🌐 <a ${A} href="${/^http/.test(cl(j.website))?cl(j.website):'https://'+cl(j.website)}">${E(j.website)}</a>`:'')+so('facebook','https://facebook.com/')+so('instagram','https://instagram.com/')+so('linkedin','https://linkedin.com/')+so('tiktok','https://tiktok.com/@')+so('youtube','https://youtube.com/')+(j.hours?`<br>🕒 ${E(j.hours)}`:'')+'<br><small>⚠ Verify details on the official page before paying any fee.</small>'}
+rev=async function(ll){try{const r=await(await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&lat=${ll.lat}&lon=${ll.lng}`)).json(),x={name:r.name||(r.address&&(r.address.amenity||r.address.road))||'Selected place',addr:r.display_name,lat:ll.lat,lng:ll.lng};RES.push(x);const n=RES.length-1;setTimeout(()=>showD(n,0),60);return `<b>${E(x.name)}</b><br>Loading details…`}catch(e){return 'Lookup failed (offline?)'}};
+gm=function(){const f=$('gmf'),on=f.style.display=='none',q=CURX?`${CURX.lat},${CURX.lng}`:encodeURIComponent(($('ms').value||(S.course||'')+' academy')+' '+(S.p?S.p.c:'Lahore'));f.style.display=on?'block':'none';$('map').style.display=on?'none':'block';if(on)f.src=`https://maps.google.com/maps?q=${q}&z=${CURX?16:12}&output=embed`;else map&&map.invalidateSize()};
+
+/* ---------- 4. Code Studio: any programming language ---------- */
+{const h=document.querySelector('#s5 h3');h.textContent='Assignment Sandbox (any language)';h.insertAdjacentHTML('afterend','<select id="pl">'+['JavaScript','Auto-detect','Python','C++','C','Java','C#','TypeScript','PHP','Go','Rust','Kotlin','Swift','Ruby','SQL','HTML/CSS','Bash','R','Dart'].map(x=>`<option>${x}</option>`).join('')+'</select>')}
+const SMP={JavaScript:$('code').value,Python:'# write Python here\ndef add(a, b):\n    return a + b\nprint(add(2, 3))','C++':'// write C++ here\n#include <iostream>\nint main(){ std::cout << 2 + 3; }',C:'// write C here\n#include <stdio.h>\nint main(){ printf("%d", 2 + 3); }',Java:'// write Java here\npublic class Main { public static void main(String[] a){ System.out.println(2 + 3); } }'};
+$('pl').onchange=()=>{const c=$('code').value;if(!c.trim()||Object.values(SMP).includes(c))$('code').value=SMP[$('pl').value]||''};
+const _run=run;
+run=async function(){const Lg=$('pl').value,o=$('co2');if(Lg=='JavaScript')return _run();
+if(!hasAI()){o.textContent='JavaScript runs offline. For '+Lg+' (any language), tap 🔑 Add AI key at the top.';return}
+o.textContent='Running '+Lg+'…';try{const a=await gem(`You are a precise code executor and mentor. Language: ${Lg=='Auto-detect'?'detect it and name it':Lg}. Mentally execute the program exactly and reply in this format:\nLANGUAGE: ...\nOUTPUT:\n<exact stdout, or the exact compiler/runtime error>\nREVIEW: 3 short bullets (correctness, edge cases, style) in ${S.lang=='ur'?'Roman Urdu':'English'}\nFIX: corrected code, only if there is a bug\nScore: NN (0-100)\n\nCode:\n${$('code').value}`,{max:2000}),m=/Score:\s*(\d+)/.exec(a.text),sc=m?+m[1]:50;o.textContent=a.text.replace(/Score:\s*\d+/,'')+`\nScore: ${sc}/100 · +${sc/4|0} XP`;xp(sc/4|0)}catch(e){o.textContent='❌ '+e.message}};
+
+/* ---------- 5. LinkedIn audit: trained on what successful profiles do ---------- */
+const LIP=`You are a senior LinkedIn growth coach and technical recruiter who has reviewed thousands of profiles of people who got hired (students, freshers, career-switchers, professionals). Audit THIS user's profile using what top-performing profiles do:
+1 HEADLINE (220 chars): Target role | 3 searchable skills or tools | proof or value | availability. Never just "Student" or "Seeking opportunities".
+2 PHOTO and BANNER: face about 60% of the frame, plain background, natural light, smile; banner shows niche plus tagline or portfolio.
+3 ABOUT (1,500-2,600 characters): strong hook in the first 2 lines, what you build or who you help, 2-3 proof points with numbers, key skills, what you are looking for, call to action with contact.
+4 EXPERIENCE/PROJECTS: action verb + what + tool + measurable result. Freshers use projects, internships, freelancing, volunteering and coursework.
+5 FEATURED: 2-3 best projects, GitHub, portfolio, certificates.
+6 SKILLS: top 3 pinned, 30+ relevant, endorsements, certificates, education.
+7 SOCIAL PROOF: 3+ recommendations. 8 BASICS: custom URL, location, Open to Work (recruiters only), 500+ connections.
+9 ACTIVITY: 2-3 posts a week (learning logs, project demos), 5 thoughtful comments a day, 10 personalised connection requests a week to recruiters, alumni and people in the target role.
+RULES: If the screenshot shows a COMPANY or ORGANISATION page instead of a personal profile, say so, audit it briefly as a page, and tell the user to upload their own personal profile for a real audit. Use only what is visible in the screenshot or typed; if something is missing say "not visible" instead of guessing. Never invent achievements; use [brackets] for facts the user must fill in.
+OUTPUT: 1) Score /100 with a one-line verdict each for Headline, Photo/Banner, About, Experience, Skills, Activity. 2) Top 5 fixes in priority order. 3) Three rewritten headline options. 4) A rewritten About using the user's real details. 5) A 30-day plan, week by week, to become a recruiter-visible profile. Be specific, warm and concise.`;
+const b64=f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(f)}),_audit=audit;
+audit=async function(){if(!hasAI()){_audit();$('lo').textContent+='\n\n💡 Tap 🔑 Add AI key for a deep personalised audit that also reads your screenshot.';return}
+const o=$('lo'),f=$('lis').files[0],nm=(S.p&&S.p.n)||(S.user&&S.user.n)||'the user';o.textContent='Auditing your profile…';
+const parts=[{text:LIP+`\n\nUSER DATA\nName: ${nm}\nTarget role: ${$('lt').value||'not given'}\nHeadline: ${$('lh').value||'not given'}\nAbout: ${$('la').value||'not given'}\nSkills: ${(S.p&&S.p.sk)||'not given'}\nCourse: ${S.course||'not given'}\nLocation: ${S.p?S.p.c+', '+S.p.k:'not given'}\nReply in: ${S.lang=='ur'?'Roman Urdu':'English'}\n${f?'A screenshot is attached.':'No screenshot attached.'}`}];
+if(f)parts.push({inlineData:{mimeType:f.type||'image/jpeg',data:await b64(f)}});
+try{const a=await gem(parts,{max:3500});o.innerHTML=md(a.text);xp(30)}catch(e){o.textContent='❌ '+e.message}};
+
+/* ---------- 6. Interview: thinking time, patient listening, real body-language AI ---------- */
+$('il').insertAdjacentHTML('afterend','<select id="itm"><option value="15">Thinking time: 15 s</option><option value="30" selected>Thinking time: 30 s</option><option value="45">Thinking time: 45 s</option><option value="60">Thinking time: 60 s</option><option value="90">Thinking time: 90 s</option></select>');
+$('orb').insertAdjacentHTML('afterend','<div id="tbox" class="card"><span id="tcd"></span><br><button class="gold" onclick="ready()">I\'m ready, start answering</button> <button onclick="TN+=15">+15 s</button></div>');
+document.querySelector('#iarena button[onclick="listen()"]').insertAdjacentHTML('afterend',' <button onclick="LISTEN.submit&&LISTEN.submit()">✅ Done answering</button>');
+const LISTEN={};let TH,TN=0;
+function hideT(){clearInterval(TH);const t=$('tbox');if(t)t.style.display='none'}
+function ready(){hideT();startRec()}
+function think(){hideT();if(!going)return;TN=+$('itm').value;$('tbox').style.display='block';const sh=()=>$('tcd').textContent=`🤔 Think about your answer… ${TN}s left. Listening starts automatically.`;sh();orb('🤔 Thinking time, no rush');TH=setInterval(()=>{TN--;if(TN<=0)ready();else sh()},1000)}
+function startRec(){hideT();if(!going)return;const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){orb('Speech recognition needs Chrome/Edge. Type your answer below');return}LISTEN.kill&&LISTEN.kill();
+rec=new R();rec.lang=$('il').value;rec.interimResults=true;rec.continuous=true;let fin='',tm,done=0;const me=rec;
+const sub=()=>{if(done)return;done=1;clearTimeout(tm);try{me.abort()}catch(e){}const t=fin.trim();if(t)ans(t);else if(going)setTimeout(startRec,300)};
+LISTEN.submit=sub;LISTEN.kill=()=>{done=1;clearTimeout(tm);try{me.abort()}catch(e){}};
+rec.onresult=e=>{fin=[...e.results].map(r=>r[0].transcript).join(' ');$('orb').textContent='🎤 '+fin.slice(-90)+'  (pause 5 s or press Done when finished)';clearTimeout(tm);tm=setTimeout(sub,5000)};
+rec.onend=()=>{if(!going||done)return;if(fin.trim())sub();else{done=1;setTimeout(startRec,200)}};
+rec.onerror=e=>{if(e.error=='not-allowed'){going=0;orb('Microphone blocked, allow it in the address bar')}};try{rec.start();orb('listening')}catch(e){}}
+listen=function(a){if(!going)return;a===1?think():startRec()};
+const _nq=nextQ;nextQ=function(f){LISTEN.kill&&LISTEN.kill();hideT();return _nq(f)};
+const _ans=ans;ans=function(t){LISTEN.kill&&LISTEN.kill();hideT();return _ans(t)};
+
+/* Body language: MediaPipe pose + hands. Tune the numbers in TH if it is too strict or too loose. */
+const TH2={slouch:.8,lean:.25,uneven:.15,tilt:.15,off:.45,fidget:.05,nose:.22,hand:.55},BL={cur:new Set(),tot:{},c:{},ev:{nose:0},fr:0,cal:[],base:null,sp:0,pw:null,on:0};
+const BM={slouch:'🪑 Sit upright: shoulders back, chin level.',lean:'↔ Keep a steady distance from the camera.',uneven:'⚖ Level your shoulders.',tilt:'🙂 Keep your head level.',off:'🎯 Stay centred in the frame.',away:'👀 Look at the camera lens.',nose:'🤚 Hand near your nose or face: put it down.',hand:'🤚 Keep your hands away from your face.',fidget:'😮‍💨 You look nervous: relax your hands and breathe slowly.'};
+const BT={slouch:'sit up straight with your shoulders back',lean:'keep a steady distance from the camera',uneven:'keep your shoulders level',tilt:'keep your head level',off:'stay centred in the frame',away:'look straight at the camera',nose:'avoid touching your nose or face',hand:'keep your hands away from your face',fidget:'keep your hands calm and breathe slowly'};
+const _bl0=bodyLoop,CDN='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14',MD='https://storage.googleapis.com/mediapipe-models/';
+bodyLoop=async function(){const v=$('vid'),bl=$('bl');bl.textContent='⏳ Loading body-language AI (about 10 s the first time)…';
+try{const M=await import(CDN+'/vision_bundle.mjs'),fs=await M.FilesetResolver.forVisionTasks(CDN+'/wasm');
+const mk2=async(C,u,o)=>{for(const d of ['GPU','CPU'])try{return await C.createFromOptions(fs,{baseOptions:{modelAssetPath:u,delegate:d},runningMode:'VIDEO',...o})}catch(e){}throw new Error('model load failed')};
+const pose=await mk2(M.PoseLandmarker,MD+'pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',{numPoses:1});let hand=null;try{hand=await mk2(M.HandLandmarker,MD+'hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',{numHands:2})}catch(e){}
+BL.on=1;BL.base=null;BL.cal=[];bl.textContent='🎯 Calibrating: sit up straight and look at the camera…';
+BL.t=setInterval(()=>{if(!BL.on||v.readyState<2||!v.videoWidth)return;const ts=performance.now();let P,H=null;try{P=pose.detectForVideo(v,ts);if(hand)H=hand.detectForVideo(v,ts)}catch(e){return}
+const lm=P.landmarks&&P.landmarks[0];if(!lm){bl.innerHTML='⚠ I cannot see your upper body. Sit back so your head and shoulders are in frame.';return}
+const W=v.videoWidth,Ht=v.videoHeight,p=i=>({x:lm[i].x*W,y:lm[i].y*Ht,v:lm[i].visibility}),n=p(0),el=p(7),er=p(8),ls=p(11),rs=p(12),sw=Math.hypot(ls.x-rs.x,ls.y-rs.y)||1,sy=(ls.y+rs.y)/2,ratio=(sy-n.y)/sw;
+if(!BL.base){BL.cal.push([ratio,sw]);if(BL.cal.length>=15)BL.base={r:BL.cal.reduce((a,b)=>a+b[0],0)/15,w:BL.cal.reduce((a,b)=>a+b[1],0)/15};return}
+const f=new Set(),T=TH2;if(ratio<BL.base.r*T.slouch)f.add('slouch');if(Math.abs(sw/BL.base.w-1)>T.lean)f.add('lean');if(Math.abs(ls.y-rs.y)/sw>T.uneven)f.add('uneven');
+if(el.v>.5&&er.v>.5&&Math.abs(el.y-er.y)/sw>T.tilt)f.add('tilt');if(Math.abs(n.x-(ls.x+rs.x)/2)/sw>T.off)f.add('off');if((el.v<.3&&er.v>.6)||(er.v<.3&&el.v>.6))f.add('away');
+let near=0,fing=0;[15,16].forEach(i=>{const w=p(i);if(w.v>.5&&Math.hypot(w.x-n.x,w.y-n.y)/sw<T.hand)near=1});
+if(H&&H.landmarks)H.landmarks.forEach(h=>[4,8,12,16,20].forEach(i=>{if(Math.hypot(h[i].x*W-n.x,h[i].y*Ht-n.y)/sw<T.nose)fing=1}));
+if(fing)f.add('nose');else if(near)f.add('hand');
+const wr=[15,16].map(p),d=BL.pw?wr.reduce((a,w,i)=>a+Math.hypot(w.x-BL.pw[i].x,w.y-BL.pw[i].y),0)/2/sw:0;BL.pw=wr;BL.sp=BL.sp*.85+d*.15;if(BL.sp>T.fidget)f.add('fidget');
+BL.fr++;const sh=[];Object.keys(BM).forEach(k=>{const was=BL.c[k]>=4;BL.c[k]=f.has(k)?(BL.c[k]||0)+1:0;if(BL.c[k]>=4){sh.push(k);BL.tot[k]=(BL.tot[k]||0)+1;if(!was&&k=='nose')BL.ev.nose++}if(BL.c[k]>=12)BL.cur.add(k)});
+bl.innerHTML=sh.length?sh.map(k=>`<div style="color:#8a1c1c"><b>${BM[k]}</b></div>`).join(''):'✅ Great posture: upright, calm and centred. Keep it up.'},120)}catch(e){_bl0();$('bl').textContent+=' (Full pose AI could not load: '+e.message+'. Using the basic motion check.)'}};
+const _say=say;say=function(t,cb){if(/ Next question\.$/.test(t)&&BL.cur.size){t=t.replace(/ Next question\.$/,'')+' Body language: '+[...BL.cur].slice(0,3).map(k=>BT[k]).join(', and ')+'. Next question.';BL.cur.clear()}_say(t,cb)};
+const _f4=finish;finish=function(){BL.on=0;clearInterval(BL.t);LISTEN.kill&&LISTEN.kill();hideT();_f4();
+const s=$('sc');s.innerHTML=s.innerHTML.replace('Body language: camera-motion check only (not full pose AI).<br>','');const ks=Object.keys(BL.tot).filter(k=>BL.tot[k]);
+if(BL.fr>20){const pc=k=>Math.round(BL.tot[k]/BL.fr*100),sc2=Math.max(0,100-ks.reduce((a,k)=>a+pc(k),0));s.insertAdjacentHTML('beforeend',`<div class="card"><h3>Body language report: ${sc2}/100</h3>${ks.length?ks.map(k=>`• ${BM[k]} (${pc(k)}% of the time)`).join('<br>')+(BL.ev.nose?`<br>• Touched nose/face area ${BL.ev.nose} time(s).`:''):'Excellent. No posture, nose-touching or fidgeting problems detected.'}<br><small>Tip: set the camera at eye level and sit about an arm's length away.</small></div>`)}};
+kstat();
+</script>
+  <style>#kb,#s6 .card:has(#key){display:none!important}</style>
+<script>
+const APPS_URL='https://script.google.com/macros/s/AKfycbxhVzcTzEVsf3w71XEYX0QCgVL8U9q6ucY9P579-Bpd9SVxbpraPmB5es8AY2Fund0_/exec';
+localStorage.removeItem('k');
+gem=async function(parts,o={}){
+ const body={contents:[{role:'user',parts:typeof parts=='string'?[{text:parts}]:parts}],generationConfig:{maxOutputTokens:o.max||4096,temperature:.7}};
+ if(o.search)body.tools=[{googleSearch:{}}];
+ const j=await(await fetch(APPS_URL,{method:'POST',body:JSON.stringify(body)})).json();
+ if(j.error)throw new Error(j.error.message||'AI error');
+ const c=j.candidates&&j.candidates[0];if(!c||!c.content)throw new Error('Empty response ('+(c&&c.finishReason||'blocked')+')');
+ return{text:c.content.parts.map(p=>p.text||'').join(''),src:[...new Set(((c.groundingMetadata||{}).groundingChunks||[]).map(x=>x.web&&x.web.uri).filter(Boolean))]}};
 </script>
 </body></html>
