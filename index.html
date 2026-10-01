@@ -1,440 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Career Compass</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Alpine.js CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            50: '#f0f4ff',
-                            100: '#e0e7ff',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-navy-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col" x-data="careerApp()">
+<html lang="en"><head><meta charset="utf-8"><title>AI Career Compass</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<style>
+:root{--bg:#050b1a;--c:#0b1a36;--c2:#10254a;--g:#d4af37;--t:#eaf0ff;--m:#9fb0d3}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#12306a,var(--bg) 60%);color:var(--t);font:15px system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:Georgia,serif;color:var(--g);margin:.3em 0}
+nav{position:sticky;top:0;z-index9;z-index:9;background:#050b1aee;border-bottom:1px solid #d4af3755;display:flex;gap:4px;overflow-x:auto;padding:8px}
+nav b{color:var(--g);font-family:Georgia;padding:6px 10px;white-space:nowrap}
+nav button{white-space:nowrap}
+button,.btn{background:var(--c2);color:var(--t);border:1px solid #d4af3766;border-radius:8px;padding:8px 12px;cursor:pointer;font:inherit}
+button:hover,nav button.on{background:var(--g);color:#000}
+.gold{background:var(--g);color:#000;font-weight:700;box-shadow:0 0 18px #d4af37aa}
+#xp{height:6px;background:#0008}#xp i{display:block;height:100%;width:0;background:linear-gradient(90deg,#b8860b,var(--g));transition:width 1s}
+#st{font-size:12px;color:var(--m);padding:4px 12px}
+section{display:none;max-width:1100px;margin:auto;padding:18px;animation:f .7s}section.on{display:block}
+@keyframes f{from{opacity:0;transform:translateY(12px)}}
+.card{background:var(--c);border:1px solid #d4af3733;border-radius:14px;padding:14px;margin:8px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:760px){.two{grid-template-columns:1fr}}
+input,select,textarea{width:100%;background:#061229;color:var(--t);border:1px solid #2a4680;border-radius:8px;padding:9px;margin:4px 0;font:inherit}
+textarea{min-height:110px;font-family:monospace}
+.chip{display:inline-block;padding:6px 12px;border:1px solid #d4af3766;border-radius:99px;margin:3px;cursor:pointer}.chip.on{background:var(--g);color:#000}
+.out{background:#020713;border-radius:8px;padding:10px;white-space:pre-wrap;min-height:50px;max-height:340px;overflow:auto}
+#map{height:360px;border-radius:12px}
+#hero{text-align:center;padding:12vh 0}#q{font:italic 24px Georgia;min-height:90px;transition:opacity 1s}
+#cvp{background:#fff;color:#111;padding:28px;border-radius:6px;min-height:420px;font-family:var(--ff,Georgia)}
+#cvp h1{color:var(--ac,#111);margin:0}#cvp h3{color:var(--ac,#111);border-bottom:1px solid var(--ac,#111);font-size:13px;letter-spacing:2px}
+#cvp.minimal{font-family:system-ui}#cvp.creative{border-left:12px solid var(--ac)}
+.msg{margin:6px 0;padding:8px;border-radius:8px;background:#0e2247}.me{background:#1b3a70}
+video{width:100%;border-radius:12px;background:#000;max-height:340px}
+@media print{body *{visibility:hidden}#cvp,#cvp *,#notes,#notes *{visibility:visible}#cvp,#notes{position:absolute;left:0;top:0;width:100%}}
+@media print{#notes{max-height:none!important;overflow:visible!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<nav id="nav"><b>◈ AI CAREER COMPASS</b></nav><div id="xp"><i></i></div><div id="st"></div>
 
-    <!-- Header / Navigation Bar -->
-    <header class="bg-navy-900 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-            <div class="flex items-center space-x-3 cursor-pointer" @click="currentStep = 'welcome'">
-                <div class="bg-navy-700 p-2 rounded-lg font-bold text-lg tracking-wider">AI Compass</div>
-                <span class="text-xs bg-navy-800 px-2 py-1 rounded text-navy-100 border border-navy-600">Dual-Track Engine</span>
-            </div>
-            
-            <!-- Step Navigation Tabs -->
-            <nav class="flex flex-wrap gap-1 mt-2 md:mt-0 text-xs font-medium">
-                <template x-for="(stepName, key) in steps" :key="key">
-                    <button @click="currentStep = key" 
-                        :class="currentStep === key ? 'bg-navy-700 text-white shadow-inner' : 'bg-navy-800/60 text-navy-100 hover:bg-navy-700/50'"
-                        class="px-3 py-1.5 rounded transition-all"
-                        x-text="stepName">
-                    </button>
-                </template>
-            </nav>
-        </div>
-    </header>
+<section id="s0"><div id="hero"><h1 style="font-size:40px">Your Ascent Starts Today</h1><div id="q"></div>
+<button class="gold" onclick="S.user?go(1):($('auth').style.display='flex')" style="font-size:18px;padding:14px 28px;margin-top:20px">Begin Your Ascent</button></div></section>
 
-    <!-- Main Content Area -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+<section id="s1"><h2>Step 1 · Profile</h2><div class="card two">
+<div><input id="nm" placeholder="Full name"><input id="ag" type="number" placeholder="Age"><select id="gd"><option>Gender</option><option>Female</option><option>Male</option><option>Other</option></select><input id="ed" placeholder="Education (e.g. Matric, BSc)"></div>
+<div><input id="ct" placeholder="City" value="Lahore"><input id="co" placeholder="Country" value="Pakistan"><input id="sk" placeholder="Current skills (comma separated)"></div></div>
+<div class="card"><b>Interests (pick any)</b><br><span id="ints"></span></div>
+<button class="gold" onclick="intake()">Build My Roadmap ⚡</button></section>
 
-        <!-- 1: WELCOME -->
-        <section x-show="currentStep === 'welcome'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100">
-            <div class="max-w-3xl mx-auto text-center space-y-6">
-                <span class="bg-navy-100 text-navy-800 text-sm font-semibold px-4 py-1.5 rounded-full inline-block">Discover & Engineer Your Ideal Career Path</span>
-                <h1 class="text-4xl font-extrabold text-navy-900 tracking-tight">AI Career Compass</h1>
-                <p class="text-slate-600 text-lg leading-relaxed">
-                    Welcome to AI Career Compass. Complete your personal evaluation, leverage live skill-gap analysis, explore targeted academies, audit your LinkedIn profile, and train with live AI interviews.
-                </p>
-                <div class="pt-4 flex justify-center gap-4">
-                    <button @click="currentStep = 'intake'" class="bg-navy-700 hover:bg-navy-800 text-white font-medium px-8 py-3 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5">
-                        Start Assessment &rarr;
-                    </button>
-                </div>
-            </div>
-        </section>
+<section id="s2" style="text-align:center"><h2>Analysing your profile…</h2><canvas id="rd" width="320" height="320"></canvas><p id="rt">Computing skill gaps…</p><button onclick="go(3)">Skip →</button></section>
 
-        <!-- 2: INTAKE -->
-        <section x-show="currentStep === 'intake'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-4xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">Step 1: Personal Intake & Academic Background</h2>
-                <p class="text-slate-500 text-sm">Please enter your exact details so the compass can map precise local and international trajectory options.</p>
-            </div>
-            <form @submit.prevent="submitIntake()" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                        <input type="text" x-model="formData.fullName" required class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Age</label>
-                        <input type="text" x-model="formData.age" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Country</label>
-                        <input type="text" x-model="formData.country" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">City</label>
-                        <input type="text" x-model="formData.city" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Education Level</label>
-                        <input type="text" x-model="formData.education" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Technical Skills & Interests</label>
-                        <input type="text" x-model="formData.skills" class="w-full rounded-lg border-slate-300 border px-4 py-2.5 focus:ring-2 focus:ring-navy-600 focus:outline-none">
-                    </div>
-                </div>
-                <div class="flex justify-end">
-                    <button type="submit" class="bg-navy-700 hover:bg-navy-800 text-white font-medium px-8 py-3 rounded-xl shadow transition-all">
-                        Submit Intake & Compute APEX Radar ⚡
-                    </button>
-                </div>
-            </form>
-        </section>
+<section id="s3"><h2>Step 3 · Recommended Courses</h2><p style="color:var(--m)">Sorted by your interests. Pick one, then find academies.</p>
+<button id="tl" onclick="tog()">Timeline: Balanced</button><div class="grid" id="cg"></div></section>
 
-        <!-- 3: RADAR -->
-        <section x-show="currentStep === 'radar'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-4xl mx-auto text-center">
-            <div class="mb-4 border-b pb-4 text-left">
-                <h2 class="text-2xl font-bold text-navy-900">APEX Competency Radar Analysis</h2>
-                <p class="text-slate-500 text-sm">Processing skill vectors in nanoseconds...</p>
-            </div>
-            <div class="py-12 bg-navy-50/50 rounded-xl border border-navy-100 my-6 flex flex-col items-center justify-center space-y-4">
-                <div class="w-64 h-64 rounded-full border-4 border-dashed border-navy-500 flex items-center justify-center relative shadow-inner bg-white">
-                    <span class="text-xs font-bold text-navy-800 absolute top-4">Python Dev</span>
-                    <span class="text-xs font-bold text-navy-800 absolute right-4">ML & PyTorch</span>
-                    <span class="text-xs font-bold text-navy-800 absolute bottom-4">Data Analysis</span>
-                    <span class="text-xs font-bold text-navy-800 absolute left-4">Communication</span>
-                    <div class="w-32 h-32 bg-navy-600/20 rounded-full flex items-center justify-center font-bold text-navy-900 text-sm">
-                        Optimal Fit
-                    </div>
-                </div>
-                <p class="text-xs text-slate-500 italic">⚡ Computing gap vectors... Redirecting to Recommendations...</p>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'intake'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'recommendations'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Recommendations &rarr;</button>
-            </div>
-        </section>
+<section id="s4"><h2>Step 4 · Academies Near You</h2><div style="display:flex;gap:6px"><input id="ms" placeholder="Search any academy or place…" onkeydown="if(event.key=='Enter')msearch()"><button onclick="msearch()">🔍</button></div>
+<p style="color:var(--m);font-size:13px">Drag/zoom freely. Click anywhere on the map to get that place's address and lookup links.</p>
+<button onclick="gm()">🗺 Google Maps view</button><div id="map"></div><iframe id="gmf" style="display:none;width:100%;height:360px;border:0;border-radius:12px;margin-top:8px" allowfullscreen></iframe><div id="al" class="grid"></div>
+<div class="card"><b>Online fallbacks:</b> <a style="color:var(--g)" href="https://www.coursera.org" target=_blank>Coursera</a> · <a style="color:var(--g)" href="https://www.edx.org" target=_blank>edX</a> · <a style="color:var(--g)" href="https://www.khanacademy.org" target=_blank>Khan Academy</a> · <a style="color:var(--g)" href="https://www.youtube.com" target=_blank>YouTube</a></div>
+<button class="gold" onclick="enroll()">I've Enrolled → Learning Hub</button></section>
 
-        <!-- 4: RECOMMENDATIONS -->
-        <section x-show="currentStep === 'recommendations'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">Targeted Skill & Pathway Recommendations</h2>
-                <p class="text-slate-500 text-sm">Click on any recommendation below to instantly jump into the Academies Map with filtered institute contacts.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="border border-navy-200 rounded-xl p-6 bg-navy-50/30 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-navy-900 mb-2">Full-Stack Python & Data Engineering</h3>
-                        <p class="text-xs text-slate-600 mb-4">Master FastAPI, Django, and PyTorch for backend system engineering.</p>
-                    </div>
-                    <button @click="currentStep = 'academies'" class="text-xs bg-navy-700 text-white py-2 rounded-lg font-medium hover:bg-navy-800">Find IT Academies &rarr;</button>
-                </div>
-                <div class="border border-navy-200 rounded-xl p-6 bg-navy-50/30 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-navy-900 mb-2">Aviation & Emirates Cabin Crew Training</h3>
-                        <p class="text-xs text-slate-600 mb-4">Elevate English fluency, emergency protocols, and high-standard customer care.</p>
-                    </div>
-                    <button @click="currentStep = 'academies'" class="text-xs bg-navy-700 text-white py-2 rounded-lg font-medium hover:bg-navy-800">Find Cabin Crew Academies &rarr;</button>
-                </div>
-                <div class="border border-navy-200 rounded-xl p-6 bg-navy-50/30 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-navy-900 mb-2">United World Colleges & Global Diplomas</h3>
-                        <p class="text-xs text-slate-600 mb-4">Explore international pre-university scholarships in UK, Australia, and UWC campuses.</p>
-                    </div>
-                    <button @click="currentStep = 'academies'" class="text-xs bg-navy-700 text-white py-2 rounded-lg font-medium hover:bg-navy-800">Find Global Institutes &rarr;</button>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'radar'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'academies'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next &rarr;</button>
-            </div>
-        </section>
+<section id="s5"><h2>Step 5 · Code Studio & LinkedIn</h2><div class="two">
+<div class="card"><h3>Assignment Sandbox (JavaScript)</h3><textarea id="code">// write JS here
+function add(a,b){return a+b}
+console.log(add(2,3))</textarea><button class="gold" onclick="run()">Run & Evaluate</button><div class="out" id="co2"></div></div>
+<div class="card"><h3>LinkedIn Audit</h3><input type="file" id="lis" accept="image/*"><img id="lip" style="max-width:100%;display:none;border-radius:8px">
+<input id="lh" placeholder="Your current headline"><textarea id="la" style="min-height:70px" placeholder="Your current About text"></textarea><input id="lt" placeholder="Target role (e.g. Junior Web Developer)">
+<button class="gold" onclick="audit()">Audit Profile</button><div class="out" id="lo"></div></div></div></section>
 
-        <!-- 5: ACADEMIES MAP -->
-        <section x-show="currentStep === 'academies'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-4xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">Step 5: Global Academies & Pathway Map</h2>
-                <p class="text-slate-500 text-sm">Filtered institute contacts based on your dual-track focus.</p>
-            </div>
-            <div class="space-y-4 mb-8">
-                <div class="p-4 border rounded-xl flex justify-between items-center bg-slate-50">
-                    <div>
-                        <h4 class="font-bold text-slate-800">Emirates Aviation College & Hubs (Dubai)</h4>
-                        <p class="text-xs text-slate-500">Cabin crew recruitment prep camps and service excellence seminars.</p>
-                    </div>
-                    <span class="bg-navy-100 text-navy-800 text-xs px-3 py-1 rounded-full font-semibold">Active Match</span>
-                </div>
-                <div class="p-4 border rounded-xl flex justify-between items-center bg-slate-50">
-                    <div>
-                        <h4 class="font-bold text-slate-800">Python & Data Science Bootcamp Global Network</h4>
-                        <p class="text-xs text-slate-500">Advanced full-stack and machine learning training modules.</p>
-                    </div>
-                    <span class="bg-navy-100 text-navy-800 text-xs px-3 py-1 rounded-full font-semibold">Target Route</span>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'recommendations'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'code'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Code & LinkedIn &rarr;</button>
-            </div>
-        </section>
+<section id="s6"><h2>Step 6 · AI Tutor & Notes</h2>
+<div class="card"><input id="key" type="password" placeholder="Paste your AI API key (saved only in this browser)"><button class="gold" onclick="saveKey()">Save &amp; Test</button> <span id="ks" style="color:var(--m)"></span></div><div class="two">
+<div class="card"><h3>Notes Generator</h3><input id="yt" placeholder="YouTube URL (optional)"><input id="tp" placeholder="Topic or paste transcript"><button class="gold" onclick="notes()">Generate Notes</button> <button onclick="print()">PDF</button> <button onclick="lsStart()">🔊 Live Session</button><div class="out" id="notes" style="max-height:60vh"></div><div id="lsc" style="display:none;margin-top:8px"><button onclick="lsBack()">⏪ Back</button> <button onclick="lsToggle()">⏯ Pause/Play</button> <button onclick="lsFwd()">⏩ Next</button> <button onclick="lsStop()">⏹ Stop</button> <select id="lsr" style="width:auto" onchange="LS.r=+this.value;LS.on&&lsPlay()"><option value=".7">Slow</option><option value=".88" selected>Normal</option><option value="1.1">Fast</option></select><div id="lst" style="color:var(--m);font-size:13px;margin-top:6px"></div></div></div>
+<div class="card"><h3>AI Tutor</h3><div class="out" id="chat" style="height:260px"></div><input id="ci" placeholder="Ask anything… (English / Roman Urdu)" onkeydown="if(event.key=='Enter')ask()"><button onclick="ask()">Send</button></div></div>
+<button class="gold" onclick="go(7)">Course Complete → Job Hunter</button></section>
 
-        <!-- 6: CODE & LINKEDIN -->
-        <section x-show="currentStep === 'code'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">Code Studio & LinkedIn Profile Audit</h2>
-                <p class="text-slate-500 text-sm">Test live HTML/CSS/JavaScript code snippets and perform a deep LinkedIn profile verification audit.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800 mb-2 text-sm">Interactive Live Code Sandbox</h4>
-                        <textarea rows="4" class="w-full text-xs font-mono p-2 border rounded bg-white" placeholder="Write HTML/JS snippet here...">console.log('Running Azure by Minal code builder...');</textarea>
-                    </div>
-                    <button class="mt-3 bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-medium">Run Code Snippet</button>
-                </div>
-                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800 mb-2 text-sm">LinkedIn Professional Profile Audit</h4>
-                        <input type="text" value="https://linkedin.com/in/minal-profile" class="w-full text-xs p-2 border rounded bg-white mb-2">
-                    </div>
-                    <button class="bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-medium">Run Profile Audit</button>
-                </div>
-            </div>
-            <div class="p-4 bg-navy-50 rounded-xl border border-navy-100 text-xs space-y-1 mb-6">
-                <p class="font-bold text-navy-900">Audit Findings & Enhancement Playbook:</p>
-                <p>• **Headline Recommendation:** Change to "Full-Stack Python Developer | AI Model Engineer | High-Standard Customer Service Specialist"</p>
-                <p>• **Profile Banner & Photo:** Ensure clear lighting, neutral backdrop, and structured professional posture.</p>
-                <p>• **Content Strategy:** Publish 2 technical posts per week documenting working code demos, PyTorch model results, or aviation customer excellence principles.</p>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'academies'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'tutor'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: AI Tutor Studio &rarr;</button>
-            </div>
-        </section>
+<section id="s7"><h2>Step 7 · Job Hunter</h2><div class="card two"><select id="jw"><option>Remote</option><option>On-site</option></select><input id="js" placeholder="Your skills"></div><button class="gold" onclick="jobs()">Find Live Openings</button> <button class="gold" onclick="research()">🔎 AI Deep Research (web)</button><div class="out" id="rs" style="display:none;margin-top:8px"></div><div class="grid" id="jl"></div><div class="card" id="jd" style="display:none"></div></section>
 
-        <!-- 7: AI TUTOR STUDIO -->
-        <section x-show="currentStep === 'tutor'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">AI Tutor Studio & Video Note Generator</h2>
-                <p class="text-slate-500 text-sm">Convert YouTube learning video URLs into comprehensive structured study notes, or chat directly with the trained AI tutor.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800 mb-2 text-sm">YouTube Video Note Generator</h4>
-                        <input type="text" value="https://www.youtube.com/watch?v=rfcV50vtbw" class="w-full text-xs p-2 border rounded bg-white mb-3">
-                        <div class="bg-white p-3 rounded border text-xs space-y-1 text-slate-600">
-                            <p class="font-bold text-slate-800">Extracted Comprehensive Video Study Notes:</p>
-                            <p>- Key Concept 1: Model Architecture & Training Datasets</p>
-                            <p>- Key Concept 2: Feature Normalization using Scikit-Learn pipelines</p>
-                            <p>- Practical Snippet: model.fit(X_train, y_train)</p>
-                        </div>
-                    </div>
-                    <button class="mt-3 bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-medium">Extract & Build Comprehensive Notes</button>
-                </div>
-                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800 mb-2 text-sm">Well-Trained AI Learning Companion</h4>
-                        <div class="bg-white p-3 rounded border text-xs space-y-2 h-36 overflow-y-auto mb-3">
-                            <p><span class="font-bold text-navy-800">AI Tutor:</span> Hello Minal! I am trained on full-stack development, Python ML models, and cabin crew hospitality protocols. Ask me anything!</p>
-                            <p><span class="font-bold text-slate-700">You:</span> ok whats difference between sigmoid and relu?</p>
-                            <p><span class="font-bold text-navy-800">AI Tutor:</span> Excellent question! Regarding "ok whats difference between sigmoid and relu", ensure you maintain strict syntax formatting and split your datasets properly into training and test vectors.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <input type="text" placeholder="Ask a question..." class="flex-grow text-xs p-2 border rounded bg-white">
-                        <button class="bg-navy-700 text-white text-xs px-4 py-2 rounded-lg">Ask</button>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'code'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'hunter'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Job Hunter &rarr;</button>
-            </div>
-        </section>
+<section id="s8"><h2>Step 8 · CV Studio</h2><div class="two"><div class="card">
+<select id="cs" onchange="cv()"></select>Accent <input type="color" id="cc" value="#0b3d91" oninput="cv()">
+<input id="c1" placeholder="Name" oninput="cv()"><input id="c2" placeholder="Title / target role" oninput="cv()"><input id="c3" type="email" placeholder="Email" oninput="cv()"><input id="c8" placeholder="Phone number" oninput="cv()"><input id="c9" placeholder="City, Country" oninput="cv()">
+<textarea id="c4" style="min-height:70px" placeholder="Professional summary" oninput="cv()"></textarea><textarea id="c5" placeholder="Experience / projects (one per line)" oninput="cv()"></textarea><input id="c6" placeholder="Skills (comma separated)" oninput="cv()"><textarea id="c7" style="min-height:60px" placeholder="Education (one per line)" oninput="cv()"></textarea>
+<button class="gold" onclick="autoCV()">✨ Auto-build CV</button> <button class="gold" onclick="print()">Export PDF</button></div><div id="cvp"></div></div></section>
 
-        <!-- 8: JOB HUNTER -->
-        <section x-show="currentStep === 'hunter'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">Job Hunter & Vacancy Matcher</h2>
-                <p class="text-slate-500 text-sm">Answer these 3 core questions to find accurate local and international industry openings.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">1. Work Preference</label>
-                    <select class="w-full text-xs p-2 border rounded bg-white"><option>Remote</option><option>On-Site / Relocation</option></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">2. Target Market Industry</label>
-                    <select class="w-full text-xs p-2 border rounded bg-white"><option>Pakistan Industry</option><option>Global Aviation & Tech</option></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">3. Skillset You Serve</label>
-                    <input type="text" value="Python, AI & Cabin Crew Customer Care" class="w-full text-xs p-2 border rounded bg-white">
-                </div>
-            </div>
-            <div class="flex justify-center mb-6">
-                <button class="bg-navy-700 hover:bg-navy-800 text-white text-xs px-6 py-2.5 rounded-lg font-medium">Match Industries & Open Vacancies</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <div class="border p-4 rounded-xl bg-slate-50">
-                    <span class="text-[10px] bg-navy-100 text-navy-800 px-2 py-0.5 rounded font-semibold">Remote</span>
-                    <h4 class="font-bold text-slate-800 mt-2 text-sm">Emirates Airline - Pakistan Operations</h4>
-                    <p class="text-xs text-slate-500">Skill Match: Python, AI & Cabin Crew Customer Care</p>
-                    <p class="text-xs text-slate-500">Vacancies: 12 Openings | Requirements: English Fluency & Customer Care</p>
-                    <p class="text-xs text-navy-700 font-mono mt-2">Contact: recruitment@emirates.com</p>
-                </div>
-                <div class="border p-4 rounded-xl bg-slate-50">
-                    <span class="text-[10px] bg-navy-100 text-navy-800 px-2 py-0.5 rounded font-semibold">Remote</span>
-                    <h4 class="font-bold text-slate-800 mt-2 text-sm">Systems Limited - Pakistan Tech</h4>
-                    <p class="text-xs text-slate-500">Skill Match: Python, AI & Cabin Crew Customer Care</p>
-                    <p class="text-xs text-slate-500">Vacancies: 5 Openings | Requirements: Python, FastAPI & PyTorch</p>
-                    <p class="text-xs text-navy-700 font-mono mt-2">Contact: careers@systemsltd.com</p>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'tutor'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'cv'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: CV Studio &rarr;</button>
-            </div>
-        </section>
+<section id="s9"><h2>Step 9 · Interview Arena</h2><div id="iset" class="card"><input id="ic" placeholder="Company"><input id="ir" placeholder="Position"><textarea id="ij" style="min-height:70px" placeholder="Paste job requirements"></textarea>
+<select id="il"><option value="en-US">English</option><option value="en-IN">Roman Urdu / Hinglish</option></select><button class="gold" onclick="istart()">Start Interview</button></div>
+<div id="iarena" style="display:none" class="two"><div><div id="orb" class="card" style="text-align:center">🤖 Interviewer ready</div><video id="vid" autoplay muted playsinline></video><div id="bl" class="card">Body language: starting…</div></div>
+<div class="card"><div class="out" id="ilog" style="height:260px"></div><button class="gold" onclick="listen()">🎤 Answer</button> <button onclick="nextQ()">Next</button> <button onclick="finish()">That's it for today</button><input id="ti" placeholder="or type answer" onkeydown="if(event.key=='Enter'){ans(this.value);this.value=''}"></div></div><div id="sc"></div></section>
 
-        <!-- 9: CV STUDIO -->
-        <section x-show="currentStep === 'cv'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">CV Studio & Layout Customizer</h2>
-                <p class="text-slate-500 text-sm">Enter your details and requirements to auto-generate from 5 professional layout styles with live editing.</p>
-            </div>
-            <div class="mb-4">
-                <label class="block text-xs font-medium text-slate-700 mb-2">Select Layout Style Example:</label>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-                    <button class="p-2 border rounded bg-navy-700 text-white font-medium">1. Modern Executive</button>
-                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">2. Aviation Premium</button>
-                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">3. Minimalist Tech</button>
-                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">4. Academic Clean</button>
-                    <button class="p-2 border rounded bg-slate-100 text-slate-700 hover:bg-slate-200">5. Creative Brand</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="space-y-3">
-                    <input type="text" value="Minal" class="w-full text-xs p-2 border rounded">
-                    <input type="text" value="minal@example.com" class="w-full text-xs p-2 border rounded">
-                    <input type="text" value="+92 300 1234567" class="w-full text-xs p-2 border rounded">
-                    <input type="text" value="Emirates Cabin Crew / Full-Stack Python Developer" class="w-full text-xs p-2 border rounded">
-                    <textarea rows="3" class="w-full text-xs p-2 border rounded">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</textarea>
-                    <button class="w-full bg-navy-700 text-white text-xs py-2 rounded font-medium">Build & Update CV</button>
-                </div>
-                <div class="border rounded-xl p-4 bg-slate-50 text-[11px] font-mono space-y-3">
-                    <div class="flex justify-between border-b pb-2">
-                        <span class="font-bold text-slate-900 text-sm">MINAL</span>
-                        <span class="text-slate-500">minal@example.com<br>+92 300 1234567</span>
-                    </div>
-                    <p class="font-semibold text-navy-800">Emirates Cabin Crew / Full-Stack Python Developer</p>
-                    <div>
-                        <p class="font-bold text-slate-800 uppercase text-[10px]">Professional Summary</p>
-                        <p class="text-slate-600">High-proficiency English communicator with a strong foundation in full-stack Python engineering, customer relations, and machine learning models.</p>
-                    </div>
-                    <div>
-                        <p class="font-bold text-slate-800 uppercase text-[10px]">Key Projects & Built Applications</p>
-                        <p class="text-slate-600">1. Azure E-Commerce Web App<br>2. PyTorch Machine Learning Classifier<br>3. AI Career Compass Portal</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'hunter'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'interview'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Next: Interview Arena &rarr;</button>
-            </div>
-        </section>
-
-        <!-- 10: INTERVIEW ARENA -->
-        <section x-show="currentStep === 'interview'" class="bg-white rounded-2xl shadow-xl p-8 border border-navy-100 max-w-5xl mx-auto">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-navy-900">Live AI Mock Interview Arena</h2>
-                <p class="text-slate-500 text-sm">Interactive interviewer voice simulation, webcam posture detection, and immediate evaluation response.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-slate-900 text-white rounded-xl p-4 flex flex-col justify-between h-56">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="bg-green-600 text-white px-2 py-0.5 rounded">Camera Active</span>
-                        <span class="text-slate-400">Posture: Excellent</span>
-                    </div>
-                    <div class="text-center text-slate-500 text-xs">
-                        [ Simulated Video Feed / Avatar ]
-                    </div>
-                    <button class="bg-slate-800 text-white text-xs py-1.5 rounded">Toggle Camera</button>
-                </div>
-                <div class="border rounded-xl p-4 bg-slate-50 flex flex-col justify-between h-56">
-                    <div>
-                        <span class="text-[10px] bg-navy-100 text-navy-800 px-2 py-0.5 rounded font-semibold">AI Interviewer</span>
-                        <p class="text-xs text-slate-800 mt-2 font-medium">
-                            "Welcome to your cabin crew interview session for the Cabin Crew Specialist position. Why do you believe you are the ideal fit?"
-                        </p>
-                    </div>
-                    <textarea rows="2" class="w-full text-xs p-2 border rounded bg-white" placeholder="Type or speak your answer here..."></textarea>
-                    <button class="bg-navy-700 text-white text-xs py-2 rounded font-medium">Submit Answer</button>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button @click="currentStep = 'cv'" class="text-slate-600 hover:text-navy-800 font-medium">&larr; Back</button>
-                <button @click="currentStep = 'welcome'" class="bg-navy-700 hover:bg-navy-800 text-white px-6 py-2.5 rounded-xl">Return to Welcome</button>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-auto py-4 text-center text-xs text-slate-500">
-        AI Career Compass &copy; 2026 • Dual-Track Professional Development Engine
-    </footer>
-
-    <!-- Alpine.js Application Logic -->
-    <script>
-        function careerApp() {
-            return {
-                currentStep: 'welcome',
-                steps: {
-                    welcome: '1. Welcome',
-                    intake: '2. Intake',
-                    radar: '3. Radar',
-                    recommendations: '4. Recommendations',
-                    academies: '5. Academies Map',
-                    code: '6. Code & LinkedIn',
-                    tutor: '7. AI Tutor',
-                    hunter: '8. Job Hunter',
-                    cv: '9. CV Studio',
-                    interview: '10. Interview Arena'
-                },
-                formData: {
-                    fullName: 'Minal',
-                    age: '18',
-                    country: 'Pakistan',
-                    city: 'Lahore',
-                    education: 'Matriculation / Self-Study Preparation',
-                    skills: 'Python, Basic Web Development, Customer Communication, Model Training'
-                },
-                submitIntake() {
-                    this.currentStep = 'radar';
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+<div id="auth" style="display:none;position:fixed;inset:0;background:#000c;z-index:99;align-items:center;justify-content:center"><div class="card" style="width:min(360px,92%)"><h2>Sign In / Up</h2><input id="an" placeholder="Full name (sign up only)"><input id="ae" type="email" placeholder="Email"><input id="ap" type="password" placeholder="Password (min 6)"><button class="gold" onclick="auth(0)">Sign In</button> <button onclick="auth(1)">Sign Up</button> <button onclick="$('auth').style.display='none'">Close</button><p id="am" style="color:#f88"></p><small style="color:var(--m)">Accounts are stored only in this browser (demo auth, hashed password).</small></div></div>
+<script>
+const $=id=>document.getElementById(id),S={xp:0,int:[],fast:false,course:null,job:null,m:0};
+const NAV=['Welcome','Profile','Radar','Courses','Academies','Code & LinkedIn','Tutor','Jobs','CV','Interview'];
+const nav=$('nav');NAV.forEach((n,i)=>{const b=document.createElement('button');b.textContent=i+': '+n;b.id='n'+i;b.onclick=()=>go(i);nav.append(b)});
+function xp(n){S.xp+=n;$('xp').firstChild.style.width=Math.min(100,S.xp/5)+'%';const L=['Bronze','Silver','Gold','Platinum','Diamond','L99 Apex'][Math.min(5,S.xp/100|0)];$('st').textContent=`Level ${(S.xp/20|0)+1} · ${L} · ${S.xp} XP · 🔥 streak 1`}
+function go(i){document.querySelectorAll('section').forEach((s,j)=>s.classList.toggle('on',i==j));NAV.forEach((_,j)=>$('n'+j).classList.toggle('on',i==j));S.cur=i;if(i==2)radar();if(i==3)courses();if(i==4)setTimeout(mapInit,50);if(i==8)cv();scrollTo(0,0)}
+const Q=['The expert in anything was once a beginner.','Small steps every day build a legendary career.','Your future is built by what you do today.'];let qi=0;const qe=$('q');
+setInterval(()=>{qe.style.opacity=0;setTimeout(()=>{qe.textContent='“'+Q[qi++%3]+'”';qe.style.opacity=1},800)},4500);qe.textContent='“'+Q[0]+'”';
+const F=['Tech','Design','Data','Business','English/IELTS','Aviation','Health','Finance','Marketing','Trades'];
+F.forEach(f=>{const s=document.createElement('span');s.className='chip';s.textContent=f;s.onclick=()=>{s.classList.toggle('on');S.int=[...document.querySelectorAll('.chip.on')].map(x=>x.textContent)};$('ints').append(s)});
+function intake(){if(!$('nm').value)return alert('Enter your name');S.p={n:$('nm').value,c:$('ct').value,k:$('co').value,sk:$('sk').value};xp(40);$('c1').value=S.p.n;$('js').value=S.p.sk;go(2)}
+let rt;function radar(){const c=$('rd').getContext('2d');let a=0;clearInterval(rt);rt=setInterval(()=>{c.fillStyle='#050b1a';c.fillRect(0,0,320,320);c.strokeStyle='#d4af3766';for(let r=40;r<=150;r+=37){c.beginPath();c.arc(160,160,r,0,7);c.stroke()}
+c.strokeStyle='#d4af37';c.lineWidth=3;c.beginPath();c.moveTo(160,160);c.lineTo(160+150*Math.cos(a),160+150*Math.sin(a));c.stroke();c.lineWidth=1;a+=.08},30);setTimeout(()=>{clearInterval(rt);if(S.cur==2){xp(30);go(3)}},3500)}
+const C=[['Full-Stack Web Development','Tech','4 mo','8h','Medium'],['Python & Data Science','Data','5 mo','8h','Medium'],['AI / Machine Learning','Tech','6 mo','10h','Hard'],['Cybersecurity Basics','Tech','4 mo','6h','Medium'],['UI/UX Design','Design','3 mo','6h','Easy'],['Graphic Design & Canva','Design','2 mo','5h','Easy'],['Digital Marketing & SEO','Marketing','3 mo','5h','Easy'],['Business Analytics (Excel/SQL)','Business','3 mo','6h','Medium'],['Accounting & Finance Fundamentals','Finance','5 mo','6h','Medium'],['IELTS Preparation (Band 7+)','English/IELTS','2 mo','8h','Medium'],['Spoken English & Communication','English/IELTS','3 mo','5h','Easy'],['Cabin Crew & Aviation Training','Aviation','3 mo','8h','Medium'],['Medical Assistant / Healthcare Basics','Health','4 mo','6h','Medium'],['Electrician & Solar Installation','Trades','3 mo','10h','Medium'],['Freelancing (Fiverr/Upwork)','Business','2 mo','5h','Easy']];
+function tog(){S.fast=!S.fast;$('tl').textContent='Timeline: '+(S.fast?'Fast':'Balanced');courses()}
+function courses(){const s=[...C].sort((a,b)=>S.int.includes(b[1])-S.int.includes(a[1]));$('cg').innerHTML=s.map((c,i)=>{const m=parseInt(c[2])*(S.fast?.6:1),h=parseInt(c[3])*(S.fast?1.5:1);return `<div class="card"><h3>${c[0]}</h3>${S.int.includes(c[1])?'⭐ Matches your interest<br>':''}💰 ${money(parseInt(c[2])*15000*(c[4]=='Hard'?1.4:1))} (est.)<br>⏱ ${m.toFixed(1)} months · ${h|0} h/week<br>Difficulty: ${c[4]}<br>Skill gap: ${'█'.repeat(3+i%4)}${'░'.repeat(4-i%4)}<br><button class="gold" onclick="pick('${c[0]}')">Choose</button></div>`}).join('')}
+function pick(n){S.course=n;xp(30);go(4)}
+let map,mk=[];function mapInit(){if(!map){map=L.map('map').setView([31.52,74.36],11);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);map.on('click',async e=>{const r=await rev(e.latlng);L.popup().setLatLng(e.latlng).setContent(r).openOn(map)})}
+setTimeout(()=>map.invalidateSize(),100);if(S.course)msearch((S.course.split(' ')[0])+' academy institute '+(S.p?S.p.c:''),true)}
+const gl=q=>`https://www.google.com/search?q=${encodeURIComponent(q)}`;
+function card(n,a,ll){return `<b>${n}</b><br>${a}<br><a target=_blank style="color:#d4af37" href="${gl(n+' contact phone email')}">📞 Phone/Email</a> · <a target=_blank style="color:#d4af37" href="${gl(n+' official website admission')}">🌐 Portal</a> · <a target=_blank style="color:#d4af37" href="https://www.google.com/maps/dir/?api=1&destination=${ll.lat},${ll.lng}">🧭 Directions</a>`}
+async function rev(ll){try{const r=await(await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${ll.lat}&lon=${ll.lng}`)).json();return card(r.name||'Selected place',r.display_name,ll)}catch(e){return 'Lookup failed (offline?)'}}
+async function msearch(q,auto){q=typeof q=='string'?q:$('ms').value;if(!q)return;$('al').innerHTML='<div class="card">Searching…</div>';try{let b=map.getBounds(),v=auto?'':'&viewbox='+[b.getWest(),b.getNorth(),b.getEast(),b.getSouth()];let r=await(await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=8&q=${encodeURIComponent(q)}`)).json();mk.forEach(m=>m.remove());mk=[];if(!r.length){$('al').innerHTML='<div class="card">No results. Try another name or use the online options below.</div>';return}
+$('al').innerHTML=r.map(x=>`<div class="card">${card(x.display_name.split(',')[0],x.display_name,{lat:x.lat,lng:x.lon})}<br><span style="color:var(--m)">Est. fees from ${money(25000)}/month · confirm with academy · ratings on Google</span></div>`).join('');r.forEach(x=>mk.push(L.marker([x.lat,x.lon]).addTo(map).bindPopup(card(x.display_name.split(',')[0],x.display_name,{lat:x.lat,lng:x.lon}))));map.setView([r[0].lat,r[0].lon],12)}catch(e){$('al').innerHTML='<div class="card">Search error: check internet.</div>'}}
+function enroll(){xp(50);go(5)}
+function run(){const o=$('co2');let logs=[],t=0;const f=document.createElement('iframe');f.style.display='none';document.body.append(f);const w=f.contentWindow;w.console={log:(...a)=>logs.push(a.map(x=>typeof x=='object'?JSON.stringify(x):x).join(' '))};try{w.eval($('code').value);t=1}catch(e){logs.push('❌ '+e.message)}f.remove();const sc=t?Math.min(100,60+Math.min(logs.length,2)*10+($('code').value.includes('//')?10:0)):20;o.textContent=(logs.join('\n')||'(no output — use console.log)')+`\n\nScore: ${sc}/100 · +${sc/4|0} XP\nTips: ${t?'Add comments, handle edge cases, use const/let.':'Fix the error above, then re-run.'}`;xp(sc/4|0)}
+$('lis').onchange=e=>{const f=e.target.files[0];if(f){$('lip').src=URL.createObjectURL(f);$('lip').style.display='block'}};
+function audit(){const r=$('lt').value||'your target role',h=$('lh').value,a=$('la').value,sk=(S.p&&S.p.sk)||'your key skills',n=S.p?S.p.n:'Name';
+let o=`HEADLINE (${h.length} chars)\nProblem: ${h.length<40?'Too short/vague — recruiters search keywords.':'OK length; ensure keywords lead.'}\nWrite instead:\n"${r} | ${sk.split(',').slice(0,3).join(' · ')} | Building real projects & open to work"\n\nABOUT\n${a.length<300?'Too short. ':''}Use this structure:\n"I'm ${n}, an aspiring ${r} based in ${S.p?S.p.c:'your city'}. I build/learn with ${sk}. Recently I completed ${S.course||'a professional course'} and shipped [project 1] and [project 2] that [result/number]. I'm looking for [internship/remote role] where I can [value you bring]. Open to: [roles]. Contact: [email]."\n\nPHOTO & BANNER\n• Face 60% of frame, plain background, natural light, smile.\n• Banner: write your niche + tagline e.g. "${r} · Turning ideas into working products".\n\nEXPERIENCE/PROJECTS\nRewrite each bullet as: Action verb + what + tool + result. Example:\n✗ "Made a website"\n✓ "Built a responsive store with HTML/CSS/JS, cutting load time to 1.8s"\n\nSKILLS\nPin top 3: ${sk.split(',').slice(0,3).join(', ')}. Get 5+ endorsements; add 30+ relevant skills.\n\nACTIVITY\nPost 2×/week: what you learned, a mini project demo, a lesson. Comment on 5 industry posts daily. Connect with 10 recruiters/week with a note.\n\nURL: linkedin.com/in/yourname (no numbers). Turn on "Open to Work" (recruiters only).`;
+if($('lis').files[0])o+='\n\nScreenshot received locally — it is not uploaded anywhere. Compare it against the checklist above.';$('lo').textContent=o;xp(30)}
+const KB={sigmoid:'Sigmoid squashes values to (0,1): 1/(1+e^-x). Good for probabilities but suffers vanishing gradients. ReLU = max(0,x): fast, no saturation for x>0, but can "die". Use ReLU in hidden layers, sigmoid at binary outputs.',relu:'ReLU = max(0,x): fast, sparse, avoids vanishing gradients; beware dying neurons (use Leaky ReLU).',python:'Python: readable, dynamic language. Learn variables, lists/dicts, loops, functions, classes, then libraries (pandas, numpy).',html:'HTML structures a page, CSS styles it, JavaScript adds behaviour. Start with semantic tags, flexbox/grid, then DOM events.',javascript:'JavaScript runs in the browser. Key: let/const, functions, arrays (map/filter), promises/async-await, DOM.',ielts:'IELTS: Listening, Reading, Writing (Task 1 report, Task 2 essay), Speaking (3 parts). Practice timed papers, learn paraphrasing, and record yourself.',interview:'Use STAR: Situation, Task, Action, Result. Keep answers 60–90s, quantify results, research the company.',cv:'One page, ATS-friendly, keywords from the job post, achievements with numbers, no photos/graphics.',english:'Improve English: daily speaking 15 min, read news, learn phrases not words, shadow native speakers, record and review.',sql:'SQL queries tables: SELECT cols FROM t WHERE cond GROUP BY x ORDER BY y; learn JOINs next.',excel:'Excel: master VLOOKUP/XLOOKUP, pivot tables, IF, SUMIFS, charts.',marketing:'Marketing funnel: awareness → interest → conversion → retention. Learn SEO, content, ads, analytics.',cabin:'Cabin crew: strong English, grooming, safety procedures (SEP), teamwork, calm customer service; practise group tasks and assessment-day interviews.'};
+async function llm(p){const k=localStorage.k;if(!k)return null;try{const r=await(await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GM+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:p}]}]})})).json();return r.candidates[0].content.parts[0].text}catch(e){return null}}
+async function ask(){const q=$('ci').value.trim();if(!q)return;$('ci').value='';const c=$('chat');c.innerHTML+=`<div class="msg me">${q}</div>`;let a=await llm(`You are a friendly tutor for any subject. Current lesson: ${S.course||'general'}. Explain clearly, give hints before full answers; if the user writes Roman Urdu, reply in Roman Urdu. Question: ${q}`);
+if(!a){const l=q.toLowerCase();const h=Object.keys(KB).filter(k=>l.includes(k)).map(k=>KB[k]);a=h.length?h.join('\n\n'):"I don't have this in my built-in knowledge. Paste a free Gemini API key above (aistudio.google.com) and I can answer any topic. Meanwhile, tell me the subject and I'll break it into steps."}
+c.innerHTML+=`<div class="msg">${a.replace(/</g,'&lt;')}</div>`;c.scrollTop=1e9;xp(5)}
+async function notes(){const t=$('tp').value||$('yt').value||S.course||'your topic';$('notes').textContent='Generating…';let a=await llm(`Write long, detailed, well-structured study notes on: ${t}. Include: overview, key concepts each explained, examples, common mistakes, 5 short Q&A, summary.`);
+if(!a)a=`STUDY NOTES: ${t}\n\n1. Overview\n${t} — define it in one sentence, then why it matters.\n\n2. Key Concepts\n• Concept A: definition → example → when to use.\n• Concept B: definition → example → pitfalls.\n\n3. Worked Example\nStep 1 … Step 2 … Step 3 …\n\n4. Common Mistakes\n• Skipping fundamentals • Not practising daily\n\n5. Short Q&A\nQ: What is ${t}? A: …\nQ: Give one use case. A: …\n\n6. Summary\nRevise in 3 bullets.\n\n(For full-depth notes on any video/topic, add a Gemini key above. Browsers cannot read YouTube transcripts directly, so paste the transcript into the Topic box.)`;$('notes').textContent=a;xp(15)}
+function speak(t,cb){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.slice(0,3000));u.onend=cb;speechSynthesis.speak(u)}
+const J=[['Systems Limited','Software/IT','Remote','https://www.systemsltd.com/careers'],['NetSol Technologies','Software/IT','On-site','https://www.netsolpk.com/careers'],['Arbisoft','Software/IT','Remote','https://arbisoft.com/careers'],['10Pearls','Software/IT','Remote','https://10pearls.com/careers'],['Emirates Group','Aviation','On-site','https://www.emiratesgroupcareers.com'],['Qatar Airways','Aviation','On-site','https://careers.qatarairways.com'],['PIA','Aviation','On-site','https://www.piac.com.pk'],['Upwork','Freelance','Remote','https://www.upwork.com'],['Fiverr','Freelance','Remote','https://www.fiverr.com'],['Teleperformance','BPO/Customer Care','Remote','https://www.teleperformance.com/en-us/careers'],['HBL','Banking','On-site','https://www.hbl.com/careers'],['Habib Metropolitan','Finance','On-site','https://www.habibmetro.com/careers'],['Shaukat Khanum','Healthcare','On-site','https://shaukatkhanum.org.pk/careers'],['British Council','Education/IELTS','On-site','https://www.britishcouncil.org.pk/about/jobs'],['Daraz','E-commerce','On-site','https://www.daraz.pk/careers'],['Careem','Tech/Transport','Remote','https://www.careem.com/careers']];
+function jobs(){const w=$('jw').value,s=$('js').value.toLowerCase(),c=S.p?S.p.c:'';$('jl').innerHTML=J.filter(j=>j[2]==w||1).sort((a,b)=>(b[2]==w)-(a[2]==w)).map((j,i)=>`<div class="card"><h3>${j[0]}</h3>${j[1]} · ${j[2]}<br><button onclick="jd(${J.indexOf(j)})">Open Panel</button></div>`).join('')}
+function jd(i){const j=JL[i];S.job=j;xp(10);const d=$('jd');d.style.display='block';d.innerHTML=`<h3>${j[0]}</h3><a style="color:#d4af37" target=_blank href="${j[3]}">Official careers page</a> · <a style="color:#d4af37" target=_blank href="https://www.linkedin.com/company/${j[0].toLowerCase().replace(/[^a-z0-9]+/g,'-')}">LinkedIn</a> · <a style="color:#d4af37" target=_blank href="${gl(j[0]+' HR recruiter email')}">Find HR email</a> · <a style="color:#d4af37" target=_blank href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j[0])}">Live vacancies</a><button onclick="research('${j[0].replace(/[^\w ]/g,'')}')">🔎 Find contacts & emails with AI</button><p style="color:var(--m)">Always verify email addresses on the company site before sending.</p>
+<h3>Cold Email</h3><div class="out">Subject: ${$('js').value.split(',')[0]||'Candidate'} Application – ${S.p?S.p.n:'Your Name'}\n\nDear Hiring Team at ${j[0]},\n\nI'm ${S.p?S.p.n:'[Name]'}, trained in ${S.course||'[course]'}, with skills in ${$('js').value||'[skills]'}. I admire ${j[0]} and believe I can contribute to your ${j[1]} work. My CV is attached; I'd value a 10-minute chat.\n\nBest regards,\n${S.p?S.p.n:'[Name]'}</div>
+<h3>How to email</h3>1. Subject: role + your name (under 8 words).<br>2. Body: 4 short lines — who you are, proof, why them, ask.<br>3. Attach PDF CV named Name_Role.pdf.<br>4. Follow up after 5–7 days, once more after 7 more, then stop.<br>5. Send Tue–Thu mornings.<br><button class="gold" onclick="tailor(${i})">Tailor CV for this job →</button>`}
+const T=[];['Premium','Minimal Tech','Creative'].forEach(g=>[1,2,3,4,5].forEach(n=>T.push(g+' '+n)));T.forEach((t,i)=>$('cs').innerHTML+=`<option value="${i}">${t}</option>`);
+function cv(){const i=+$('cs').value,g=i/5|0,p=$('cvp'),ac=$('cc').value,fm=['Georgia','Garamond,serif','Palatino,serif','Times New Roman','Cambria'][i%5],fs=['system-ui','Consolas,monospace','Arial','Verdana','Trebuchet MS'][i%5];p.className=['','minimal','creative'][g];p.style.cssText=`--ac:${ac};--ff:${g==1?fs:fm}`;
+const l=x=>$(x).value.split('\n').filter(Boolean).map(z=>'<li>'+z.replace(/</g,'&lt;')+'</li>').join('');p.innerHTML=`<h1>${$('c1').value||'YOUR NAME'}</h1><div style="margin-bottom:10px">${$('c2').value||'Target Role'} · ${[$('c3').value,$('c8').value,S.p?S.p.c:''].filter(Boolean).join(' · ')||'email · phone · city'}</div><h3>SUMMARY</h3><p>${$('c4').value||'Write a 2–3 line summary.'}</p><h3>EXPERIENCE & PROJECTS</h3><ul>${l('c5')||'<li>Add entries</li>'}</ul><h3>SKILLS</h3><p>${$('c6').value}</p><h3>EDUCATION</h3><ul>${l('c7')}</ul>`}
+let Qs=[],qn=0,sc={a:0,n:0,tot:0},rec,stream,mv=0,prev;
+async function istart(){if(!$('ic').value||!$('ir').value)return alert('Enter company and position');const r=($('ij').value||'teamwork, communication, problem solving').split(/[,\n.;]+/).map(x=>x.trim()).filter(x=>x.length>3).slice(0,4);
+Qs=['Tell me about yourself and why you want the '+$('ir').value+' role at '+$('ic').value+'.',...r.map(x=>`The role requires "${x}". Describe a time you showed this (use STAR).`),'Tell me about a challenge you overcame.','Why should we hire you over other candidates?','Do you have any questions for us?'];qn=0;sc={a:0,n:0,tot:0};$('iset').style.display='none';$('iarena').style.display='grid';
+try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});$('vid').srcObject=stream;bodyLoop()}catch(e){$('bl').textContent='Camera/mic blocked — allow permissions in the browser address bar.'}nextQ(true)}
+function say(t){$('ilog').innerHTML+=`<div class="msg">🤖 ${t}</div>`;$('ilog').scrollTop=1e9;speak(t)}
+function nextQ(f){if(!f&&qn>0)sc.tot++;if(qn>=Qs.length)return finish();say(Qs[qn++])}
+function listen(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return alert('Speech recognition needs Chrome/Edge. Type your answer instead.');rec=new R();rec.lang=$('il').value;rec.onresult=e=>ans(e.results[0][0].transcript);rec.onerror=()=>alert('Mic error: allow microphone access.');rec.start()}
+function ans(t){if(!t)return;$('ilog').innerHTML+=`<div class="msg me">${t}</div>`;const l=t.toLowerCase();if(/that'?s it|bas itna|khatam/.test(l))return finish();if(/next question|move on|skip|agla|i don'?t know|pata nahi/.test(l)){sc.tot++;return nextQ(1)}
+const w=t.split(/\s+/).length,star=/(situation|task|action|result|achiev|improv|%|\d)/i.test(t)?1:0,fl=(l.match(/\b(um|uh|like|basically|actually)\b/g)||[]).length;let s=Math.min(100,30+Math.min(w,80)*.6+star*15-fl*4);sc.a+=s;sc.n++;sc.tot++;xp(10);
+$('ilog').innerHTML+=`<div class="msg">📝 ${s|0}/100 — ${w<25?'Too short, add a concrete example. ':''}${star?'Good use of specifics. ':'Add numbers/results (STAR). '}${fl?'Cut filler words ('+fl+'). ':''}</div>`;setTimeout(()=>nextQ(1),1200)}
+function bodyLoop(){const c=document.createElement('canvas');c.width=64;c.height=48;const x=c.getContext('2d');setInterval(()=>{x.drawImage($('vid'),0,0,64,48);const d=x.getImageData(0,0,64,48).data;if(prev){let df=0;for(let i=0;i<d.length;i+=16)df+=Math.abs(d[i]-prev[i]);mv=mv*.7+df/1000*.3}prev=d;const f=mv>12;$('bl').innerHTML=f?'⚠ Lots of movement — keep hands still, sit upright.':'✅ Steady posture. Keep eye contact with the camera lens, shoulders back, smile naturally.'},700)}
+function finish(){speechSynthesis.cancel();if(stream)stream.getTracks().forEach(t=>t.stop());const a=sc.n?sc.a/sc.n:0,pct=a|0;$('iarena').style.display='none';$('sc').innerHTML=`<div class="card"><h2>Scorecard</h2>Answered: ${sc.n}/${sc.tot||sc.n} · Overall: <b>${pct}%</b><br>Practice needed: ${pct>75?'light — polish delivery':pct>50?'moderate — 3–4 more sessions':'high — rehearse STAR answers daily'}<br>Review: requirements of ${$('ic').value} — prepare one STAR story per requirement.<br>Body language: camera-motion check only (not full pose AI).<br><button class="gold" onclick="location.reload()">Retry</button></div>`;xp(40)}
+go(0);xp(0);
+</script><script>
+const GM='gemini-2.0-flash',E=x=>String(x).replace(/[<&]/g,c=>c=='<'?'&lt;':'&amp;');
+const CU={pakistan:'PKR',india:'INR',uk:'GBP','united kingdom':'GBP',england:'GBP',usa:'USD','united states':'USD',america:'USD',uae:'AED',dubai:'AED','saudi arabia':'SAR',canada:'CAD',australia:'AUD',germany:'EUR',france:'EUR',italy:'EUR',spain:'EUR',ireland:'EUR',bangladesh:'BDT',turkey:'TRY',malaysia:'MYR',qatar:'QAR',nigeria:'NGN',egypt:'EGP'};
+let RT={PKR:280,USD:1,GBP:.79,INR:83,AED:3.67,SAR:3.75,CAD:1.36,AUD:1.5,EUR:.92,BDT:118,TRY:32,MYR:4.7,QAR:3.64,NGN:1500,EGP:48};
+fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{if(d.rates){RT=d.rates;if(S.cur==3)courses()}}).catch(()=>{});
+const cur=()=>CU[($('co').value||'').trim().toLowerCase()]||'USD';
+function money(p){const c=cur();return new Intl.NumberFormat('en',{style:'currency',currency:c,maximumFractionDigits:0}).format(p/RT.PKR*(RT[c]||1))}
+$('co').oninput=()=>{if(S.cur==3)courses()};
+async function h(s){return[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('')}
+async function auth(up){const e=$('ae').value.trim().toLowerCase(),p=$('ap').value,m=$('am');if(!e||p.length<6)return m.textContent='Valid email and 6+ character password required';const U=JSON.parse(localStorage.users||'{}'),ph=await h(p);
+if(up){if(U[e])return m.textContent='Account already exists';U[e]={n:$('an').value||e.split('@')[0],p:ph};localStorage.users=JSON.stringify(U)}else if(!U[e]||U[e].p!=ph)return m.textContent='Wrong email or password';
+login(e,U[e]);$('auth').style.display='none';$('ap').value='';xp(10);if(S.cur==0)go(1)}
+function login(e,u){S.user=u;localStorage.me=e;$('ab').textContent='👤 '+u.n.split(' ')[0];$('nm').value=$('nm').value||u.n;$('c1').value=$('c1').value||u.n;$('c3').value=$('c3').value||e}
+{const lg=document.createElement('select');lg.id='lang';lg.style.width='auto';lg.innerHTML='<option value="en">English</option><option value="ur">Roman Urdu</option>';lg.onchange=()=>tr();nav.append(lg);const ab=document.createElement('button');ab.id='ab';ab.textContent='Sign In / Up';ab.onclick=()=>{if(S.user){if(confirm('Sign out?')){localStorage.removeItem('me');location.reload()}}else $('auth').style.display='flex'};nav.append(ab);
+const me=localStorage.me,U=JSON.parse(localStorage.users||'{}');if(me&&U[me])login(me,U[me])}
+const D={'Begin Your Ascent':'Safar Shuru Karein','Your Ascent Starts Today':'Aaj Se Aapka Safar Shuru','Step 1 · Profile':'Step 1 · Profile','Build My Roadmap ⚡':'Mera Roadmap Banayein ⚡','Interests (pick any)':'Dilchaspiyan (chunein)','Analysing your profile…':'Aapki profile ka tajziya…','Skip →':'Aage →','Step 3 · Recommended Courses':'Step 3 · Tajweez Kardah Courses','Choose':'Chunein','Step 4 · Academies Near You':'Step 4 · Qareebi Academies',"I've Enrolled → Learning Hub":'Main ne Enroll kar liya →','Step 5 · Code Studio & LinkedIn':'Step 5 · Code aur LinkedIn','Run & Evaluate':'Chalayein aur Jaanchein','Audit Profile':'Profile Audit Karein','Step 6 · AI Tutor & Notes':'Step 6 · AI Ustaad aur Notes','Generate Notes':'Notes Banayein','Send':'Bhejein','Course Complete → Job Hunter':'Course Mukammal → Naukri Talash','Step 7 · Job Hunter':'Step 7 · Naukri Talash','Find Live Openings':'Live Naukriyan Dhoondein','🔎 AI Deep Research (web)':'🔎 AI Gehri Research (web)','Open Panel':'Panel Kholein','Step 8 · CV Studio':'Step 8 · CV Studio','✨ Auto-build CV':'✨ CV Khud Banayein','Export PDF':'PDF Nikalein','Step 9 · Interview Arena':'Step 9 · Interview Arena','Start Interview':'Interview Shuru Karein',"That's it for today":'Aaj ke liye bas','Next':'Agla','🎤 Answer':'🎤 Jawab Dein','Welcome':'Khush Amdeed','Profile':'Profile','Courses':'Courses','Academies':'Academies','Tutor':'Ustaad','Jobs':'Naukriyan','Interview':'Interview','Sign In / Up':'Sign In / Up','Full name':'Poora naam','Age':'Umar','City':'Shehar','Country':'Mulk','Company':'Company','Position':'Position','Phone number':'Phone number','Skills (comma separated)':'Skills (comma se alag)','Search any academy or place…':'Koi bhi academy ya jagah talash karein…'};
+const t=x=>S.lang=='ur'&&D[x]||x;
+function tr(){S.lang=$('lang').value;NAV.forEach((n,i)=>$('n'+i).textContent=i+': '+t(n));document.querySelectorAll('h1,h2,button,b').forEach(e=>{if(e.children.length||e.closest('nav'))return;const o=e.dataset.o||e.textContent;if(D[o]){e.dataset.o=o;e.textContent=t(o)}});document.querySelectorAll('[placeholder]').forEach(e=>{const o=e.dataset.p||e.placeholder;if(D[o]){e.dataset.p=o;e.placeholder=t(o)}});$('ab').textContent=S.user?'👤 '+S.user.n.split(' ')[0]:t('Sign In / Up')}
+const _go=go;go=function(i){_go(i);tr()};
+function gm(){const f=$('gmf'),on=f.style.display=='none';f.style.display=on?'block':'none';$('map').style.display=on?'none':'block';if(on)f.src='https://maps.google.com/maps?q='+encodeURIComponent($('ms').value||(S.course||'')+' academy in '+(S.p?S.p.c:'Lahore'))+'&output=embed';else map&&map.invalidateSize()}
+let JL=[];
+async function jobs(){const w=$('jw').value,q=($('js').value||'developer').split(',')[0].trim(),city=S.p?S.p.c:'',c=encodeURIComponent,pk=S.p&&/pakistan/i.test(S.p.k);$('jl').innerHTML='<div class="card">Searching live job boards…</div>';JL=[];
+try{const r=await(await fetch('https://remotive.com/api/remote-jobs?limit=12&search='+c(q))).json();JL=r.jobs.map(j=>[j.company_name,j.title+' · '+(j.candidate_required_location||'Worldwide'),'Remote',j.url,1])}catch(e){}
+const L=w=='Remote'?'remote':city;JL=[...JL,['LinkedIn Jobs',`"${q}" ${L}`,w,`https://www.linkedin.com/jobs/search/?keywords=${c(q)}&location=${c(w=='Remote'?'Worldwide':city)}${w=='Remote'?'&f_WT=2':''}`],['Google Jobs','Live listings: '+q,w,`https://www.google.com/search?q=${c(q+' jobs '+L)}&ibp=htl;jobs`],['Indeed','Listings: '+q,w,`https://${pk?'pk':'www'}.indeed.com/jobs?q=${c(q)}&l=${c(L)}`],['Rozee.pk','Pakistan listings: '+q,w,`https://www.rozee.pk/job/jsearch/q/${c(q)}`],...J];
+$('jl').innerHTML=JL.map((j,i)=>`<div class="card"><h3>${E(j[0])}</h3>${j[4]?'🟢 LIVE · ':''}${E(j[1])} · ${j[2]}<br><button onclick="jd(${i})">Open Panel</button></div>`).join('')+'<small style="color:var(--m)">Remote feed: Remotive.com</small>';xp(10)}
+async function research(n){const k=localStorage.k,r=$('rs'),city=S.p?S.p.city||S.p.c:'',ct=S.p?S.p.k:'',sk=$('js').value||'my skills';r.style.display='block';r.scrollIntoView({behavior:'smooth'});
+if(!k){r.innerHTML='Real web research needs a free Gemini API key (Step 6 box, aistudio.google.com). Until then:\n'+[['HR emails',`${n||sk} HR recruiter email ${city}`],['Hiring now',`${sk} companies hiring ${city}`]].map(x=>`<a style="color:#d4af37" target=_blank href="${gl(x[1])}">${x[0]} on Google</a>`).join('\n');return}
+r.textContent='Researching the live web…';const q=n?`Research "${n}": official careers page, publicly published HR/recruiter emails, LinkedIn and social accounts, current open roles and requirements relevant to: ${sk}. Country: ${ct}.`:`Research real employers currently hiring for ${sk} (${$('jw').value}) in ${city}, ${ct}. List 8 across different industries: name, industry, careers URL, public HR/recruiter email if published, LinkedIn URL, requirements, how to apply. Use only facts found in search; write "not found" otherwise.`;
+try{const j=await(await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GM+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tools:[{google_search:{}}],contents:[{parts:[{text:q}]}]})})).json(),c=j.candidates[0],tx=c.content.parts.map(p=>p.text||'').join(''),src=((c.groundingMetadata||{}).groundingChunks||[]).map(x=>x.web&&x.web.uri).filter(Boolean);
+r.innerHTML=E(tx)+'\n\nSources:\n'+src.map(u=>`<a style="color:#d4af37" target=_blank href="${u}">${E(u)}</a>`).join('\n')+'\n\n⚠ Verify every email on the official site before sending.';xp(20)}catch(e){r.textContent='Research failed — check API key / internet.'}}
+function tailor(i){const j=JL[i];S.job=j;$('c2').value=j[1].split(' · ')[0];go(8)}
+async function autoCV(){const n=$('c1').value,sk=$('c6').value||$('js').value,role=$('c2').value||'Professional',job=S.job?S.job[0]:'';if(!n||!sk)return alert('Enter name and skills first');$('c6').value=sk;let d;
+try{const a=await llm(`Write a CV for ${n}, target role ${role}${job?' at '+job:''}, skills: ${sk}, education: ${$('c7').value}. Return ONLY JSON {"summary":"2-3 sentence ATS summary","bullets":["5 achievement bullets, action verbs, metrics"]}`);d=JSON.parse(a.replace(/```json|```/g,'').trim())}catch(e){const s0=sk.split(',').slice(0,3).join(', ');d={summary:`Motivated ${role} with hands-on skills in ${sk}. Completed ${S.course||'professional training'} and built practical projects. Brings reliability, fast learning and clear communication to ${job||'a growing organisation'}.`,bullets:[`Built and deployed a project using ${s0}, delivering end to end`,`Completed ${S.course||'a structured course'} with graded assignments`,`Collaborated in team tasks and reported progress clearly`,`Improved workflow speed through automation and clean, documented work`,`Maintained an active LinkedIn presence and industry network`]}}
+$('c4').value=d.summary;$('c5').value=d.bullets.join('\n');cv();xp(20)}
+/* Siri-style interviewer */
+let going=0;
+const orb=s=>{const o=$('orb');if(o)o.textContent={speaking:'🗣 Interviewer speaking…',listening:'🎤 Listening — just answer naturally',think:'🤔 Evaluating…',idle:'🤖 Interviewer ready'}[s]||s};
+function speak(tx,cb){speechSynthesis.cancel();const v=speechSynthesis.getVoices(),vo=v.find(x=>/Samantha|Aria|Jenny|Zira|Google UK English Female|Google US English/i.test(x.name))||v.find(x=>/^en/.test(x.lang)),ss=(tx.replace(/\n/g,' ').match(/[^.!?]+[.!?]*/g)||[tx]).map(x=>x.trim()).filter(Boolean);
+ss.forEach((x,i)=>{const u=new SpeechSynthesisUtterance(x);if(vo)u.voice=vo;u.rate=.97;u.pitch=1.05;if(i==0)u.onstart=()=>orb('speaking');if(i==ss.length-1)u.onend=()=>{orb('idle');cb&&cb()};speechSynthesis.speak(u)})}
+function say(tx,cb){$('ilog').innerHTML+=`<div class="msg">🤖 ${E(tx)}</div>`;$('ilog').scrollTop=1e9;speak(tx,cb)}
+async function nextQ(f){if(!going)return;try{rec&&rec.abort()}catch(e){}if(!f&&qn>0)sc.tot++;if(qn>=Qs.length)return finish();let q=Qs[qn];const first=qn==0;qn++;if($('il').value=='en-IN')q=await llm('Translate into natural Roman Urdu (keep names/terms in English), output only the translation: '+q)||q;
+say((first?`Hello ${S.p?S.p.n:''}. I'm your AI interviewer for the ${$('ir').value} role at ${$('ic').value}. Let's begin. `:'')+q,()=>listen(1))}
+function listen(a){if(!going)return;const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){orb('Speech recognition needs Chrome/Edge — type your answer below');return}try{rec&&rec.abort()}catch(e){}rec=new R();rec.lang=$('il').value;rec.interimResults=true;let fin='',ok=0;rec.onresult=e=>{fin=[...e.results].map(r=>r[0].transcript).join(' ');ok=1;$('orb').textContent='🎤 '+fin.slice(-90)};rec.onend=()=>{if(!going)return;if(fin.trim())ans(fin);else if(a)setTimeout(()=>listen(1),300)};rec.onerror=e=>{if(e.error=='not-allowed'){going=0;orb('Microphone blocked — allow it in the address bar');}};try{rec.start();orb('listening')}catch(e){}}
+async function ans(tx){if(!going||!tx.trim())return;tx=tx.trim();orb('think');$('ilog').innerHTML+=`<div class="msg me">${E(tx)}</div>`;const l=tx.toLowerCase(),ctx=`${$('ir').value} at ${$('ic').value}. Requirements: ${$('ij').value}`;
+if(/that'?s it|thats it|bas itna|bas aaj|khatam|that is it for today/.test(l))return finish();
+if(/next question|move on|skip|agla|i don'?t know|dont know|pata nahi|lets move|let's move/.test(l)){sc.tot++;return say(/pata|agla|nahi/.test(l)?'Theek hai, koi masla nahi. Agla sawal.':"No problem. Let's move on.",()=>nextQ(1))}
+if(/\?$/.test(tx)||/^(what|how|why|can you|could you|kya|kaise|kyun|kia)\b/.test(l)){const r=await llm(`You are a professional interviewer (${ctx}). The candidate asks: "${tx}". Answer in max 3 sentences in the candidate's language (Roman Urdu if they used it), then ask them to answer the current question.`)||'Good question. Please answer the current question as best you can, and we can discuss details afterwards.';return say(r,()=>listen(1))}
+const w=tx.split(/\s+/).length,star=/(situation|task|action|result|achiev|improv|%|\d)/i.test(tx)?1:0,fl=(l.match(/\b(um|uh|like|basically|actually)\b/g)||[]).length;let s=Math.min(100,30+Math.min(w,80)*.6+star*15-fl*4),msg=`${w<25?'Try a longer answer with a concrete example. ':''}${star?'Good use of specifics. ':'Add numbers and results, STAR style. '}${fl?'Reduce filler words. ':''}`;
+const fb=await llm(`Mock interview (${ctx}). Question: "${Qs[qn-1]}". Answer: "${tx}". Reply in 2 short spoken sentences (honest strength or gap, then a tip), in the candidate's language (Roman Urdu if they used it). End exactly with "Score: NN" (0-100).`);if(fb){const m=/Score:\s*(\d+)/.exec(fb);if(m)s=+m[1];msg=fb.replace(/Score:\s*\d+/,'').trim()}
+sc.a+=s;sc.n++;sc.tot++;xp(10);$('ilog').innerHTML+=`<div class="msg">📝 ${s|0}/100</div>`;say(msg+' Next question.',()=>nextQ(1))}
+const _is=istart;istart=async function(){going=1;await _is()};
+const _fin=finish;finish=function(){going=0;try{rec&&rec.abort()}catch(e){}_fin();speak('Thank you. Your scorecard is ready.')};
+tr();
+</script>
+<script>
+const PROXY='',MODELS=['gemini-2.5-flash','gemini-2.0-flash'];
+async function gem(parts,o={}){const k=localStorage.k;if(!k&&!PROXY)throw new Error('No API key. Paste it in Tutor tab and press Save & Test.');let last;
+for(const m of MODELS){const body={contents:[{role:'user',parts:typeof parts=='string'?[{text:parts}]:parts}],generationConfig:{maxOutputTokens:o.max||4096,temperature:.7}};if(m.startsWith('gemini-2.5'))body.generationConfig.thinkingConfig={thinkingBudget:0};if(o.search)body.tools=[{googleSearch:{}}];
+const url=PROXY||(k.startsWith('AQ.')?`https://aiplatform.googleapis.com/v1/publishers/google/models/${m}:generateContent?key=${k}`:`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`);
+try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),j=await r.json();if(j.error){last=new Error(j.error.message||'API error');if(/not found|not supported|deprecated|thinking/i.test(last.message))continue;throw last}
+const c=j.candidates&&j.candidates[0];if(!c||!c.content)throw new Error('Empty response ('+(c&&c.finishReason||'blocked')+')');return{text:c.content.parts.map(p=>p.text||'').join(''),src:[...new Set(((c.groundingMetadata||{}).groundingChunks||[]).map(x=>x.web&&x.web.uri).filter(Boolean))]}}catch(e){if(e.message&&!/fetch/i.test(e.message))throw e;last=new Error('Network/CORS error — check internet or key restrictions')}}
+throw last}
+llm=async function(p){try{return(await gem(p)).text}catch(e){S.err=e.message;return null}};
+$('key').value=localStorage.k||'';
+async function saveKey(){localStorage.k=$('key').value.trim();$('ks').textContent='Testing…';try{await gem('Reply with the single word OK',{max:20});$('ks').textContent='✅ Key works — AI is live';xp(5)}catch(e){$('ks').textContent='❌ '+e.message}}
+const md=x=>E(x).replace(/^# (.*)$/gm,'<h2>$1</h2>').replace(/^#{2,3} (.*)$/gm,'<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[*-] (.*)$/gm,'• $1').replace(/`([^`]+)`/g,'<code>$1</code>');
+let NOTES='';
+notes=async function(){const box=$('notes'),yt=$('yt').value.trim();let title='';if(yt){try{const o=await(await fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent(yt))).json();title=o.title+' by '+o.author_name}catch(e){}}
+const topic=$('tp').value.trim()||title||S.course;if(!topic)return alert('Enter a topic or a YouTube link');
+if(!localStorage.k&&!PROXY){box.textContent='Add your API key above and press Save & Test. Long 5–7 page notes need the AI.';return}
+box.textContent='Planning your notes…';let plan;
+try{try{plan=JSON.parse((await gem(`Outline comprehensive study notes on: "${topic}"${yt?' (from YouTube video '+yt+')':''}. Return ONLY a JSON array of 8 section titles.`,{search:!!yt,max:600})).text.replace(/```json|```/g,'').trim())}catch(e){if(/key|permission|quota|invalid/i.test(e.message))throw e;plan=['Introduction & Big Picture','Core Concepts','How It Works Step by Step','Worked Examples','Real-World Applications','Common Mistakes & Fixes','Advanced Ideas','Revision Summary']}
+let out=`# ${topic}\n`;for(let i=0;i<plan.length;i++){box.innerHTML=md(out)+`<p>⏳ Writing section ${i+1}/${plan.length}: ${E(plan[i])}…</p>`;const a=await gem(`Write section ${i+1} of ${plan.length} of long, detailed study notes on "${topic}". Section: "${plan[i]}". Outline: ${plan.join('; ')}. About 450 words: explain every idea in depth, define terms, include at least one worked example or code sample, end with "**Key takeaway:**". Markdown (bullets, **bold**). No repetition of other sections.`,{max:4096});out+=`\n## ${i+1}. ${plan[i]}\n${a.text.replace(/^#+ .*\n/,'')}\n`}
+box.innerHTML=md(out)+'<p>⏳ Writing practice Q&A…</p>';const q=await gem(`Write 10 exam-style questions with short model answers on "${topic}". Markdown.`,{max:3000});out+=`\n## Practice Q&A\n${q.text}\n`;NOTES=out;box.innerHTML=md(out);xp(40)}catch(e){box.innerHTML=(NOTES?md(NOTES):'')+'<p>❌ '+E(e.message)+'</p>'}};
+const LS={c:[],i:0,on:0,r:.88,tok:0};
+function lsStart(){const tx=$('notes').innerText;if(tx.length<120)return alert('Generate notes first');LS.c=(tx.replace(/\n+/g,'. ').match(/[^.!?]+[.!?]*/g)||[]).reduce((a,s)=>{if(a.length&&(a[a.length-1]+s).length<240)a[a.length-1]+=s;else a.push(s);return a},[]);LS.i=0;$('lsc').style.display='block';lsPlay()}
+function lsPlay(){const me=++LS.tok;speechSynthesis.cancel();if(LS.i>=LS.c.length){LS.on=0;$('lst').textContent='✅ Session finished';return}LS.on=1;const u=new SpeechSynthesisUtterance(LS.c[LS.i]),v=speechSynthesis.getVoices().find(x=>/Samantha|Aria|Jenny|Google UK English Female|Google US English/i.test(x.name));if(v)u.voice=v;u.rate=LS.r;u.onend=()=>{if(LS.on&&me==LS.tok){LS.i++;lsPlay()}};$('lst').textContent=`▶ Part ${LS.i+1}/${LS.c.length}: ${LS.c[LS.i].slice(0,110)}…`;speechSynthesis.speak(u)}
+function lsPause(){LS.on=0;LS.tok++;speechSynthesis.cancel();$('lst').textContent='⏸ Paused at part '+(LS.i+1)+'/'+LS.c.length}
+function lsToggle(){LS.on?lsPause():lsPlay()}
+function lsBack(){LS.i=Math.max(0,LS.i-1);lsPlay()}
+function lsFwd(){LS.i=Math.min(LS.c.length,LS.i+1);lsPlay()}
+function lsStop(){LS.on=0;LS.tok++;speechSynthesis.cancel();LS.i=0;$('lst').textContent='⏹ Stopped'}
+/* Jobs */
+const strip=h=>(h||'').replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/g,' ').replace(/\s+/g,' ').trim(),hasAI=()=>localStorage.k||PROXY;
+jobs=async function(){const w=$('jw').value,q=($('js').value||'developer').split(',')[0].trim(),city=S.p?S.p.c:'',ct=S.p?S.p.k:'',c=encodeURIComponent,pk=/pakistan/i.test(ct);$('jl').innerHTML='<div class="card">Searching live job boards…</div>';JL=[];const ql=q.toLowerCase().split(/\s+/);
+try{const r=await(await fetch('https://remotive.com/api/remote-jobs?limit=15&search='+c(q))).json();JL=r.jobs.map(j=>[j.company_name,j.title+(j.salary?' · '+j.salary:''),'Remote',j.url,1,strip(j.description),j.candidate_required_location||'Worldwide'])}catch(e){}
+try{const r=await(await fetch('https://www.arbeitnow.com/api/job-board-api')).json();r.data.filter(j=>ql.some(z=>(j.title+' '+(j.tags||[]).join(' ')).toLowerCase().includes(z))&&(w=='Remote'?j.remote:!j.remote)).slice(0,8).forEach(j=>JL.push([j.company_name,j.title,j.remote?'Remote':'On-site',j.url,1,strip(j.description),j.location]))}catch(e){}
+const L=w=='Remote'?'remote':city;JL=[...JL,['LinkedIn Jobs',`"${q}" ${L}`,w,`https://www.linkedin.com/jobs/search/?keywords=${c(q)}&location=${c(w=='Remote'?'Worldwide':city)}${w=='Remote'?'&f_WT=2':''}`],['Google Jobs','Live listings: '+q,w,`https://www.google.com/search?q=${c(q+' jobs '+L)}&ibp=htl;jobs`],['Indeed','Listings: '+q,w,`https://${pk?'pk':'www'}.indeed.com/jobs?q=${c(q)}&l=${c(L)}`],...(pk?[['Rozee.pk','Pakistan listings: '+q,w,`https://www.rozee.pk/job/jsearch/q/${c(q)}`]]:[]),...J];
+$('jl').innerHTML=(JL.some(j=>j[4])?'':'<div class="card">No live feed results for this search — use the boards below or AI research.</div>')+JL.map((j,i)=>`<div class="card"><h3>${E(j[0])}</h3>${j[4]?'🟢 LIVE · ':''}${E(j[1])} · ${j[2]}${j[6]?'<br>📍 '+E(j[6]):''}<br><button onclick="jd(${i})">Open Panel</button></div>`).join('')+'<small style="color:var(--m)">Feeds: Remotive, Arbeitnow</small>';xp(10);if(hasAI())research()};
+research=async function(n,tg){const r=$(tg||'rs'),city=S.p?S.p.c:'',ct=S.p?S.p.k:'',sk=$('js').value||'';r.style.display='block';const g=u=>`<a style="color:#d4af37" target=_blank href="${gl(u)}">Search Google: ${E(u)}</a>`;
+if(!hasAI()){r.innerHTML='Add your API key (Tutor tab → Save & Test) for real web research.<br>'+g((n||sk)+' HR email contact '+city);return}
+r.textContent='Researching the live web…';const q=n?`Using web search, research the company "${n}" (country: ${ct}). Give: 1) office address & city, 2) official careers page URL, 3) publicly published HR/recruitment emails and phone numbers (only if found on official sources, else "not published"), 4) LinkedIn, Facebook, X, Instagram URLs, 5) typical requirements for roles in: ${sk}, 6) how to apply. Never invent emails, numbers or links.`:`Using web search, find 8 real employers currently hiring for "${sk}" (${$('jw').value}) in ${city}, ${ct}, across different industries. For each: name, industry, address, careers URL, publicly published HR/recruiter email if found, LinkedIn URL, key requirements, how to apply. Only facts found in search; otherwise write "not found".`;
+try{const a=await gem(q,{search:1,max:4096});r.innerHTML=md(a.text)+'<br><b>Sources</b><br>'+a.src.map(u=>`<a style="color:#d4af37" target=_blank href="${u}">${E(u)}</a>`).join('<br>')+'<br>⚠ Verify every email/number on the official site before using.';xp(20)}catch(e){r.innerHTML='❌ '+E(e.message)}};
+jd=function(i){const j=JL[i],c=encodeURIComponent,city=S.p?S.p.c:'',nm=S.p?S.p.n:'[Name]',loc=j[6]&&!/remote|anywhere|worldwide/i.test(j[6])?j[6]:city,a='style="color:#d4af37" target=_blank';S.job=j;xp(10);const d=$('jd');d.style.display='block';
+d.innerHTML=`<h3>${E(j[0])}</h3><b>${E(j[1])}</b> · ${j[2]}<br>📍 ${E(j[6]||loc)}<br><a ${a} href="${j[3]}">Apply / open listing</a> · <a ${a} href="https://www.linkedin.com/company/${j[0].toLowerCase().replace(/[^a-z0-9]+/g,'-')}">LinkedIn</a> · <a ${a} href="${gl(j[0]+' HR recruiter email contact')}">HR email search</a> · <a ${a} href="https://www.linkedin.com/jobs/search/?keywords=${c(j[0])}">Open vacancies</a>
+${j[5]?`<h3>Requirements &amp; description</h3><div class="out" style="max-height:200px">${E(j[5].slice(0,2000))}</div>`:''}
+<h3>Location</h3><iframe loading="lazy" style="width:100%;height:240px;border:0;border-radius:10px" src="https://maps.google.com/maps?q=${c(j[0]+' '+loc)}&output=embed"></iframe>
+<h3>Emails, contacts &amp; social links (AI web research)</h3><div class="out" id="rp">${hasAI()?'Researching…':'Add your API key in the Tutor tab to load verified contact research.'}</div>
+<h3>Cold email</h3><div class="out">Subject: ${E(($('js').value.split(',')[0]||'Candidate'))} application – ${E(nm)}\n\nDear Hiring Team at ${E(j[0])},\n\nI'm ${E(nm)}, trained in ${E(S.course||'[course]')}, with skills in ${E($('js').value||'[skills]')}. I'd value a short conversation about the role. My CV is attached.\n\nBest regards,\n${E(nm)}</div>
+<h3>How to email</h3>1. Subject: role + your name.<br>2. Four short lines: who you are, proof, why them, ask.<br>3. Attach Name_Role.pdf.<br>4. Follow up after 5–7 days, once more after 7, then stop.<br>5. Send Tue–Thu mornings.<br><button class="gold" onclick="tailor(${i})">Tailor CV for this job →</button>`;if(hasAI())research(j[0],'rp');d.scrollIntoView({behavior:'smooth'})};
+cv=function(){const i=+$('cs').value,g=i/5|0,p=$('cvp'),ac=$('cc').value,fm=['Georgia','Garamond,serif','Palatino,serif','Times New Roman','Cambria'][i%5],fs=['system-ui','Consolas,monospace','Arial','Verdana','Trebuchet MS'][i%5];p.className=['','minimal','creative'][g];p.style.cssText=`--ac:${ac};--ff:${g==1?fs:fm}`;
+const l=x=>$(x).value.split('\n').filter(Boolean).map(z=>'<li>'+E(z)+'</li>').join(''),ct=[$('c3').value,$('c8').value,$('c9').value].filter(Boolean).map(E).join(' &nbsp;|&nbsp; ');
+p.innerHTML=`<h1>${E($('c1').value||'YOUR NAME')}</h1><div>${E($('c2').value||'Target Role')}</div><div style="margin:4px 0 12px;font-size:13px">${ct||'Email | Phone | City'}</div><h3>SUMMARY</h3><p>${E($('c4').value||'Write a 2–3 line summary.')}</p><h3>EXPERIENCE &amp; PROJECTS</h3><ul>${l('c5')||'<li>Add entries</li>'}</ul><h3>SKILLS</h3><p>${E($('c6').value)}</p><h3>EDUCATION</h3><ul>${l('c7')}</ul>`};
+const _g3=go;go=function(i){if(i==8&&!$('c9').value&&S.p)$('c9').value=S.p.c+', '+S.p.k;_g3(i)};
+</script>
+</body></html>
