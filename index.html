@@ -339,12 +339,27 @@ const LIP=`You are a senior LinkedIn growth coach and technical recruiter who ha
 9 ACTIVITY: 2-3 posts a week (learning logs, project demos), 5 thoughtful comments a day, 10 personalised connection requests a week to recruiters, alumni and people in the target role.
 RULES: If the screenshot shows a COMPANY or ORGANISATION page instead of a personal profile, say so, audit it briefly as a page, and tell the user to upload their own personal profile for a real audit. Use only what is visible in the screenshot or typed; if something is missing say "not visible" instead of guessing. Never invent achievements; use [brackets] for facts the user must fill in.
 OUTPUT: 1) Score /100 with a one-line verdict each for Headline, Photo/Banner, About, Experience, Skills, Activity. 2) Top 5 fixes in priority order. 3) Three rewritten headline options. 4) A rewritten About using the user's real details. 5) A 30-day plan, week by week, to become a recruiter-visible profile. Be specific, warm and concise.`;
+const LIP2=`You are a friendly senior LinkedIn coach and technical recruiter. The user can be ANYONE: a complete beginner, fresher, career switcher, or someone whose profile is weak or unused. Never assume a name, field or country. Use only the USER DATA and what is visible in the screenshot. If something is missing, say what to add. Never invent employers, degrees, numbers or achievements.
+RULES: If the screenshot shows a COMPANY or organisation page instead of a personal profile, say so in one line, ask the user to upload their own personal profile, and still give the full guide below from the typed headline, About and target role. If there is no screenshot, work from the typed text only.
+Explain simply, as if the user has never maintained LinkedIn. Reply in the same language as the user's text (English or Roman Urdu).
+OUTPUT in this order:
+1) Score /100 with a one-line verdict each for Headline, Photo/Banner, About, Experience/Projects, Skills, Activity.
+2) Top 5 fixes in priority order.
+3) Three ready-to-paste headlines (under 220 characters): Target role | 3 skills | proof or value.
+4) Ready-to-paste About section (1,500-2,000 characters): hook in first 2 lines, what they build or want to do, 2-3 proof points, skills, call to action. Use [brackets] where the user must add their own facts.
+5) Photo and banner guide.
+6) Experience/projects: action verb + tool + result. Beginners use projects, courses, volunteering, freelancing.
+7) Featured and Skills: what to pin, 30+ skills, how to get endorsements and recommendations.
+8) What to post: 3 post ideas this week with one sample post, how often, 5 thoughtful comments a day, 10 personalised connection requests a week with a sample message.
+9) A 15-minutes-a-day weekly routine.
+10) Making the account look professional and verified: custom URL, location, Open to Work (recruiters only), contact info, profile completeness, and how to verify identity and workplace or education email on LinkedIn.
+Be practical, encouraging and specific.`;
 const b64=f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(f)}),_audit=audit;
 audit=async function(){if(!hasAI()){_audit();$('lo').textContent+='\n\n💡 Tap 🔑 Add AI key for a deep personalised audit that also reads your screenshot.';return}
 const o=$('lo'),f=$('lis').files[0],nm=(S.p&&S.p.n)||(S.user&&S.user.n)||'the user';o.textContent='Auditing your profile…';
-const parts=[{text:LIP+`\n\nUSER DATA\nName: ${nm}\nTarget role: ${$('lt').value||'not given'}\nHeadline: ${$('lh').value||'not given'}\nAbout: ${$('la').value||'not given'}\nSkills: ${(S.p&&S.p.sk)||'not given'}\nCourse: ${S.course||'not given'}\nLocation: ${S.p?S.p.c+', '+S.p.k:'not given'}\nReply in: ${S.lang=='ur'?'Roman Urdu':'English'}\n${f?'A screenshot is attached.':'No screenshot attached.'}`}];
+const parts=[{text:LIP2+`\n\nUSER DATA\nName: ${nm}\nTarget role: ${$('lt').value||'not given'}\nHeadline: ${$('lh').value||'not given'}\nAbout: ${$('la').value||'not given'}\nSkills: ${(S.p&&S.p.sk)||'not given'}\nCourse: ${S.course||'not given'}\nLocation: ${S.p?S.p.c+', '+S.p.k:'not given'}\nReply in: ${S.lang=='ur'?'Roman Urdu':'English'}\n${f?'A screenshot is attached.':'No screenshot attached.'}`}];
 if(f)parts.push({inlineData:{mimeType:f.type||'image/jpeg',data:await b64(f)}});
-try{const a=await gem(parts,{max:3500});o.innerHTML=md(a.text);xp(30)}catch(e){o.textContent='❌ '+e.message}};
+try{const a=await gem(parts,{max:6000});o.innerHTML=md(a.text);xp(30)}catch(e){o.textContent='❌ '+e.message}};
 
 /* ---------- 6. Interview: thinking time, patient listening, real body-language AI ---------- */
 $('il').insertAdjacentHTML('afterend','<select id="itm"><option value="15">Thinking time: 15 s</option><option value="30" selected>Thinking time: 30 s</option><option value="45">Thinking time: 45 s</option><option value="60">Thinking time: 60 s</option><option value="90">Thinking time: 90 s</option></select>');
