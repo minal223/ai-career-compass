@@ -420,4 +420,107 @@ gem=async function(parts,o={}){
  const c=j.candidates&&j.candidates[0];if(!c||!c.content)throw new Error('Empty response ('+(c&&c.finishReason||'blocked')+')');
  return{text:c.content.parts.map(p=>p.text||'').join(''),src:[...new Set(((c.groundingMetadata||{}).groundingChunks||[]).map(x=>x.web&&x.web.uri).filter(Boolean))]}};
 </script>
+  <!-- ===== ALTUS PATCH: look + brand + speed + languages ===== -->
+<link rel="preconnect" href="https://generativelanguage.googleapis.com" crossorigin>
+<link rel="dns-prefetch" href="https://maps.googleapis.com">
+
+<style>
+:root{
+  --bg:#F3F0EA; --surface:#FAF8F4; --ink:#1D1C1A; --muted:#6E685F;
+  --line:#DCD6CA; --accent:#8C7B64; --accent-ink:#FFFFFF; --dark:#2B2927;
+}
+html,body{background:var(--bg)!important;color:var(--ink)!important;
+  font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif!important}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif!important;
+  color:var(--ink)!important;letter-spacing:-.01em}
+header,nav{background:var(--surface)!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
+nav button,header button,.tab{background:transparent!important;color:var(--muted)!important;
+  border:1px solid var(--line)!important;border-radius:10px!important;box-shadow:none!important;
+  transition:all .2s ease}
+nav button:hover{border-color:var(--accent)!important;color:var(--ink)!important}
+nav button.active,nav .active,.tab.active{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important}
+button{background:var(--accent)!important;color:var(--accent-ink)!important;border:none!important;
+  border-radius:10px!important;box-shadow:0 1px 2px rgba(0,0,0,.08)!important;
+  transition:transform .15s ease,background .2s ease}
+button:hover{background:#776753!important;transform:translateY(-1px)}
+input,select,textarea{background:var(--surface)!important;color:var(--ink)!important;
+  border:1px solid var(--line)!important;border-radius:10px!important;box-shadow:none!important}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--accent)!important}
+section,.card,.panel,.slide>div{background:var(--surface)!important;color:var(--ink)!important;
+  border:1px solid var(--line)!important;border-radius:16px!important;
+  box-shadow:0 6px 24px rgba(60,50,35,.06)!important}
+p,li,label,span{color:inherit}
+.muted,small{color:var(--muted)!important}
+*{animation-duration:.25s!important}
+</style>
+
+<script>
+/* ---------- 1) NAME + ONE-LINE DESCRIPTION (edit these two) ---------- */
+const APP_NAME = "Altus";
+const APP_TAGLINE = "Your AI mentor from first lesson to first job.";
+
+(function brand(){
+  document.title = APP_NAME + " — " + APP_TAGLINE;
+  const swap = () => {
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = w.nextNode())) {
+      const t = n.nodeValue;
+      if (/ai career compass/i.test(t)) n.nodeValue = t.replace(/ai career compass/ig, APP_NAME);
+      if (t.includes("Your future is built by what you do today")) n.nodeValue = "“" + APP_TAGLINE + "”";
+    }
+  };
+  swap();
+  new MutationObserver(swap).observe(document.body,{childList:true,subtree:true});
+})();
+
+/* ---------- 2) LESS LATENCY ---------- */
+(function speed(){
+  const cache = new Map();
+  const realFetch = window.fetch.bind(window);
+  window.fetch = async (url, opts = {}) => {
+    const u = String(url);
+    const isGemini = u.includes("generativelanguage.googleapis.com") && u.includes("generateContent");
+    if (isGemini && typeof opts.body === "string") {
+      try {
+        const b = JSON.parse(opts.body);
+        b.generationConfig = Object.assign(
+          { maxOutputTokens: 1500, temperature: 0.7, thinkingConfig: { thinkingBudget: 0 } },
+          b.generationConfig || {}
+        );
+        opts = { ...opts, body: JSON.stringify(b) };
+      } catch(e){}
+      const key = u.split("?")[0] + opts.body;
+      if (cache.has(key)) return new Response(cache.get(key), {status:200, headers:{"Content-Type":"application/json"}});
+      const res = await realFetch(url, opts);
+      if (res.ok) res.clone().text().then(t => cache.set(key, t));
+      return res;
+    }
+    return realFetch(url, opts);
+  };
+  document.querySelectorAll("img,iframe").forEach(el => el.loading = "lazy");
+  document.querySelectorAll("script[src]:not([async]):not([defer])").forEach(s => s.defer = true);
+})();
+
+/* ---------- 3) CODE STUDIO: only Python, C++, Java ---------- */
+(function limitLanguages(){
+  const allowed = ["python", "c++", "cpp", "java"];
+  const trim = () => {
+    document.querySelectorAll("select").forEach(sel => {
+      const opts = [...sel.options];
+      const isLangSelect = opts.some(o => /python|javascript|c\+\+|java/i.test(o.text));
+      if (!isLangSelect) return;
+      opts.forEach(o => {
+        const t = o.text.toLowerCase().trim();
+        const ok = allowed.some(a => t === a || t.startsWith(a + " "));
+        if (!ok || t === "javascript") o.remove();
+      });
+      if (sel.options.length) sel.selectedIndex = 0;
+    });
+  };
+  trim();
+  new MutationObserver(trim).observe(document.body, {childList:true, subtree:true});
+})();
+</script>
+<!-- ===== END PATCH ===== -->
 </body></html>
