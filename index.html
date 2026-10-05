@@ -424,55 +424,91 @@ gem=async function(parts,o={}){
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="dns-prefetch" href="https://maps.googleapis.com">
 
-<style>
-:root{
-  --ivory:#F4F1EB; --ivory2:#E9E4DA; --glass:rgba(255,255,255,.55);
-  --ink:#3A342D; --muted:#7A7167; --line:rgba(160,140,115,.28);
-  --bronze1:#C2A783; --bronze2:#8E7556;
-}
-html,body{
-  background:
-    radial-gradient(900px 500px at 70% 10%, rgba(214,190,150,.22), transparent 60%),
-    radial-gradient(700px 400px at 10% 90%, rgba(255,255,255,.7), transparent 60%),
-    linear-gradient(160deg,var(--ivory),var(--ivory2))!important;
-  background-attachment:fixed!important;
-  color:var(--ink)!important;
-  font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif!important}
-h1,h2,h3{font-family:Georgia,"Times New Roman",serif!important;color:var(--ink)!important;letter-spacing:-.01em}
-
-header,nav{background:rgba(250,248,243,.85)!important;backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line)!important;box-shadow:none!important}
-nav button,header button,.tab{background:rgba(255,255,255,.5)!important;color:var(--muted)!important;
-  border:1px solid var(--line)!important;border-radius:10px!important;box-shadow:none!important;transition:all .2s ease}
-nav button:hover{color:var(--ink)!important;border-color:var(--bronze2)!important;transform:none!important}
-nav button.active,nav .active,.tab.active{background:#fff!important;color:var(--ink)!important;
-  border-color:var(--bronze2)!important;box-shadow:0 2px 8px rgba(142,117,86,.18)!important}
-
-button{background:linear-gradient(180deg,var(--bronze1),var(--bronze2))!important;color:#fff!important;
-  border:1px solid rgba(255,255,255,.45)!important;border-radius:12px!important;
-  box-shadow:0 6px 16px rgba(142,117,86,.28)!important;transition:transform .15s ease,box-shadow .2s ease}
-button:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(142,117,86,.34)!important}
-
-input,select,textarea{background:rgba(255,255,255,.7)!important;color:var(--ink)!important;
-  border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important}
-input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--bronze2)!important}
-
-section,.card,.panel,.slide>div{background:var(--glass)!important;backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);color:var(--ink)!important;
-  border:1px solid rgba(255,255,255,.7)!important;border-radius:20px!important;
-  box-shadow:0 10px 40px rgba(110,90,60,.10)!important}
-p,li,label,span{color:inherit}
-.muted,small{color:var(--muted)!important}
-*{animation-duration:.25s!important}
-
-/* brand + description under it */
-.brand-wrap{display:flex!important;flex-direction:column!important;align-items:flex-start;line-height:1.15}
-.brand-sub{display:block;font:400 10.5px/1.3 system-ui,sans-serif;letter-spacing:.04em;
-  text-transform:none;color:var(--muted);white-space:nowrap;margin-top:2px}
-</style>
-
 <script>
-/* ---------- 1) NAME + DESCRIPTION (edit these two) ---------- */
+/* ---------- 0) LOOK: soft greige, glass, champagne glow ---------- */
+(function look(){
+  const css = `
+  :root{--ink:#3B352E;--muted:#82786C;--line:rgba(150,128,98,.30);
+        --gold1:#DCC397;--gold2:#A98657;--glass:rgba(255,255,255,.52)}
+  html{background:
+      radial-gradient(900px 520px at 78% 12%,rgba(255,244,222,.65),transparent 62%),
+      radial-gradient(700px 420px at 8% 92%,rgba(255,255,255,.55),transparent 60%),
+      linear-gradient(165deg,#E6E0D6,#D9D1C5)!important;background-attachment:fixed!important}
+  body{background:transparent!important;color:var(--ink)!important;
+       font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif!important}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif!important;color:var(--ink)!important;letter-spacing:-.01em}
+
+  header,nav{background:rgba(250,247,241,.88)!important;backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line)!important;box-shadow:0 2px 14px rgba(90,72,45,.06)!important}
+  nav button,header button,.tab{background:rgba(255,255,255,.55)!important;color:var(--muted)!important;
+    border:1px solid var(--line)!important;border-radius:10px!important;box-shadow:none!important;
+    transition:all .2s ease;transform:none!important}
+  nav button:hover{color:var(--ink)!important;border-color:var(--gold2)!important;background:#fff!important}
+  nav button.active,nav .active,.tab.active{background:#fff!important;color:var(--ink)!important;
+    border-color:var(--gold2)!important;box-shadow:0 3px 10px rgba(169,134,87,.22)!important}
+
+  button{background:linear-gradient(180deg,var(--gold1),var(--gold2))!important;color:#fff!important;
+    border:1px solid rgba(255,255,255,.55)!important;border-radius:12px!important;
+    text-shadow:0 1px 1px rgba(80,55,25,.25);
+    box-shadow:0 8px 22px rgba(169,134,87,.38),0 0 26px rgba(224,190,130,.35)!important;
+    transition:transform .15s ease,box-shadow .25s ease}
+  button:hover{transform:translateY(-1px);
+    box-shadow:0 12px 28px rgba(169,134,87,.45),0 0 34px rgba(224,190,130,.5)!important}
+
+  input,select,textarea{background:rgba(255,255,255,.72)!important;color:var(--ink)!important;
+    border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important}
+  input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--gold2)!important;
+    box-shadow:0 0 0 3px rgba(169,134,87,.15)!important}
+
+  section,.card,.panel,.slide>div{background:var(--glass)!important;backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);color:var(--ink)!important;
+    border:1px solid rgba(255,255,255,.75)!important;border-radius:22px!important;
+    box-shadow:0 14px 44px rgba(100,80,50,.12),inset 0 1px 0 rgba(255,255,255,.8)!important}
+  p,li,label,span{color:inherit}
+  .muted,small{color:var(--muted)!important}
+
+  .brand-wrap{display:flex!important;flex-direction:column!important;align-items:flex-start;line-height:1.15}
+  .brand-sub{display:block;font:400 10.5px/1.3 system-ui,sans-serif;letter-spacing:.04em;
+    text-transform:none;color:var(--muted);white-space:nowrap;margin-top:2px}
+
+  #pw-deco{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  #pw-deco svg.net{position:absolute;inset:0;width:100%;height:100%}
+  .pw-tile{position:absolute;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;
+    background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);
+    box-shadow:0 8px 24px rgba(100,80,50,.12);backdrop-filter:blur(8px)}
+  .pw-tile svg{width:26px;height:26px;stroke:#A98657;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  @media(max-width:1300px){.pw-tile{display:none}}
+  `;
+  const st = document.createElement("style"); st.id = "pw-style"; st.textContent = css;
+  document.head.appendChild(st);
+
+  const deco = document.createElement("div"); deco.id = "pw-deco";
+  deco.innerHTML = `
+  <svg class="net" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="#B9985F" stroke-opacity=".42" stroke-width="1.2">
+      <polyline points="120,640 320,530 470,575 640,385 770,450 910,250 1050,305 1160,140"/>
+      <polyline points="690,120 820,70 940,150 1060,85 1160,170"/>
+      <polyline points="640,385 700,260 820,230 910,250"/>
+      <polyline points="820,70 910,250"/>
+    </g>
+    <g fill="#C9A96E" fill-opacity=".85">
+      <circle cx="320" cy="530" r="3"/><circle cx="470" cy="575" r="3"/><circle cx="640" cy="385" r="3.5"/>
+      <circle cx="770" cy="450" r="3"/><circle cx="910" cy="250" r="4"/><circle cx="1050" cy="305" r="3"/>
+      <circle cx="690" cy="120" r="2.5"/><circle cx="820" cy="70" r="3"/><circle cx="940" cy="150" r="3"/>
+      <circle cx="1060" cy="85" r="2.5"/><circle cx="700" cy="260" r="2.5"/><circle cx="820" cy="230" r="2.5"/>
+    </g>
+    <g fill="#E3C98F" fill-opacity=".9">
+      <path d="M1160 124l4 12 12 4-12 4-4 12-4-12-12-4 12-4z"/>
+      <path d="M910 232l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/>
+      <path d="M640 368l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>
+    </g>
+  </svg>
+  <div class="pw-tile" style="left:6%;top:30%"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></div>
+  <div class="pw-tile" style="left:4%;top:50%"><svg viewBox="0 0 24 24"><path d="M8 3v18M16 3v18M8 8h8M8 13h8M8 18h8"/></svg></div>
+  <div class="pw-tile" style="right:7%;bottom:20%"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></div>`;
+  document.body.prepend(deco);
+})();
+/* ---------- 1) NAME + DESCRIPTION ---------- */
 const APP_NAME = "Pathwise";
 const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
 
@@ -484,11 +520,14 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
     while ((n = w.nextNode())) {
       let t = n.nodeValue;
       if (/ai career compass|altus/i.test(t)) { n.nodeValue = t.replace(/ai career compass|altus/ig, APP_NAME); t = n.nodeValue; }
-      if (t.includes("Your future is built by what you do today")) n.nodeValue = "“" + APP_TAGLINE + "”";
+      if (t.includes("any language")) n.nodeValue = t.replace("(any language)", "(Python · C++ · Java)");
+      if (t.includes("Your future is built by what you do today") || t.includes("Small steps every day"))
+        n.nodeValue = "“" + APP_TAGLINE + "”";
       const el = n.parentElement;
-      if (el && t.trim().toLowerCase() === APP_NAME.toLowerCase() && !el.closest("button")
-          && el.getBoundingClientRect().top < 140 && !el.classList.contains("brand-wrap")
-          && !(el.parentElement && el.parentElement.classList.contains("brand-wrap"))) {
+      if (el && !el.closest("button") && t.length < APP_NAME.length + 6
+          && t.toLowerCase().includes(APP_NAME.toLowerCase())
+          && el.getBoundingClientRect().top < 140
+          && !el.querySelector(".brand-sub")) {
         el.classList.add("brand-wrap");
         const s = document.createElement("span");
         s.className = "brand-sub"; s.textContent = APP_TAGLINE;
@@ -500,26 +539,16 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
   new MutationObserver(swap).observe(document.body,{childList:true,subtree:true});
 })();
 
-/* ---------- 2) LESS LATENCY ---------- */
+/* ---------- 2) SAFE SPEED-UP (does not change your AI requests) ---------- */
 (function speed(){
   const cache = new Map();
   const realFetch = window.fetch.bind(window);
   window.fetch = async (url, opts = {}) => {
-    const u = String(url);
-    const isAI = u.includes("script.google.com/macros");
-    if (isAI && typeof opts.body === "string") {
-      try {
-        const b = JSON.parse(opts.body);
-        b.generationConfig = Object.assign(
-          { maxOutputTokens: 1500, temperature: 0.7, thinkingConfig: { thinkingBudget: 0 } },
-          b.generationConfig || {}
-        );
-        opts = { ...opts, body: JSON.stringify(b) };
-      } catch(e){}
+    if (String(url).includes("script.google.com/macros") && typeof opts.body === "string") {
       const key = opts.body;
       if (cache.has(key)) return new Response(cache.get(key), {status:200, headers:{"Content-Type":"application/json"}});
       const res = await realFetch(url, opts);
-      if (res.ok) res.clone().text().then(t => { if(!/"error"/.test(t)) cache.set(key, t); });
+      res.clone().text().then(t => { if (t.trim().startsWith("{") && t.includes("candidates")) cache.set(key, t); });
       return res;
     }
     return realFetch(url, opts);
