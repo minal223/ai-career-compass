@@ -539,23 +539,108 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
   new MutationObserver(swap).observe(document.body,{childList:true,subtree:true});
 })();
 
-/* ---------- 2) SAFE SPEED-UP (does not change your AI requests) ---------- */
-(function speed(){
-  const cache = new Map();
+/* ---------- 2) SAFE SPEED-UP (does not change your AI requests) ---------- *
+/* ---------- 2) FIXES: AI retry + smaller images + clean code output ---------- */
+(function fixes(){
   const realFetch = window.fetch.bind(window);
-  window.fetch = async (url, opts = {}) => {
-    if (String(url).includes("script.google.com/macros") && typeof opts.body === "string") {
-      const key = opts.body;
-      if (cache.has(key)) return new Response(cache.get(key), {status:200, headers:{"Content-Type":"application/json"}});
-      const res = await realFetch(url, opts);
-      res.clone().text().then(t => { if (t.trim().startsWith("{") && t.includes("candidates")) cache.set(key, t); });
-      return res;
+  const cache = new Map();
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const busy = () => new Response(
+    JSON.stringify({error:{message:"The AI is busy right now. Please try again in a few seconds."}}),
+    {status:200, headers:{"Content-Type":"application/json"}});
+
+  async function shrink(bodyStr){
+    let b; try { b = JSON.parse(bodyStr); } catch(e){ return bodyStr; }
+    let changed = false;
+    const parts = [];
+    (b.contents || []).forEach(c => (c.parts || []).forEach(p => parts.push(p)));
+    for (const p of parts) {
+      const d = p.inlineData || p.inline_data; if (!d) continue;
+      const mime = d.mimeType || d.mime_type || "";
+      if (!mime.startsWith("image/") || !d.data || d.data.length < 400000) continue;
+      try {
+        const img = await new Promise((ok, no) => {
+          const i = new Image(); i.onload = () => ok(i); i.onerror = no;
+          i.src = "data:" + mime + ";base64," + d.data;
+        });
+        const s = Math.min(1, 1400 / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        const out = c.toDataURL("image/jpeg", 0.82).split(",")[1];
+        if (p.inlineData) p.inlineData = {mimeType:"image/jpeg", data:out};
+        else p.inline_data = {mime_type:"image/jpeg", data:out};
+        changed = true;
+      } catch(e){}
     }
-    return realFetch(url, opts);
+    return changed ? JSON.stringify(b) : bodyStr;
+  }
+
+  window.fetch = async (url, opts = {}) => {
+    if (!(String(url).includes("script.google.com/macros") && typeof opts.body === "string"))
+      return realFetch(url, opts);
+    opts = {...opts, body: await shrink(opts.body)};
+    const key = opts.body.length < 200000 ? opts.body : null;
+    if (key && cache.has(key))
+      return new Response(cache.get(key), {status:200, headers:{"Content-Type":"application/json"}});
+    for (let i = 0; i < 3; i++) {
+      try {
+        const res = await realFetch(url, opts);
+        const txt = await res.clone().text();
+        if (!txt.trim().startsWith("<")) {
+          if (key && txt.includes("candidates")) cache.set(key, txt);
+          return res;
+        }
+      } catch(e){}
+      await wait(1500 * (i + 1));
+    }
+    return busy();
   };
   document.querySelectorAll("img,iframe").forEach(el => el.loading = "lazy");
-})();
 
+  /* Code Studio: show OUTPUT first, hide the long review */
+  const st = document.createElement("style");
+  st.textContent = `
+  .pw-out{background:#2B2927;border-radius:14px;padding:12px 14px;margin:4px 0 10px}
+  .pw-out-h{font:600 11px/1 system-ui,sans-serif;letter-spacing:.08em;color:#CDB68A;margin-bottom:8px;text-transform:uppercase}
+  .pw-out pre{margin:0;color:#F3EEE4;font:14px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:transparent!important;border:none!important;padding:0!important}
+  .pw-rev{margin:6px 0;font-size:13px;color:#6E685F}
+  .pw-rev summary{cursor:pointer;font-weight:600;color:#8E7556}
+  .pw-rev div{white-space:pre-wrap;margin-top:6px}
+  .pw-score{font-size:12px;color:#6E685F;margin-top:6px}`;
+  document.head.appendChild(st);
+
+  const isRes = el => { const t = el.textContent;
+    return t.length < 6000 && t.trim().startsWith("LANGUAGE:") && t.includes("OUTPUT:") && t.includes("REVIEW:"); };
+  const mk = (tag, cls, txt) => { const e = document.createElement(tag);
+    if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  let timer;
+  const tidy = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      [...document.querySelectorAll("div,pre,p,section")].filter(isRes)
+        .filter(el => ![...el.children].some(isRes))
+        .forEach(el => {
+          const seg = (el.innerText || el.textContent).split(/(?:^|\n)\s*(LANGUAGE|OUTPUT|REVIEW|FIX|Score):/);
+          const o = {};
+          for (let i = 1; i < seg.length; i += 2) o[seg[i]] = (seg[i + 1] || "").trim();
+          if (!("OUTPUT" in o)) return;
+          el.textContent = "";
+          const box = mk("div", "pw-out");
+          box.appendChild(mk("div", "pw-out-h", "Output · " + (o.LANGUAGE || "")));
+          box.appendChild(mk("pre", "", o.OUTPUT || "(no output)"));
+          el.appendChild(box);
+          const rev = mk("details", "pw-rev");
+          rev.appendChild(mk("summary", "", "Code review & tips"));
+          rev.appendChild(mk("div", "", (o.REVIEW || "") + (o.FIX ? "\n\nFIX: " + o.FIX : "")));
+          el.appendChild(rev);
+          if (o.Score) el.appendChild(mk("div", "pw-score", "Score: " + o.Score));
+        });
+    }, 150);
+  };
+  tidy();
+  new MutationObserver(tidy).observe(document.body, {childList:true, subtree:true, characterData:true});
+})();
 /* ---------- 3) CODE STUDIO: only Python, C++, Java ---------- */
 (function limitLanguages(){
   const allowed = ["python", "c++", "cpp", "java"];
