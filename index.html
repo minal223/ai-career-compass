@@ -538,16 +538,43 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
   swap();
   new MutationObserver(swap).observe(document.body,{childList:true,subtree:true});
 })();
-
-/* ---------- 2) SAFE SPEED-UP (does not change your AI requests) ---------- *
-/* ---------- 2) FIXES: AI retry + smaller images + clean code output ---------- */
+/* ---------- 2) FIXES: AI retry + fast mode + smaller images + clean code output ---------- */
 (function fixes(){
   const realFetch = window.fetch.bind(window);
   const cache = new Map();
+  let fast = true, fastFails = 0, lastWhy = "";
   const wait = ms => new Promise(r => setTimeout(r, ms));
-  const busy = () => new Response(
-    JSON.stringify({error:{message:"The AI is busy right now. Please try again in a few seconds."}}),
-    {status:200, headers:{"Content-Type":"application/json"}});
+  const mkRes = t => new Response(t, {status:200, headers:{"Content-Type":"application/json"}});
+
+  const good = (txt, strict) => {
+    const s = txt.trim();
+    if (s.startsWith("<")) {
+      const plain = s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ");
+      const m = plain.match(/(Exception|TypeError|ReferenceError|Error)[: ].{0,200}/);
+      lastWhy = m ? m[0] : plain.slice(0, 160);
+      return false;
+    }
+    try {
+      const j = JSON.parse(s);
+      if (j.error) {
+        lastWhy = j.error.message || "API error";
+        return !strict && ![429, 500, 503].includes(j.error.code);
+      }
+      const c = j.candidates && j.candidates[0];
+      if (c && c.content && c.content.parts) return true;
+      lastWhy = "empty answer from Gemini";
+      return false;
+    } catch(e) { return true; }
+  };
+
+  const withFast = b => {
+    try {
+      const o = JSON.parse(b);
+      o.generationConfig = Object.assign({}, o.generationConfig);
+      if (!o.generationConfig.thinkingConfig) o.generationConfig.thinkingConfig = {thinkingBudget: 0};
+      return JSON.stringify(o);
+    } catch(e) { return b; }
+  };
 
   async function shrink(bodyStr){
     let b; try { b = JSON.parse(bodyStr); } catch(e){ return bodyStr; }
@@ -579,22 +606,25 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
   window.fetch = async (url, opts = {}) => {
     if (!(String(url).includes("script.google.com/macros") && typeof opts.body === "string"))
       return realFetch(url, opts);
-    opts = {...opts, body: await shrink(opts.body)};
-    const key = opts.body.length < 200000 ? opts.body : null;
-    if (key && cache.has(key))
-      return new Response(cache.get(key), {status:200, headers:{"Content-Type":"application/json"}});
-    for (let i = 0; i < 3; i++) {
+    const body = await shrink(opts.body);
+    const key = body.length < 200000 ? body : null;
+    if (key && cache.has(key)) return mkRes(cache.get(key));
+
+    const send = async (b, strict) => {
       try {
-        const res = await realFetch(url, opts);
+        const res = await realFetch(url, {...opts, body: b});
         const txt = await res.clone().text();
-        if (!txt.trim().startsWith("<")) {
-          if (key && txt.includes("candidates")) cache.set(key, txt);
-          return res;
-        }
-      } catch(e){}
-      await wait(1500 * (i + 1));
-    }
-    return busy();
+        return good(txt, strict) ? {res, txt} : null;
+      } catch(e) { lastWhy = String(e.message || e); return null; }
+    };
+
+    let r = null;
+    if (fast) { r = await send(withFast(body), true); if (r) fastFails = 0; }
+    if (!r) { r = await send(body, false); if (r && fast && ++fastFails >= 2) fast = false; }
+    if (!r) { await wait(1500); r = await send(body, false); }
+    if (!r) return mkRes(JSON.stringify({error:{message:"AI is busy (" + lastWhy + "). Try again in a few seconds."}}));
+    if (key && r.txt.includes("candidates")) cache.set(key, r.txt);
+    return r.res;
   };
   document.querySelectorAll("img,iframe").forEach(el => el.loading = "lazy");
 
@@ -641,23 +671,29 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
   tidy();
   new MutationObserver(tidy).observe(document.body, {childList:true, subtree:true, characterData:true});
 })();
+
 /* ---------- 3) CODE STUDIO: only Python, C++, Java ---------- */
 (function limitLanguages(){
-  const allowed = ["python", "c++", "cpp", "java"];
+  const keep = t => /^(python|c\+\+|cpp|java)(\s|$)/i.test(t.trim());
   const trim = () => {
     document.querySelectorAll("select").forEach(sel => {
+      if (sel.dataset.pwLang) return;
       const opts = [...sel.options];
       if (!opts.some(o => /python|javascript|c\+\+|java/i.test(o.text))) return;
-      opts.forEach(o => {
-        const t = o.text.toLowerCase().trim();
-        if (!allowed.some(a => t === a || t.startsWith(a + " ")) || t === "javascript") o.remove();
-      });
-      if (sel.options.length) sel.selectedIndex = 0;
+      sel.dataset.pwLang = "1";
+      const cur = sel.options[sel.selectedIndex];
+      const lostSelected = !cur || !keep(cur.text);
+      opts.forEach(o => { if (!keep(o.text)) o.remove(); });
+      if (lostSelected) {
+        sel.selectedIndex = 0;
+        sel.dispatchEvent(new Event("change", {bubbles:true}));
+      }
     });
   };
   trim();
   new MutationObserver(trim).observe(document.body, {childList:true, subtree:true});
 })();
+
 </script>
 <!-- ===== END PATCH ===== -->
 </body></html>
