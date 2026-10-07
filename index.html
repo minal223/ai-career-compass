@@ -693,7 +693,36 @@ const APP_TAGLINE = "Your AI mentor, from first lesson to first job.";
   trim();
   new MutationObserver(trim).observe(document.body, {childList:true, subtree:true});
 })();
+/* ---------- 4) AI TUTOR: reply in the same language the student writes in ---------- */
+(function tutorLanguage(){
+  let tutorAt = 0;
+  const mark = () => { tutorAt = Date.now(); };
+  const isTutorBox = el => el && el.querySelector && el.querySelector('[placeholder*="Ask anything"]');
 
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest("button");
+    if (b && b.textContent.trim().toLowerCase() === "send" && isTutorBox(b.parentElement)) mark();
+  }, true);
+  document.addEventListener("keydown", e => {
+    const t = e.target;
+    if (e.key === "Enter" && t && t.placeholder && /ask anything/i.test(t.placeholder)) mark();
+  }, true);
+
+  const RULE = "\n\nLANGUAGE RULE (highest priority): Look only at the language of the student's most recent message. If it is written in Roman Urdu, reply in Roman Urdu. If it is written in English, reply in simple, easy English only, with no Urdu or Roman Urdu words. Never switch language on your own, even if earlier messages used another language.";
+
+  const prev = window.fetch;
+  window.fetch = function(url, opts){
+    try {
+      if (Date.now() - tutorAt < 5000 && opts && typeof opts.body === "string" && String(url).includes("script.google.com")) {
+        const b = JSON.parse(opts.body);
+        const parts = b.contents && b.contents[b.contents.length - 1].parts;
+        const last = parts && [...parts].reverse().find(p => typeof p.text === "string");
+        if (last) { last.text += RULE; opts = {...opts, body: JSON.stringify(b)}; }
+      }
+    } catch(e){}
+    return prev.call(this, url, opts);
+  };
+})();
 </script>
 <!-- ===== END PATCH ===== -->
 </body></html>
